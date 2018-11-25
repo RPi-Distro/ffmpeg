@@ -128,7 +128,7 @@ Build-Depends:
 # # --enable-libv4l2
 # libv4l-dev [!hurd-any],
 # autodetected: hwaccels 'h263_vaapi, mpeg2_vaapi, vc1_vaapi, h264_vaapi, mpeg4_vaapi, wmv3_vaapi'
- libva-dev [!hurd-any],
+ libva-dev (>= 1.3) [!hurd-any],
 # autodetected: hwaccels 'h263_vdpau, mpeg2_vdpau, vc1_vdpau, h264_vdpau, mpeg4_vdpau, wmv3_vdpau, mpeg1_vdpau', decoders 'h264_vdpau, mpeg1_vdpau, mpeg4_vdpau, mpeg_vdpau, vc1_vdpau, wmv3_vdpau'
  libvdpau-dev,
 # --enable-libvidstab
