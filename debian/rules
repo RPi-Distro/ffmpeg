@@ -104,6 +104,7 @@ CONFIG_extra = --enable-shared \
 	--enable-version3 \
 	--disable-doc \
 	--disable-programs \
+	--enable-liblensfun \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
 	--enable-libtesseract \
