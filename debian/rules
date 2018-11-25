@@ -25,16 +25,22 @@ FLAVORS = standard extra static
 # The following flags are not added, because the necessary libraries are not in Debian:
 #   --enable-decklink
 #   --enable-libcelt                (see #676592: removed from Debian as abandoned upstream, replaced by opus)
+#   --enable-libdavs2
 #   --enable-libilbc                (see #675959 for the RFP bug)
+#   --enable-libklvanc
 #   --enable-libkvazaar
 #   --enable-libmfx
 #   --enable-libopenh264
 #   --enable-libsrt
+#   --enable-libtensorflow          (only in experimental at the moment)
 #   --enable-libvmaf
+#   --enable-libxavs2
 #   --enable-libxavs
 #   --enable-libzimg                (see #864888 for the RFP bug)
+#   --enable-vapoursynth            (see #833942 for the RFP bug)
 # The following flags are not added for various reasons:
 #   --enable-librtmp                ffmpeg has better built-in RTMP support with listen mode.
+#   --enable-mbedtls                Already using gnutls as TLS implementation
 #   --enable-libmodplug             see #849840: replaced with libopenmpt
 #   --enable-libv4l2                This is only needed for very old devices and may cause problems for others.
 #                                   Should anyone need it, using LD_PRELOAD pointing on libv4l2 has the same effect.
