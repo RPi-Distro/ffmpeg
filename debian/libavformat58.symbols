@@ -14,7 +14,7 @@ libavformat.so.58 libavformat58 #MINVER#
  av_find_best_stream@LIBAVFORMAT_58 7:4.0
  av_find_default_stream_index@LIBAVFORMAT_58 7:4.0
  av_find_input_format@LIBAVFORMAT_58 7:4.0
- av_find_program_from_stream@LIBAVFORMAT_58 7:4.0
+ av_find_program_from_stream@LIBAVFORMAT_58 7:4.1
  av_fmt_ctx_get_duration_estimation_method@LIBAVFORMAT_58 7:4.0
  av_format_ffversion@LIBAVFORMAT_58 7:4.0
  av_format_get_audio_codec@LIBAVFORMAT_58 7:4.0
@@ -51,7 +51,7 @@ libavformat.so.58 libavformat58 #MINVER#
  av_interleaved_write_uncoded_frame@LIBAVFORMAT_58 7:4.0
  av_match_ext@LIBAVFORMAT_58 7:4.0
  av_muxer_iterate@LIBAVFORMAT_58 7:4.0
- av_new_program@LIBAVFORMAT_58 7:4.0
+ av_new_program@LIBAVFORMAT_58 7:4.1
  av_oformat_next@LIBAVFORMAT_58 7:4.0
  av_pkt_dump2@LIBAVFORMAT_58 7:4.0
  av_pkt_dump_log2@LIBAVFORMAT_58 7:4.0
@@ -84,8 +84,8 @@ libavformat.so.58 libavformat58 #MINVER#
  av_write_trailer@LIBAVFORMAT_58 7:4.0
  av_write_uncoded_frame@LIBAVFORMAT_58 7:4.0
  av_write_uncoded_frame_query@LIBAVFORMAT_58 7:4.0
- avformat_alloc_context@LIBAVFORMAT_58 7:4.0
- avformat_alloc_output_context2@LIBAVFORMAT_58 7:4.0
+ avformat_alloc_context@LIBAVFORMAT_58 7:4.1
+ avformat_alloc_output_context2@LIBAVFORMAT_58 7:4.1
  avformat_close_input@LIBAVFORMAT_58 7:4.0
  avformat_configuration@LIBAVFORMAT_58 7:4.0
  avformat_find_stream_info@LIBAVFORMAT_58 7:4.0
@@ -102,7 +102,7 @@ libavformat.so.58 libavformat58 #MINVER#
  avformat_network_deinit@LIBAVFORMAT_58 7:4.0
  avformat_network_init@LIBAVFORMAT_58 7:4.0
  avformat_new_stream@LIBAVFORMAT_58 7:4.0
- avformat_open_input@LIBAVFORMAT_58 7:4.0
+ avformat_open_input@LIBAVFORMAT_58 7:4.1
  avformat_query_codec@LIBAVFORMAT_58 7:4.0
  avformat_queue_attached_pictures@LIBAVFORMAT_58 7:4.0
  avformat_seek_file@LIBAVFORMAT_58 7:4.0

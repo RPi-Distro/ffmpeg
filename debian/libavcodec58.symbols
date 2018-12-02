@@ -9,6 +9,7 @@ libavcodec.so.58 libavcodec58 #MINVER#
  av_bitstream_filter_init@LIBAVCODEC_58 7:4.0
  av_bitstream_filter_next@LIBAVCODEC_58 7:4.0
  av_bsf_alloc@LIBAVCODEC_58 7:4.0
+ av_bsf_flush@LIBAVCODEC_58 7:4.1
  av_bsf_free@LIBAVCODEC_58 7:4.0
  av_bsf_get_by_name@LIBAVCODEC_58 7:4.0
  av_bsf_get_class@LIBAVCODEC_58 7:4.0
@@ -82,6 +83,7 @@ libavcodec.so.58 libavcodec58 #MINVER#
  av_mediacodec_default_free@LIBAVCODEC_58 7:4.0
  av_mediacodec_default_init@LIBAVCODEC_58 7:4.0
  av_mediacodec_release_buffer@LIBAVCODEC_58 7:4.0
+ av_mediacodec_render_buffer_at_time@LIBAVCODEC_58 7:4.1
  av_new_packet@LIBAVCODEC_58 7:4.0
  av_packet_add_side_data@LIBAVCODEC_58 7:4.0
  av_packet_alloc@LIBAVCODEC_58 7:4.0

@@ -129,9 +129,9 @@ libavutil.so.56 libavutil56 #MINVER#
  av_encryption_info_free@LIBAVUTIL_56 7:4.0
  av_encryption_info_get_side_data@LIBAVUTIL_56 7:4.0
  av_encryption_init_info_add_side_data@LIBAVUTIL_56 7:4.0
- av_encryption_init_info_alloc@LIBAVUTIL_56 7:4.0
+ av_encryption_init_info_alloc@LIBAVUTIL_56 7:4.1
  av_encryption_init_info_free@LIBAVUTIL_56 7:4.0
- av_encryption_init_info_get_side_data@LIBAVUTIL_56 7:4.0
+ av_encryption_init_info_get_side_data@LIBAVUTIL_56 7:4.1
  av_escape@LIBAVUTIL_56 7:4.0
  av_expr_eval@LIBAVUTIL_56 7:4.0
  av_expr_free@LIBAVUTIL_56 7:4.0
@@ -400,6 +400,7 @@ libavutil.so.56 libavutil56 #MINVER#
  av_rc4_alloc@LIBAVUTIL_56 7:4.0
  av_rc4_crypt@LIBAVUTIL_56 7:4.0
  av_rc4_init@LIBAVUTIL_56 7:4.0
+ av_read_image_line2@LIBAVUTIL_56 7:4.1
  av_read_image_line@LIBAVUTIL_56 7:4.0
  av_realloc@LIBAVUTIL_56 7:4.0
  av_realloc_array@LIBAVUTIL_56 7:4.0
@@ -471,6 +472,7 @@ libavutil.so.56 libavutil56 #MINVER#
  av_thread_message_flush@LIBAVUTIL_56 7:4.0
  av_thread_message_queue_alloc@LIBAVUTIL_56 7:4.0
  av_thread_message_queue_free@LIBAVUTIL_56 7:4.0
+ av_thread_message_queue_nb_elems@LIBAVUTIL_56 7:4.1
  av_thread_message_queue_recv@LIBAVUTIL_56 7:4.0
  av_thread_message_queue_send@LIBAVUTIL_56 7:4.0
  av_thread_message_queue_set_err_recv@LIBAVUTIL_56 7:4.0
@@ -501,6 +503,7 @@ libavutil.so.56 libavutil56 #MINVER#
  av_vbprintf@LIBAVUTIL_56 7:4.0
  av_version_info@LIBAVUTIL_56 7:4.0
  av_vlog@LIBAVUTIL_56 7:4.0
+ av_write_image_line2@LIBAVUTIL_56 7:4.1
  av_write_image_line@LIBAVUTIL_56 7:4.0
  av_xtea_alloc@LIBAVUTIL_56 7:4.0
  av_xtea_crypt@LIBAVUTIL_56 7:4.0
