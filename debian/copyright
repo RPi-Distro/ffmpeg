@@ -53,7 +53,7 @@ Copyright:
   2001-2010, Krzysztof Foltman, Markus Schmidt, Thor Harald Johansen, Damien Zammit, Vladimir Sadovnikov and others
   2001-2014, Peter Ross <pross@xvid.org>
   2001-2016, Michael Niedermayer <michaelni@gmx.at>
-  2001-2016, The FFmpeg project
+  2001-2018, The FFmpeg project
   2002, Anders Johansson <ajh@atri.curtin.edu.au>
   2002, Brian Foley
   2002, Daniel Pouzzner
@@ -255,8 +255,8 @@ Copyright:
   2010-2015, Janne Grunau <janne-libav@jannau.net>
   2010-2017, Anton Khirnov <anton@khirnov.net>
   2010-2017, Google, Inc
-  2010-2017, Philip Langdale <ffmpeg.philipl@overt.org> <philipl@overt.org>
   2010-2017, Tomas Härdin
+  2010-2018, Philip Langdale <ffmpeg.philipl@overt.org> <philipl@overt.org>
   2011, Anatoliy Wasserman
   2011, Andreas Öman
   2011, Jordi Ortiz
@@ -280,7 +280,7 @@ Copyright:
   2011-2013, Daniel Kang <daniel.d.kang@gmail.com>
   2011-2015, Derek Buitenhuis
   2011-2016, Kieran Kunhya <kieran@kunhya.com>
-  2011-2017, Clément Bœsch <u@pkh.me> <clement@stupeflix.com>
+  2011-2018, Clément Bœsch <u@pkh.me> <clement@stupeflix.com>
   2011-2018, Paul B Mahol
   2012, Aleksi Nurmi
   2012, Andrew D'Addesio
@@ -309,7 +309,7 @@ Copyright:
   2012-2013, Wassim Hamidouche
   2012-2014, Georg Lippitsch <georg.lippitsch@gmx.at>
   2012-2015, Christophe Gisquet <christophe.gisquet@gmail.com>
-  2012-2016, James Almer <jamrial@gmail.com>
+  2012-2018, James Almer <jamrial@gmail.com>
   2013, Anand Meher Kotra
   2013, Ash Hughes
   2013, Darryl Wallace <wallacdj@gmail.com>
@@ -358,8 +358,8 @@ Copyright:
   2014-2015, Vignesh Venkatasubramanian
   2014-2016, Muhammad Faiz <mfcc64@gmail.com>
   2014-2016, Neil Birkbeck <birkbeck@google.com>
-  2014-2016, Thomas Volkert <thomas@homer-conferencing.com>
   2014-2017, Alexandra Hájková
+  2014-2018, Thomas Volkert <thomas@homer-conferencing.com>
   2015, Andreas Cadhalpun <Andreas.Cadhalpun@googlemail.com>
   2015, Anshul Maheshwari
   2015, Claudio Freire
@@ -387,7 +387,6 @@ Copyright:
   2015, Zhang Shuangshuang <zhangshuangshuang@ict.ac.cn>
   2015-2016, Ganesh Ajjanagadde <gajjanaq@gmail.com>
   2015-2016, Kyle Swanson <k@ylo.ph>
-  2015-2016, Loongson Technology Corporation Limited
   2015-2016, Open Broadcast Systems Ltd
   2015-2016, Rodger Combs <rodger.combs@gmail.com>
   2015-2016, Timo Rothenpieler <timo@rothenpieler.org>
@@ -396,6 +395,7 @@ Copyright:
   2015-2017, Matthieu Bouron <matthieu.bouron@stupeflix.com>
   2015-2017, Rostislav Pehlivanov <atomnuker@gmail.com>
   2015-2018, Henrik Gramner <henrik@gramner.com>
+  2015-2018, Loongson Technology Corporation Limited
   2016, Davinder Singh (DSM_) <ds.mudhar<@gmail.com>
   2016, Floris Sluiter
   2016, Jan Sebechlebsky
@@ -419,8 +419,15 @@ Copyright:
   2017-2018, Akamai Technologies, Inc.
   2018, Dylan Fernando
   2018, Danil Iashchenko
+  2018, Falei Luo <falei.luo@gmail.com>
+  2018, Huiwen Ren <hwrenx@gmail.com> <hwrenx@126.com>
+  2018, Mina Sami
   2018, Misty De Meo
+  2018, Rostislav Pehlivanov <atomnuker@gmail.com>
+  2018, Sergey Lavrushkin
+  2018, Shiyou Yin <yinshiyou-hf@loongson.cn>
   2018, Yingming Fan <yingmingfan@gmail.com>
+  2018, Yiqun Xu <yiqun.xu@vipl.ict.ac.cn>
 License: LGPL-2.1+
 Comment:
  You should have received a copy of the GNU Lesser General Public
@@ -455,7 +462,6 @@ Files:
   doc/texi2pod.pl
   libavcodec/x86/flac_dsp_gpl.asm
   libavfilter/f_ebur128.c
-  libavfilter/interlace.h
   libavfilter/signature.h
   libavfilter/signature_lookup.c
   libavfilter/tinterlace.h
@@ -474,7 +480,6 @@ Files:
   libavfilter/vf_histeq.c
   libavfilter/vf_hqdn3d.c
   libavfilter/vf_hqdn3d.h
-  libavfilter/vf_interlace.c
   libavfilter/vf_kerndeint.c
   libavfilter/vf_mcdeint.c
   libavfilter/vf_mpdecimate.c
@@ -504,7 +509,6 @@ Files:
   libavfilter/x86/vf_fspp_init.c
   libavfilter/x86/vf_hqdn3d_init.c
   libavfilter/x86/vf_interlace.asm
-  libavfilter/x86/vf_interlace_init.c
   libavfilter/x86/vf_pp7.asm
   libavfilter/x86/vf_pp7_init.c
   libavfilter/x86/vf_pullup.asm
@@ -655,10 +659,13 @@ Comment:
 Files:
   compat/solaris/make_sunver.pl
   doc/t2h.pm
+  libavfilter/vf_lensfun.c
 Copyright:
+  2007, Andrew Zabolotny
   2010-2013, Free Software Foundation, Inc.
   2014, Andreas Cadhalpun <Andreas.Cadhalpun@googlemail.com>
   2014, Tiancheng "Timothy" Gu <timothygu99@gmail.com>
+  2018, Stephen Seo
 License: GPL-3+
  FFmpeg is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -691,6 +698,7 @@ Files:
   doc/examples/filtering_audio.c
   doc/examples/filtering_video.c
   doc/examples/http_multiclient.c
+  doc/examples/hw_decode.c
   doc/examples/metadata.c
   doc/examples/muxing.c
   doc/examples/qsvdec.c
@@ -698,6 +706,8 @@ Files:
   doc/examples/resampling_audio.c
   doc/examples/scaling_video.c
   doc/examples/transcoding.c
+  doc/examples/vaapi_encode.c
+  doc/examples/vaapi_transcode.c
   doc/style.min.css
   libavcodec/arm/jrevdct_arm.S
   libavcodec/cinepakenc.c
@@ -709,6 +719,7 @@ Files:
   libavcodec/x86/vc1dsp_init.c
   libavcodec/x86/vc1dsp_mmx.c
   libavfilter/vf_avgblur.c
+  libavfilter/vf_bm3d.c
   libavfilter/vf_deband.c
   libavfilter/vf_scale_cuda.c
   libavfilter/vf_scale_cuda.cu
@@ -758,7 +769,8 @@ Copyright:
   2015, Niklas Haas
   2015, Stephan Holljes
   2015, Vittorio Giovara <vittorio.giovara@gmail.com>
-  2015-2016, Paul B Mahol
+  2015-2018, Paul B Mahol
+  2015-2016, mawen1250
 License: Expat
 
 Files:
@@ -769,6 +781,8 @@ Files:
   libavcodec/fft_fixed_32.c
   libavcodec/fft_init_table.c
   libavcodec/fft_table.h
+  libavcodec/ilbcdata.h
+  libavcodec/ilbcdec.c
   libavcodec/mdct_fixed_32.c
   libavcodec/mips/aaccoder_mips.c
   libavcodec/mips/aacdec_mips.c
@@ -807,6 +821,7 @@ Copyright:
   2010, Rob Clark <rob@ti.com>
   2011, Mans Rullgard <mans@mansr.com>
   2012-2013, MIPS Technologies, Inc., California
+  2013, The WebRTC project authors
 License: LGPL-2.1+ and BSD-3-clause
 Comment:
  On Debian systems, the full text of the GNU Lesser General Public License
