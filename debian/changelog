@@ -1,8 +1,20 @@
-ffmpeg (7:4.1-1) UNRELEASED; urgency=medium
+ffmpeg (7:4.1-1) unstable; urgency=low
 
-  *
+  * New upstream release.
+    - Fixes DSF decoding noise at end of file. (Closes: #896190)
 
- -- James Cowgill <jcowgill@debian.org>  Sun, 25 Nov 2018 20:49:07 +0000
+  * d/control:
+    - Add version restriction to libva-dev build dependency.
+  * d/copyright: Updates for 4.1.
+  * d/rules:
+  * - Disable opencv. (Closes: #915544)
+    - Enable liblensfun in libavfilter-extra.
+    - Update list of disabled libraries.
+  * d/*.symbols: Update symbols files for 4.1.
+  * d/tests: Update encdec_list.txt.
+  * d/upstream/signing-key.asc: Minimize key.
+
+ -- James Cowgill <jcowgill@debian.org>  Sat, 22 Dec 2018 13:25:13 +0000
 
 ffmpeg (7:4.0.3-1) unstable; urgency=medium
 
