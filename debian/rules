@@ -143,7 +143,7 @@ ifeq ($(DEB_HOST_ARCH_OS),linux)
 		--enable-libiec61883
 endif
 
-# ffmpeg is involed in build-dependency cycles with x264 and chromaprint, so disable them in stage one.
+# ffmpeg is involved in build-dependency cycles with x264 and chromaprint, so disable them in stage one.
 # Also disable frei0r, which build-depends on opencv.
 ifneq ($(filter pkg.ffmpeg.stage1,$(DEB_BUILD_PROFILES)),)
 	CONFIG += --disable-frei0r \
