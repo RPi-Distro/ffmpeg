@@ -1,4 +1,5 @@
-usr/bin/ff*
+usr/bin/ffmpeg
+usr/bin/ffprobe
 usr/share/man/man1
 usr/share/ffmpeg/*.ffpreset
 usr/share/ffmpeg/*.xsd

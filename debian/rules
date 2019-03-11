@@ -103,6 +103,10 @@ CONFIG := --prefix=/usr \
 	--enable-opengl \
 	--enable-sdl2
 
+# cf. http://bugs.debian.org/923494
+CONFIG += 
+	--disable-outdev=sdl2 \
+
 # The standard configuration only uses the shared CONFIG.
 CONFIG_standard = --enable-shared
 
