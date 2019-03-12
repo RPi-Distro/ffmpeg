@@ -184,7 +184,8 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends}
 Suggests:
- ffmpeg-doc
+ ffmpeg-doc,
+ ffplay
 Breaks: libav-tools (<< 6:12~~),
  qt-faststart (<< 7:2.7.1-3~),
  winff (<< 1.5.5-5~),
