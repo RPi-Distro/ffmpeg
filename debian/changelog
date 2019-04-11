@@ -1,3 +1,15 @@
+ffmpeg (7:4.1-1+rpt1) buster; urgency=medium
+
+  [ Dave Stevenson ]
+  * avcodec/omx: Fix handling of fragmented buffers
+  [ Serge Schneider ]
+  * Add libraspberrypi0 dependency
+  * Set --arch=armhf
+  [ Arindam Chaudhuri ]
+  * Enable Raspberry Pi HW acceleration
+
+ -- Serge Schneider <serge@raspberrypi.org>  Wed, 06 Feb 2019 14:17:15 +0000
+
 ffmpeg (7:4.1-1) unstable; urgency=low
 
   * New upstream release.

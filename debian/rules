@@ -99,6 +99,8 @@ CONFIG := --prefix=/usr \
 	--enable-libzvbi \
 	--enable-lv2 \
 	--enable-omx \
+	--enable-omx-rpi \
+	--enable-mmal \
 	--enable-openal \
 	--enable-opengl \
 	--enable-sdl2
@@ -153,6 +155,11 @@ else
 	CONFIG += --enable-chromaprint \
 		--enable-frei0r \
 		--enable-libx264
+endif
+
+# Ensure armhf builds even if running an aarch64 kernel
+ifeq ($(DEB_HOST_ARCH),armhf)
+	CONFIG += --arch=$(DEB_HOST_ARCH)
 endif
 
 # Disable altivec optimizations on powerpc, because they are not always available on this architecture.
