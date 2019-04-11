@@ -1,3 +1,12 @@
+ffmpeg (7:4.1.1-1+rpt1) buster; urgency=medium
+
+  [James Cowgill]
+  * New upstream release.
+    - cbs_av1: Fix reading of overlong uvlc codes (CVE-2019-1000016)
+      (Closes: #922066)
+
+ -- Serge Schneider <serge@raspberrypi.org>  Thu, 11 Apr 2019 11:29:13 +0100
+
 ffmpeg (7:4.1-1+rpt1) buster; urgency=medium
 
   [ Dave Stevenson ]
