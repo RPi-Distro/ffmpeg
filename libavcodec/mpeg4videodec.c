@@ -1899,14 +1899,20 @@ static int mpeg4_decode_studio_block(MpegEncContext *s, int32_t block[64], int n
             code >>= 1;
             run = (1 << (additional_code_len - 1)) + code;
             idx += run;
+            if (idx > 63)
+                return AVERROR_INVALIDDATA;
             j = scantable[idx++];
             block[j] = sign ? 1 : -1;
         } else if (group >= 13 && group <= 20) {
             /* Level value (Table B.49) */
+            if (idx > 63)
+                return AVERROR_INVALIDDATA;
             j = scantable[idx++];
             block[j] = get_xbits(&s->gb, additional_code_len);
         } else if (group == 21) {
             /* Escape */
+            if (idx > 63)
+                return AVERROR_INVALIDDATA;
             j = scantable[idx++];
             additional_code_len = s->avctx->bits_per_raw_sample + s->dct_precision + 4;
             flc = get_bits(&s->gb, additional_code_len);
@@ -3057,6 +3063,7 @@ static int decode_studio_vop_header(Mpeg4DecContext *ctx, GetBitContext *gb)
         return 0;
 
     s->partitioned_frame = 0;
+    s->interlaced_dct = 0;
     s->decode_mb = mpeg4_decode_studio_mb;
 
     decode_smpte_tc(ctx, gb);
