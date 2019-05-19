@@ -1270,7 +1270,7 @@ static int64_t get_frag_time(MOVFragmentIndex *frag_index,
 static int search_frag_timestamp(MOVFragmentIndex *frag_index,
                                  AVStream *st, int64_t timestamp)
 {
-    int a, b, m;
+    int a, b, m, m0;
     int64_t frag_time;
     int id = -1;
 
@@ -1286,15 +1286,18 @@ static int search_frag_timestamp(MOVFragmentIndex *frag_index,
     b = frag_index->nb_items;
 
     while (b - a > 1) {
-        m = (a + b) >> 1;
-        frag_time = get_frag_time(frag_index, m, id);
-        if (frag_time != AV_NOPTS_VALUE) {
-            if (frag_time >= timestamp)
-                b = m;
-            if (frag_time <= timestamp)
-                a = m;
-        }
+        m0 = m = (a + b) >> 1;
+
+        while (m < b &&
+               (frag_time = get_frag_time(frag_index, m, id)) == AV_NOPTS_VALUE)
+            m++;
+
+        if (m < b && frag_time <= timestamp)
+            a = m;
+        else
+            b = m0;
     }
+
     return a;
 }
 
@@ -4778,7 +4781,7 @@ static int mov_read_trun(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     av_log(c->fc, AV_LOG_TRACE, "first sample flags 0x%x\n", first_sample_flags);
 
     // realloc space for new index entries
-    if((unsigned)st->nb_index_entries + entries >= UINT_MAX / sizeof(AVIndexEntry)) {
+    if((uint64_t)st->nb_index_entries + entries >= UINT_MAX / sizeof(AVIndexEntry)) {
         entries = UINT_MAX / sizeof(AVIndexEntry) - st->nb_index_entries;
         av_log(c->fc, AV_LOG_ERROR, "Failed to add index entry\n");
     }
@@ -5047,7 +5050,7 @@ static int mov_read_sidx(MOVContext *c, AVIOContext *pb, MOVAtom atom)
                 }
             }
         }
-        for (i = 0; i < c->fc->nb_streams; i++) {
+        if (ref_st) for (i = 0; i < c->fc->nb_streams; i++) {
             st = c->fc->streams[i];
             sc = st->priv_data;
             if (!sc->has_sidx) {
