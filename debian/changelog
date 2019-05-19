@@ -1,8 +1,19 @@
-ffmpeg (7:4.1.1-2) UNRELEASED; urgency=medium
+ffmpeg (7:4.1.3-2) UNRELEASED; urgency=medium
 
   * start new upload
 
  -- Reinhard Tartler <siretart@tauware.de>  Mon, 11 Mar 2019 08:14:16 -0400
+
+ffmpeg (7:4.1.3-1) unstable; urgency=high
+
+  * Team upload.
+  * New upstream release. (Closes: #926666)
+    - Fix bug in subtitle decoder enabling DoS attacks (CVE-2019-9718,
+      CVE-2019-9721)
+    - Fix bug in studio profile decoder enabling DoS attacks (CVE-2019-11339)
+    - Fix bug mishandling HEVC data enabling DoS attacks (CVE-2019-11338)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 19 May 2019 17:22:10 +0200
 
 ffmpeg (7:4.1.1-1) unstable; urgency=medium
 
