@@ -104,7 +104,7 @@ CONFIG := --prefix=/usr \
 	--enable-sdl2
 
 # cf. http://bugs.debian.org/923494
-CONFIG += 
+CONFIG +=
 	--disable-outdev=sdl2 \
 
 # The standard configuration only uses the shared CONFIG.
