@@ -184,8 +184,7 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends}
 Suggests:
- ffmpeg-doc,
- ffplay
+ ffmpeg-doc
 Breaks: libav-tools (<< 6:12~~),
  qt-faststart (<< 7:2.7.1-3~),
  winff (<< 1.5.5-5~),
@@ -199,33 +198,9 @@ Description: Tools for transcoding, streaming and playing of multimedia files
  .
  This package contains:
   * ffmpeg: a command line tool to convert multimedia files between formats
+  * ffplay: a simple media player based on SDL and the FFmpeg libraries
   * ffprobe: a simple multimedia stream analyzer
   * qt-faststart: a utility to rearrange Quicktime files
-
-Package: ffplay
-Architecture: any
-Multi-Arch: foreign
-Depends:
- ${shlibs:Depends},
- ${misc:Depends},
- ffmpeg
-Suggests:
- ffmpeg-doc
-Breaks: libav-tools (<< 6:12~~),
- qt-faststart (<< 7:2.7.1-3~),
- winff (<< 1.5.5-5~),
- ffmpeg (<< 7:4.1.1-2~)
-Replaces: libav-tools (<< 6:12~~),
- qt-faststart (<< 7:2.7.1-3~),
- ffmpeg (<< 7:4.1.1-2~)
-Description: Tools for transcoding, streaming and playing of multimedia files
- FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
- mux, demux, stream, filter and play pretty much anything that humans and
- machines have created. It supports the most obscure ancient formats up to the
- cutting edge.
- .
- This package contains:
-  * ffplay: a simple media player based on SDL and the FFmpeg libraries
 
 Package: ffmpeg-doc
 Section: doc
