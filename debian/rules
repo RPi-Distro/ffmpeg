@@ -278,6 +278,8 @@ endif
 
 override_dh_auto_install-indep:
 	$(MAKE) -C debian/standard DESTDIR=$(CURDIR)/debian/tmp install-doc install-examples
+	# Create index.html page for the FFmpeg manual
+	cd debian/tmp/usr/share/doc/ffmpeg && tree -H '.' -L 1 -P '*.html' --noreport --charset utf-8 -T 'FFmpeg Manual Index' -o index.html
 
 override_dh_install:
 	dh_install $(addprefix -p,$(EXTRA_PKGS)) --sourcedir=debian/tmp/extra
