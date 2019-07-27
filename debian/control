@@ -48,8 +48,6 @@ Build-Depends:
  libchromaprint-dev <!pkg.ffmpeg.stage1>,
 # --enable-libcodec2
  libcodec2-dev,
-# autodetected 'crystalhd'
- libcrystalhd-dev [amd64 i386],
 # --enable-libdc1394
  libdc1394-22-dev [linux-any],
 # --enable-libdrm
