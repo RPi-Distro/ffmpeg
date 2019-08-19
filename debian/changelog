@@ -1,4 +1,4 @@
-ffmpeg (7:4.1.3-1+rpt1) buster; urgency=medium
+ffmpeg (7:4.1.4-1+rpt1) buster; urgency=medium
 
   [ Dave Stevenson ]
   * avcodec/omx: Fix handling of fragmented buffers
@@ -9,6 +9,29 @@ ffmpeg (7:4.1.3-1+rpt1) buster; urgency=medium
   * Enable Raspberry Pi HW acceleration
 
  -- Serge Schneider <serge@raspberrypi.org>  Tue, 11 Jun 2019 14:59:01 +0100
+
+ffmpeg (7:4.1.4-1) unstable; urgency=medium
+
+  [ James Cowgill ]
+  * New upstream release. (LP: #1837480)
+    - avformat/aadec: Check for scanf() failure (CVE-2019-12730)
+      (Closes: #932469)
+
+  * d/copyright: Remove paragraph containing license files.
+  * d/control: Bump standards version to 4.4.0.
+  * d/ffmpeg-doc.doc-base*:
+    - Move API docs to Programming/C section.
+    - Index the main manual pages as well.
+      Thanks to 積丹尼 Dan Jacobson for the suggestion. (Closes: #924528)
+  * d/rules:
+    - Disable crystalhd. (Closes: #917292)
+    - Generate index.html file for the HTML manual pages.
+
+  [ Ondřej Nový ]
+  * d/control:
+    - Use debhelper-compat instead of debian/compat.
+
+ -- James Cowgill <jcowgill@debian.org>  Sat, 27 Jul 2019 11:24:18 +0100
 
 ffmpeg (7:4.1.3-1) unstable; urgency=high
 

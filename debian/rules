@@ -39,6 +39,7 @@ FLAVORS = standard extra static
 #   --enable-libzimg                (see #864888 for the RFP bug)
 #   --enable-vapoursynth            (see #833942 for the RFP bug)
 # The following flags are not added for various reasons:
+#   --enable-crystalhd              Not usable in Debian (firmware missing from the archive - see #917292)
 #   --enable-librtmp                ffmpeg has better built-in RTMP support with listen mode.
 #   --enable-mbedtls                Already using gnutls as TLS implementation
 #   --enable-libmodplug             see #849840: replaced with libopenmpt
@@ -284,6 +285,8 @@ endif
 
 override_dh_auto_install-indep:
 	$(MAKE) -C debian/standard DESTDIR=$(CURDIR)/debian/tmp install-doc install-examples
+	# Create index.html page for the FFmpeg manual
+	cd debian/tmp/usr/share/doc/ffmpeg && tree -H '.' -L 1 -P '*.html' --noreport --charset utf-8 -T 'FFmpeg Manual Index' -o index.html
 
 override_dh_install:
 	dh_install $(addprefix -p,$(EXTRA_PKGS)) --sourcedir=debian/tmp/extra
