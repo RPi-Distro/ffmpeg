@@ -34,6 +34,8 @@ Build-Depends:
  ladspa-sdk,
 # --enable-libaom
  libaom-dev,
+# --enable-libaribb24
+ libaribb24-dev,
 # --enable-libass
  libass-dev,
 # --enable-libbluray
@@ -275,6 +277,7 @@ Description: FFmpeg library with additional de/encoders for audio/video codecs
  This package replaces the libavcodec58 package and contains the
  following additional codecs:
  .
+  * ARIB STD-B24 Captions (Subtitle Decoder)
   * OpenCORE Adaptive Multi-Rate (AMR) Narrow-Band (Encoder/Decoder)
   * OpenCORE Adaptive Multi-Rate (AMR) Wide-Band (Decoder)
   * Android VisualOn Adaptive Multi-Rate (AMR) Wide-Band (Encoder)
