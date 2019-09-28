@@ -101,7 +101,7 @@ libavformat.so.58 libavformat58 #MINVER#
  avformat_match_stream_specifier@LIBAVFORMAT_58 7:4.0
  avformat_network_deinit@LIBAVFORMAT_58 7:4.0
  avformat_network_init@LIBAVFORMAT_58 7:4.0
- avformat_new_stream@LIBAVFORMAT_58 7:4.0
+ avformat_new_stream@LIBAVFORMAT_58 7:4.2
  avformat_open_input@LIBAVFORMAT_58 7:4.1
  avformat_query_codec@LIBAVFORMAT_58 7:4.0
  avformat_queue_attached_pictures@LIBAVFORMAT_58 7:4.0

@@ -137,7 +137,7 @@ libavcodec.so.58 libavcodec58 #MINVER#
  av_xiphlacing@LIBAVCODEC_58 7:4.0
  avcodec_align_dimensions2@LIBAVCODEC_58 7:4.0
  avcodec_align_dimensions@LIBAVCODEC_58 7:4.0
- avcodec_alloc_context3@LIBAVCODEC_58 7:4.0
+ avcodec_alloc_context3@LIBAVCODEC_58 7:4.2
  avcodec_chroma_pos_to_enum@LIBAVCODEC_58 7:4.0
  avcodec_close@LIBAVCODEC_58 7:4.0
  avcodec_configuration@LIBAVCODEC_58 7:4.0
@@ -189,7 +189,7 @@ libavcodec.so.58 libavcodec58 #MINVER#
  avcodec_parameters_to_context@LIBAVCODEC_58 7:4.0
  avcodec_pix_fmt_to_codec_tag@LIBAVCODEC_58 7:4.0
  avcodec_profile_name@LIBAVCODEC_58 7:4.0
- avcodec_receive_frame@LIBAVCODEC_58 7:4.0
+ avcodec_receive_frame@LIBAVCODEC_58 7:4.2
  avcodec_receive_packet@LIBAVCODEC_58 7:4.0
  avcodec_register@LIBAVCODEC_58 7:4.0
  avcodec_register_all@LIBAVCODEC_58 7:4.0
