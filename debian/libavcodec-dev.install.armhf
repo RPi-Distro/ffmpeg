@@ -1,0 +1,6 @@
+usr/include/*/libavcodec
+usr/lib/*/libavcodec*.a
+usr/lib/*/neon/vfp/libavcodec*.a
+usr/lib/*/libavcodec*.so
+usr/lib/*/neon/vfp/libavcodec*.so
+usr/lib/*/pkgconfig/libavcodec*.pc

@@ -1,3 +1,14 @@
+ffmpeg (7:4.1.4-1+rpt2~deb10u1) buster; urgency=medium
+
+  * Added -f vout_rpi
+    - Rpi (mmal) video output device
+  * Added -vcodec hevc_rpi
+    - VPU, QPU and NEON accelerated HEVC decoder for BCM283(5/6)
+  * Added -hwaccel rpi
+    - Hardware HEVC acceleration for BCM2711
+
+ -- Serge Schneider <serge@raspberrypi.org>  Tue, 01 Oct 2019 14:25:02 +0100
+
 ffmpeg (7:4.1.4-1+rpt1~deb10u1) buster; urgency=medium
 
   [ Dave Stevenson ]

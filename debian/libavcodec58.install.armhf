@@ -1,0 +1,2 @@
+usr/lib/*/libavcodec.so.*
+usr/lib/*/neon/vfp/libavcodec.so.*

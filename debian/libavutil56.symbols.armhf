@@ -419,6 +419,16 @@ libavutil.so.56 libavutil56 #MINVER#
  av_ripemd_init@LIBAVUTIL_56 7:4.0
  av_ripemd_size@LIBAVUTIL_56 7:4.0
  av_ripemd_update@LIBAVUTIL_56 7:4.0
+ av_rpi_planar_to_sand_c16@LIBAVUTIL_56 7:4.1.4-1+rpt2~
+ av_rpi_planar_to_sand_c8@LIBAVUTIL_56 7:4.1.4-1+rpt2~
+ av_rpi_sand16_to_sand8@LIBAVUTIL_56 7:4.1.4-1+rpt2~
+ av_rpi_sand30_to_planar_c16@LIBAVUTIL_56 7:4.1.4-1+rpt2~
+ av_rpi_sand30_to_planar_y16@LIBAVUTIL_56 7:4.1.4-1+rpt2~
+ av_rpi_sand_to_planar_c16@LIBAVUTIL_56 7:4.1.4-1+rpt2~
+ av_rpi_sand_to_planar_c8@LIBAVUTIL_56 7:4.1.4-1+rpt2~
+ av_rpi_sand_to_planar_frame@LIBAVUTIL_56 7:4.1.4-1+rpt2~
+ av_rpi_sand_to_planar_y16@LIBAVUTIL_56 7:4.1.4-1+rpt2~
+ av_rpi_sand_to_planar_y8@LIBAVUTIL_56 7:4.1.4-1+rpt2~
  av_sample_fmt_is_planar@LIBAVUTIL_56 7:4.0
  av_samples_alloc@LIBAVUTIL_56 7:4.0
  av_samples_alloc_array_and_samples@LIBAVUTIL_56 7:4.0

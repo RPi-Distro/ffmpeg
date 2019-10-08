@@ -1,0 +1,2 @@
+usr/lib/*/libavutil.so.*
+usr/lib/*/neon/vfp/libavutil.so.*

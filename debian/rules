@@ -49,9 +49,7 @@ FLAVORS = standard extra static
 CONFIG := --prefix=/usr \
 	--extra-version="$(DEB_REVISION)" \
 	--toolchain=hardened \
-	--libdir=/usr/lib/$(DEB_HOST_MULTIARCH) \
 	--incdir=/usr/include/$(DEB_HOST_MULTIARCH) \
-	--arch=$(DEB_HOST_ARCH_CPU) \
 	--enable-gpl \
 	--disable-stripping \
 	--enable-avresample --disable-filter=resample \
@@ -104,12 +102,43 @@ CONFIG := --prefix=/usr \
 	--enable-sdl2
 
 ifeq ($(DEB_HOST_ARCH),armhf)
+	FLAVORS += standard_v7 extra_v7 static_v7
 	CONFIG += --enable-omx-rpi \
-		--enable-mmal
+		--enable-mmal \
+		--enable-neon \
+		--enable-rpi
+	CONFIG_v6 = --libdir=/usr/lib/$(DEB_HOST_MULTIARCH) \
+		--cpu=arm1176jzf-s \
+		--arch=arm
+	CONFIG_v7 = --libdir=/usr/lib/$(DEB_HOST_MULTIARCH)/neon/vfp \
+		--cpu=cortex-a7 \
+		--arch=armv6t2 \
+		--disable-thumb
+	CONFIG_standard_v7 = $(CONFIG_v7) \
+		--enable-shared \
+		--disable-doc \
+		--disable-programs
+	CONFIG_extra_v7 = $(CONFIG_standard_v7) \
+		--enable-version3 \
+		--disable-doc \
+		--disable-programs \
+		--enable-liblensfun \
+		--enable-libopencore_amrnb \
+		--enable-libopencore_amrwb \
+		--enable-libtesseract \
+		--enable-libvo_amrwbenc
+	CONFIG_static_v7 = $(CONFIG_v7) \
+		--disable-pic \
+		--disable-doc \
+		--disable-programs
+else
+	CONFIG += --libdir=/usr/lib/$(DEB_HOST_MULTIARCH) \
+		--arch=$(DEB_HOST_ARCH_CPU)
 endif
 
 # The standard configuration only uses the shared CONFIG.
-CONFIG_standard = --enable-shared
+CONFIG_standard = --enable-shared \
+	$(CONFIG_v6)
 
 # With these enabled, resulting binaries are effectively licensed as GPLv3+.
 CONFIG_extra = --enable-shared \
@@ -120,12 +149,14 @@ CONFIG_extra = --enable-shared \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
 	--enable-libtesseract \
-	--enable-libvo_amrwbenc
+	--enable-libvo_amrwbenc \
+	$(CONFIG_v6)
 
 # The static libraries should not be built with PIC.
 CONFIG_static = --disable-pic \
 	--disable-doc \
-	--disable-programs
+	--disable-programs \
+	$(CONFIG_v6)
 
 # Disable optimizations if requested.
 ifneq (,$(filter $(DEB_BUILD_OPTIONS),noopt))
@@ -244,7 +275,9 @@ override_dh_auto_build-arch:
 	set -e && for flavor in $(FLAVORS); do \
 		echo " *** $$flavor ***"; \
 		if echo "$$flavor" | grep -q "extra"; then \
-			subdir=`[ "$$flavor" = "extra" ] && echo "debian/standard/" || echo "debian/altivec/"`; \
+			subdir=`([ "$$flavor" = "extra" ] && echo "debian/standard/") \
+				|| ([ "$$flavor" = "extra_v7" ] && echo "debian/standard_v7/") \
+				|| echo "debian/altivec/"`; \
 			for dir in `cd ./$$subdir; find libavcodec libavdevice libavfilter libavformat libavresample libavutil libpostproc libswscale libswresample -type d`; do \
 				mkdir -p debian/"$$flavor"/"$$dir"; \
 				echo "$$subdir$$dir"/*.o | grep -q '*' || cp "$$subdir$$dir"/*.o debian/"$$flavor"/"$$dir"; \
@@ -268,23 +301,35 @@ override_dh_auto_test-indep:
 
 override_dh_auto_install-arch:
 	dh_auto_install -a --sourcedirectory=debian/standard
+ifeq ($(DEB_HOST_ARCH),armhf)
+	dh_auto_install -a --sourcedirectory=debian/standard_v7
+endif
 ifeq ($(DEB_HOST_ARCH),powerpc)
 	install -d debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/altivec
 	install -m 644 debian/altivec/*/*.so.* debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/altivec
 endif
 	dh_auto_install -a --sourcedirectory=debian/extra --destdir=debian/tmp/extra
+ifeq ($(DEB_HOST_ARCH),armhf)
+	dh_auto_install -a --sourcedirectory=debian/extra_v7 --destdir=debian/tmp/extra
+endif
 ifeq ($(DEB_HOST_ARCH),powerpc)
 	install -d debian/tmp/extra/usr/lib/$(DEB_HOST_MULTIARCH)/altivec
 	install -m 644 debian/altivec-extra/*/*.so.* debian/tmp/extra/usr/lib/$(DEB_HOST_MULTIARCH)/altivec
 endif
 	# Use the static libraries from the --disable-pic build
 	install -m 644 debian/static/*/lib*.a debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)
+ifeq ($(DEB_HOST_ARCH),armhf)
+	install -m 644 debian/static_v7/*/lib*.a debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/neon/vfp
+endif
 
 override_dh_auto_install-indep:
 	$(MAKE) -C debian/standard DESTDIR=$(CURDIR)/debian/tmp install-doc install-examples
 
 override_dh_install:
 	dh_install $(addprefix -p,$(EXTRA_PKGS)) --sourcedir=debian/tmp/extra
+ifeq ($(DEB_HOST_ARCH),armhf)
+	dh_install $(addprefix -p,$(EXTRA_PKGS)) --sourcedir=debian/tmp/extra-v7
+endif
 	dh_install --remaining-packages
 
 override_dh_shlibdeps:
