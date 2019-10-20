@@ -51,9 +51,9 @@ Copyright:
   2001-2003, BERO <bero@geocities.co.jp>
   2001-2006, Daniel Maas <dmaas@dcine.com> <dmaas@maasdigital.com>
   2001-2010, Krzysztof Foltman, Markus Schmidt, Thor Harald Johansen, Damien Zammit, Vladimir Sadovnikov and others
-  2001-2014, Peter Ross <pross@xvid.org>
-  2001-2016, Michael Niedermayer <michaelni@gmx.at>
-  2001-2018, The FFmpeg project
+  2001-2018, Michael Niedermayer <michaelni@gmx.at>
+  2001-2019, Peter Ross <pross@xvid.org>
+  2001-2019, The FFmpeg project
   2002, Anders Johansson <ajh@atri.curtin.edu.au>
   2002, Brian Foley
   2002, Daniel Pouzzner
@@ -71,12 +71,11 @@ Copyright:
   2002-2005, Francois Revol <revol@free.fr>
   2002-2005, Roberto Togni
   2002-2006, Alex Beregszaszi
-  2002-2013, Maxim Poliakovski
+  2002-2013, Maxim Polia/kovski
   2003, Donnie Smith
   2003, Dr. Tim Ferguson
   2003, Ewald Snel
   2003, Gustavo Sverzut Barbieri <gsbarbieri@yahoo.com.br>
-  2003, Ivan Kalvachev
   2003, James Klicman <james@klicman.org>
   2003, Max Krasnyansky <maxk@qualcomm.com>
   2003, Rich Felker
@@ -90,6 +89,7 @@ Copyright:
   2003-2011, Sascha Sommer <saschasommer@freenet.de>
   2003-2014, Loren Merritt <lorenm@u.washington.edu>
   2003-2014, Pascal Massimino <skal@planet-d.net> <pascal.massimino@gmail.com>
+  2003-2017, Ivan Kalvachev
   2003-2018, x264 project
   2004, AGAWA Koji <i@atty.jp>
   2004, Adam Thayer <krevnik@comcast.net>
@@ -179,7 +179,7 @@ Copyright:
   2007-2015, Edward Hervey
   2007-2016, David Robillard
   2007-2016, Nicolas George <nicolas.george@normalesup.org>
-  2007-2016, Ronald S. Bultje <rsbultje@gmail.com>
+  2007-2018, Ronald S. Bultje <rsbultje@gmail.com>
   2008, Affine Systems, Inc (Michael Sullivan, Bobby Impollonia)
   2008, Alessandro Sappia
   2008, BBC, Anuradha Suraparaju <asuraparaju@gmail.com>
@@ -223,11 +223,12 @@ Copyright:
   2009-2013, Christian Schmidt
   2009-2013, Daniel Verkamp <daniel@drv.nu>
   2009-2015, James Darnley <james.darnley@gmail.com>
-  2009-2015, Martin Storsjo
   2009-2016, Thilo Borgmann <thilo.borgmann@mail.de>
   2009-2018, Kostya Shishkov
+  2009-2019, Martin Storsjo
   2010, Adrian Daerr
   2010, Amanda, Y.N. Wu <amanda11192003@gmail.com>
+  2010, Andrzej Szombierski
   2010, Brandon Mintern
   2010, Daniel G. Taylor <dan@programmer-art.org>
   2010, Francesco Lavra <francescolavra@interfree.it>
@@ -281,15 +282,15 @@ Copyright:
   2011-2015, Derek Buitenhuis
   2011-2016, Kieran Kunhya <kieran@kunhya.com>
   2011-2018, Clément Bœsch <u@pkh.me> <clement@stupeflix.com>
-  2011-2018, Paul B Mahol
+  2011-2019, Paul B Mahol
   2012, Aleksi Nurmi
   2012, Andrew D'Addesio
   2012, Antti Seppälä
   2012, AvxSynth Team
   2012, British Broadcasting Corporation
   2012, David Kment
-  2012, Jan Ekström
   2012, Jeremy Tran
+  2012, Krzysztof Klinikowski
   2012, Laurent de Soras
   2012, Pavel Koshevoy <pkoshevoy@gmail.com>
   2012, Petri Hintukainen <phintuka@users.sourceforge.net>
@@ -309,7 +310,8 @@ Copyright:
   2012-2013, Wassim Hamidouche
   2012-2014, Georg Lippitsch <georg.lippitsch@gmx.at>
   2012-2015, Christophe Gisquet <christophe.gisquet@gmail.com>
-  2012-2018, James Almer <jamrial@gmail.com>
+  2012-2019, James Almer <jamrial@gmail.com>
+  2012-2019, Jan Ekström
   2013, Anand Meher Kotra
   2013, Ash Hughes
   2013, Darryl Wallace <wallacdj@gmail.com>
@@ -388,7 +390,6 @@ Copyright:
   2015-2016, Ganesh Ajjanagadde <gajjanaq@gmail.com>
   2015-2016, Kyle Swanson <k@ylo.ph>
   2015-2016, Open Broadcast Systems Ltd
-  2015-2016, Rodger Combs <rodger.combs@gmail.com>
   2015-2016, Timo Rothenpieler <timo@rothenpieler.org>
   2015-2016, Zhou Xiaoyong <zhouxiaoyong@loongson.cn>
   2015-2017, Manojkumar Bhosale <Manojkumar.Bhosale@imgtec.com>
@@ -396,6 +397,7 @@ Copyright:
   2015-2017, Rostislav Pehlivanov <atomnuker@gmail.com>
   2015-2018, Henrik Gramner <henrik@gramner.com>
   2015-2018, Loongson Technology Corporation Limited
+  2015-2019, Rodger Combs <rodger.combs@gmail.com>
   2016, Davinder Singh (DSM_) <ds.mudhar<@gmail.com>
   2016, Floris Sluiter
   2016, Jan Sebechlebsky
@@ -409,25 +411,34 @@ Copyright:
   2016, Umair Khan <omerjerk@gmail.com>
   2016, William Ma, Sofia Kim, Dustin Woo
   2016, foo86
-  2016-2017, Jokyo Images
+  2016-2018, Jokyo Images
   2017, Felix Matouschek
+  2017, Maksym Veremeyenko
   2017, Meng Wang <wangmeng.kids@bytedance.com>
   2017, Paras Chadha
   2017, Richard Ling
   2017, sfan5 <sfan5@live.de>
   2017, Steinar H. Gunderson
   2017-2018, Akamai Technologies, Inc.
+  2018, Bjorn Roche
   2018, Dylan Fernando
   2018, Danil Iashchenko
   2018, Falei Luo <falei.luo@gmail.com>
+  2018, gxw <guxiwei-hf@loongson.cn>
   2018, Huiwen Ren <hwrenx@gmail.com> <hwrenx@126.com>
+  2018, Magnus Röös <mla2.roos@gmail.com>
   2018, Mina Sami
   2018, Misty De Meo
+  2018, Mohammad Izadi <moh.izadi at gmail.com>
   2018, Rostislav Pehlivanov <atomnuker@gmail.com>
   2018, Sergey Lavrushkin
-  2018, Shiyou Yin <yinshiyou-hf@loongson.cn>
   2018, Yingming Fan <yingmingfan@gmail.com>
   2018, Yiqun Xu <yiqun.xu@vipl.ict.ac.cn>
+  2018-2019, Shiyou Yin <yinshiyou-hf@loongson.cn>
+  2019, Guo Yejun
+  2019, Lynne <dev@lynne.ee>
+  2019, Swaraj Hota
+  2019, Xuewei Meng
 License: LGPL-2.1+
 Comment:
  You should have received a copy of the GNU Lesser General Public
@@ -516,7 +527,6 @@ Files:
   libavfilter/x86/vf_removegrain.asm
   libavfilter/x86/vf_spp.c
   libavfilter/x86/vf_tinterlace_init.c
-  libavfilter/yadif.h
   libpostproc/postprocess.c
   libpostproc/postprocess.h
   libpostproc/postprocess_altivec_template.c
@@ -548,6 +558,7 @@ Files:
   tests/checkasm/pixblockdsp.c
   tests/checkasm/sbrdsp.c
   tests/checkasm/synth_filter.c
+  tests/checkasm/v210dec.c
   tests/checkasm/v210enc.c
   tests/checkasm/vf_blend.c
   tests/checkasm/videodsp.c
@@ -556,6 +567,7 @@ Files:
   tests/checkasm/x86/*
   tests/tiny_ssim.c
   tools/coverity.c
+  tools/target_dec_fate.sh
 Copyright:
   Wilbert Dijkhof
   1997-2001, ZSNES Team <zsknight@zsnes.com> <_demo_@zsnes.com>
@@ -588,10 +600,10 @@ Copyright:
   2013, Vittorio Giovara <vittorio.giovara@gmail.com>
   2013-2015, Jean Delvare <jdelvare@suse.com>
   2013-2017, Paul B Mahol
-  2014, James Darnley <james.darnley@gmail.com>
   2014, Kieran Kunhya <kierank@obe.tv>
   2014, Red Hat, Inc
   2014-2015, Arwa Arif <arwaarif1994@gmail.com>
+  2014-2019, James Darnley <james.darnley@gmail.com>
   2015, Janne Grunau
   2015-2016, Martin Storsjo
   2015-2016, Ronald S. Bultje <rsbultje@gmail.com>
@@ -718,6 +730,7 @@ Files:
   libavcodec/texturedspenc.c
   libavcodec/x86/vc1dsp_init.c
   libavcodec/x86/vc1dsp_mmx.c
+  libavfilter/af_deesser.c
   libavfilter/vf_avgblur.c
   libavfilter/vf_bm3d.c
   libavfilter/vf_deband.c
@@ -731,6 +744,7 @@ Files:
   libavformat/oggparsespeex.c
   libavformat/oggparsetheora.c
   libavformat/oggparsevorbis.c
+  libavutil/avsscanf.c
   tests/api/api-band-test.c
   tests/api/api-codec-param-test.c
   tests/api/api-flac-test.c
@@ -745,6 +759,7 @@ Copyright:
   2005, Matthieu CASTET
   2005, Michael Ahlberg
   2005, Måns Rullgård
+  2005-2014, Rich Felker, et al.
   2007, Benjamin Larsson
   2007, Christophe GISQUET <christophe.gisquet@free.fr>
   2007, Loic Minier <lool@dooz.org>
@@ -771,6 +786,7 @@ Copyright:
   2015, Vittorio Giovara <vittorio.giovara@gmail.com>
   2015-2018, Paul B Mahol
   2015-2016, mawen1250
+  2018, Chris Johnson
 License: Expat
 
 Files:
@@ -957,6 +973,7 @@ Copyright:
 License: LGPL-2.1+ and Expat
 
 Files:
+  libavfilter/gblur.h
   libavfilter/vf_gblur.c
 Copyright:
   2011, Pascal Getreuer
