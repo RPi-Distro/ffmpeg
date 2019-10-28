@@ -1,8 +1,19 @@
-ffmpeg (7:4.2.1-1) UNRELEASED; urgency=medium
+ffmpeg (7:4.2.1-1) unstable; urgency=medium
 
-  *
+  * New upstream release.
+    - avcodec/vqavideo: Set video size. (CVE-2019-17542)
+    - avcodec/utils: Check close before calling it. (CVE-2019-17539)
 
- -- James Cowgill <jcowgill@debian.org>  Sun, 29 Sep 2019 19:00:35 +0100
+  * d/copyright: Various copyright updates for 4.2.
+  * d/patches: Add patch to fix sbcenc segfault on armhf.
+  * d/rules:
+    - Enable libartbb24.
+    - Disable MSA2.
+    - Update list of non-enabled libraries.
+  * d/*.symbols: Updates for 4.2.
+  * d/tests: Update encdec lists with 4.2 additions.
+
+ -- James Cowgill <jcowgill@debian.org>  Mon, 28 Oct 2019 18:14:56 +0000
 
 ffmpeg (7:4.1.4-1) unstable; urgency=medium
 
