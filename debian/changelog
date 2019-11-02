@@ -1,8 +1,11 @@
-ffmpeg (7:4.2.1-2) UNRELEASED; urgency=medium
+ffmpeg (7:4.2.1-2) unstable; urgency=medium
 
-  *
+  * d/patches:
+    - avcodec/libtwolame: fix mono default bitrate. (Closes: #943900)
+  * d/tests:
+    - Replace remaining occurrences of ADTTMP.
 
- -- James Cowgill <jcowgill@debian.org>  Wed, 30 Oct 2019 22:51:26 +0000
+ -- James Cowgill <jcowgill@debian.org>  Sat, 02 Nov 2019 01:17:31 +0000
 
 ffmpeg (7:4.2.1-1) unstable; urgency=medium
 
