@@ -237,7 +237,7 @@ read_tests() {
 }
 
 echo "TEST: $TEST_NAME"
-echo -e "ADTTMP directory: $AUTOPKGTEST_TMP\n\n"
+echo -e "AUTOPKGTEST_TMP directory: $AUTOPKGTEST_TMP\n\n"
 
 mkdir -p "$TEST_DIR"
 
