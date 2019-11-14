@@ -128,6 +128,7 @@ libavcodec.so.58 libavcodec58 #MINVER#
  av_rpi_zc_env_release@LIBAVCODEC_58 7:4.1.4-1+rpt2~
  av_rpi_zc_frame_geometry@LIBAVCODEC_58 7:4.1.4-1+rpt2~
  av_rpi_zc_get_buffer@LIBAVCODEC_58 7:4.1.4-1+rpt2~
+ av_rpi_zc_get_decoder_pool_size@LIBAVCODEC_58 7:4.1.4-1+rpt3~
  av_rpi_zc_in_use@LIBAVCODEC_58 7:4.1.4-1+rpt2~
  av_rpi_zc_init2@LIBAVCODEC_58 7:4.1.4-1+rpt2~
  av_rpi_zc_int_env_alloc@LIBAVCODEC_58 7:4.1.4-1+rpt2~
@@ -136,6 +137,10 @@ libavcodec.so.58 libavcodec58 #MINVER#
  av_rpi_zc_numbytes@LIBAVCODEC_58 7:4.1.4-1+rpt2~
  av_rpi_zc_offset@LIBAVCODEC_58 7:4.1.4-1+rpt2~
  av_rpi_zc_ref@LIBAVCODEC_58 7:4.1.4-1+rpt2~
+ av_rpi_zc_resolve_buffer@LIBAVCODEC_58 7:4.1.4-1+rpt3~
+ av_rpi_zc_resolve_frame@LIBAVCODEC_58 7:4.1.4-1+rpt3~
+ av_rpi_zc_set_decoder_pool_size@LIBAVCODEC_58 7:4.1.4-1+rpt3~
+ av_rpi_zc_set_valid_frame@LIBAVCODEC_58 7:4.1.4-1+rpt3~
  av_rpi_zc_uninit2@LIBAVCODEC_58 7:4.1.4-1+rpt2~
  av_rpi_zc_unref@LIBAVCODEC_58 7:4.1.4-1+rpt2~
  av_rpi_zc_vc_handle@LIBAVCODEC_58 7:4.1.4-1+rpt2~

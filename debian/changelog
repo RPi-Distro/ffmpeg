@@ -1,3 +1,9 @@
+ffmpeg (7:4.1.4-1+rpt3~deb10u1) buster; urgency=medium
+
+  * MMAL patch 3
+
+ -- Serge Schneider <serge@raspberrypi.org>  Thu, 14 Nov 2019 14:49:24 +0000
+
 ffmpeg (7:4.1.4-1+rpt2~deb10u1) buster; urgency=medium
 
   * Added -f vout_rpi
