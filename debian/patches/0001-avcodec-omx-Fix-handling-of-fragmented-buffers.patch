@@ -30,11 +30,9 @@ Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.org>
  libavcodec/omx.c | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/libavcodec/omx.c b/libavcodec/omx.c
-index 466e0be..e813362 100644
 --- a/libavcodec/omx.c
 +++ b/libavcodec/omx.c
-@@ -739,6 +739,7 @@ static int omx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
+@@ -739,6 +739,7 @@
      int ret = 0;
      OMX_BUFFERHEADERTYPE* buffer;
      OMX_ERRORTYPE err;
@@ -42,7 +40,7 @@ index 466e0be..e813362 100644
  
      if (frame) {
          uint8_t *dst[4];
-@@ -830,7 +831,7 @@ static int omx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
+@@ -830,7 +831,7 @@
          // packet, or get EOS.
          buffer = get_buffer(&s->output_mutex, &s->output_cond,
                              &s->num_done_out_buffers, s->done_out_buffers,
@@ -51,7 +49,7 @@ index 466e0be..e813362 100644
          if (!buffer)
              break;
  
-@@ -865,6 +866,9 @@ static int omx_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
+@@ -865,6 +866,9 @@
                      s->output_buf = NULL;
                      s->output_buf_size = 0;
                  }
@@ -61,6 +59,3 @@ index 466e0be..e813362 100644
              } else {
                  // End of frame, and the caller provided a preallocated frame
                  if ((ret = ff_alloc_packet2(avctx, pkt, s->output_buf_size + buffer->nFilledLen, 0)) < 0) {
--- 
-2.7.4
-
