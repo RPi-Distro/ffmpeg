@@ -1,3 +1,9 @@
+ffmpeg (7:4.1.4-1+rpt6~deb10u1) buster; urgency=medium
+
+  * Disable vaapi and vdpau
+
+ -- Serge Schneider <serge@raspberrypi.org>  Tue, 26 Nov 2019 21:56:37 +0000
+
 ffmpeg (7:4.1.4-1+rpt5~deb10u1) buster; urgency=medium
 
   * MMAL patch 5

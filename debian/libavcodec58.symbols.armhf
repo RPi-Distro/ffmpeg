@@ -3,7 +3,6 @@ libavcodec.so.58 libavcodec58 #MINVER#
  LIBAVCODEC_58@LIBAVCODEC_58 7:4.0
  av_ac3_parse_header@LIBAVCODEC_58 7:4.0
  av_adts_header_parse@LIBAVCODEC_58 7:4.0
- av_alloc_vdpaucontext@LIBAVCODEC_58 7:4.0
  av_bitstream_filter_close@LIBAVCODEC_58 7:4.0
  av_bitstream_filter_filter@LIBAVCODEC_58 7:4.0
  av_bitstream_filter_init@LIBAVCODEC_58 7:4.0
@@ -139,18 +138,13 @@ libavcodec.so.58 libavcodec58 #MINVER#
  av_rpi_zc_ref@LIBAVCODEC_58 7:4.1.4-1+rpt2~
  av_rpi_zc_resolve_buffer@LIBAVCODEC_58 7:4.1.4-1+rpt3~
  av_rpi_zc_resolve_frame@LIBAVCODEC_58 7:4.1.4-1+rpt3~
+ av_rpi_zc_set_broken_frame@LIBAVCODEC_58 7:4.1.4-1+rpt5~
  av_rpi_zc_set_decoder_pool_size@LIBAVCODEC_58 7:4.1.4-1+rpt3~
  av_rpi_zc_set_valid_frame@LIBAVCODEC_58 7:4.1.4-1+rpt3~
  av_rpi_zc_uninit2@LIBAVCODEC_58 7:4.1.4-1+rpt2~
  av_rpi_zc_unref@LIBAVCODEC_58 7:4.1.4-1+rpt2~
  av_rpi_zc_vc_handle@LIBAVCODEC_58 7:4.1.4-1+rpt2~
  av_shrink_packet@LIBAVCODEC_58 7:4.0
- av_vdpau_alloc_context@LIBAVCODEC_58 7:4.0
- av_vdpau_bind_context@LIBAVCODEC_58 7:4.0
- av_vdpau_get_profile@LIBAVCODEC_58 7:4.0
- av_vdpau_get_surface_parameters@LIBAVCODEC_58 7:4.0
- av_vdpau_hwaccel_get_render2@LIBAVCODEC_58 7:4.0
- av_vdpau_hwaccel_set_render2@LIBAVCODEC_58 7:4.0
  av_vorbis_parse_frame@LIBAVCODEC_58 7:4.0
  av_vorbis_parse_frame_flags@LIBAVCODEC_58 7:4.0
  av_vorbis_parse_free@LIBAVCODEC_58 7:4.0
