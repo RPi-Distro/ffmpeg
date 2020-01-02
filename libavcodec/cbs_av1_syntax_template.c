@@ -882,7 +882,7 @@ static int FUNC(skip_mode_params)(CodedBitstreamContext *ctx, RWContext *rw,
         forward_idx  = -1;
         backward_idx = -1;
         for (i = 0; i < AV1_REFS_PER_FRAME; i++) {
-            ref_hint = priv->ref[i].order_hint;
+            ref_hint = priv->ref[current->ref_frame_idx[i]].order_hint;
             dist = cbs_av1_get_relative_dist(seq, ref_hint,
                                              current->order_hint);
             if (dist < 0) {
@@ -913,7 +913,7 @@ static int FUNC(skip_mode_params)(CodedBitstreamContext *ctx, RWContext *rw,
 
             second_forward_idx = -1;
             for (i = 0; i < AV1_REFS_PER_FRAME; i++) {
-                ref_hint = priv->ref[i].order_hint;
+                ref_hint = priv->ref[current->ref_frame_idx[i]].order_hint;
                 if (cbs_av1_get_relative_dist(seq, ref_hint,
                                               forward_hint) < 0) {
                     if (second_forward_idx < 0 ||
@@ -1045,7 +1045,7 @@ static int FUNC(film_grain_params)(CodedBitstreamContext *ctx, RWContext *rw,
         return 0;
     }
 
-    fb(4, num_y_points);
+    fc(4, num_y_points, 0, 14);
     for (i = 0; i < current->num_y_points; i++) {
         fbs(8, point_y_value[i],   1, i);
         fbs(8, point_y_scaling[i], 1, i);

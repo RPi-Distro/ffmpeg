@@ -798,7 +798,7 @@ static int matroska_resync(MatroskaDemuxContext *matroska, int64_t last_pos)
             id == MATROSKA_ID_CLUSTER  || id == MATROSKA_ID_CHAPTERS) {
             /* Prepare the context for parsing of a level 1 element. */
             matroska_reset_status(matroska, id, -1);
-            /* Given that we are here means that an error has occured,
+            /* Given that we are here means that an error has occurred,
              * so treat the segment as unknown length in order not to
              * discard valid data that happens to be beyond the designated
              * end of the segment. */
@@ -1331,7 +1331,7 @@ static int ebml_parse(MatroskaDemuxContext *matroska,
             // current element (i.e. how much would be skipped); if there were
             // more than a few skipped elements in a row and skipping the current
             // element would lead us more than SKIP_THRESHOLD away from the last
-            // known good position, then it is inferred that an error occured.
+            // known good position, then it is inferred that an error occurred.
             // The dependency on the number of unknown elements in a row exists
             // because the distance to the last known good position is
             // automatically big if the last parsed element was big.
@@ -3276,20 +3276,17 @@ fail:
 static int matroska_parse_prores(MatroskaTrack *track, uint8_t *src,
                                  uint8_t **pdst, int *size)
 {
-    uint8_t *dst = src;
-    int dstlen = *size;
+    uint8_t *dst;
+    int dstlen = *size + 8;
 
-    if (AV_RB32(&src[4]) != MKBETAG('i', 'c', 'p', 'f')) {
-        dst = av_malloc(dstlen + 8 + AV_INPUT_BUFFER_PADDING_SIZE);
+        dst = av_malloc(dstlen + AV_INPUT_BUFFER_PADDING_SIZE);
         if (!dst)
             return AVERROR(ENOMEM);
 
         AV_WB32(dst, dstlen);
         AV_WB32(dst + 4, MKBETAG('i', 'c', 'p', 'f'));
-        memcpy(dst + 8, src, dstlen);
-        memset(dst + 8 + dstlen, 0, AV_INPUT_BUFFER_PADDING_SIZE);
-        dstlen += 8;
-    }
+        memcpy(dst + 8, src, dstlen - 8);
+        memset(dst + dstlen, 0, AV_INPUT_BUFFER_PADDING_SIZE);
 
     *pdst = dst;
     *size = dstlen;
@@ -3444,7 +3441,8 @@ static int matroska_parse_frame(MatroskaDemuxContext *matroska,
         pkt_data = wv_data;
     }
 
-    if (st->codecpar->codec_id == AV_CODEC_ID_PRORES) {
+    if (st->codecpar->codec_id == AV_CODEC_ID_PRORES &&
+        AV_RB32(pkt_data + 4)  != MKBETAG('i', 'c', 'p', 'f')) {
         uint8_t *pr_data;
         res = matroska_parse_prores(track, pkt_data, &pr_data, &pkt_size);
         if (res < 0) {
