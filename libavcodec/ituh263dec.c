@@ -222,7 +222,7 @@ int ff_h263_resync(MpegEncContext *s){
             get_bits(&s->gb, 8);
         }
 
-        if (show_bits_long(&s->gb, 32) == SLICE_START_CODE)
+        if (get_bits_left(&s->gb) >= 32 && show_bits_long(&s->gb, 32) == SLICE_START_CODE)
             return get_bits_count(&s->gb);
         else
             return -1;
@@ -1217,6 +1217,11 @@ int ff_h263_decode_picture_header(MpegEncContext *s)
 
     if ((ret = av_image_check_size(s->width, s->height, 0, s)) < 0)
         return ret;
+
+    if (!(s->avctx->flags2 & AV_CODEC_FLAG2_CHUNKS)) {
+        if ((s->width * s->height / 256 / 8) > get_bits_left(&s->gb))
+            return AVERROR_INVALIDDATA;
+    }
 
     s->mb_width = (s->width  + 15) / 16;
     s->mb_height = (s->height  + 15) / 16;
