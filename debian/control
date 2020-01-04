@@ -287,9 +287,9 @@ Description: FFmpeg library with additional de/encoders for audio/video codecs
  GPL version 3 or later.
 
 Package: libavcodec-extra
-Architecture: all
+Architecture: any
 Section: metapackages
-Multi-Arch: foreign
+Multi-Arch: same
 Depends:
  libavcodec-extra58,
  ${misc:Depends}
@@ -430,9 +430,9 @@ Description: FFmpeg library with extra media filters - runtime files
  GPL version 3 or later.
 
 Package: libavfilter-extra
-Architecture: all
+Architecture: any
 Section: metapackages
-Multi-Arch: foreign
+Multi-Arch: same
 Depends:
  libavfilter-extra7,
  ${misc:Depends}
