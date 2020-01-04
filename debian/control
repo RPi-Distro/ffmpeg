@@ -252,9 +252,7 @@ Architecture: any
 Section: libs
 Multi-Arch: same
 Conflicts: libavcodec58
-Provides:
- libavcodec58 (= ${binary:Version}),
- libavcodec-extra
+Provides: libavcodec58 (= ${binary:Version})
 Pre-Depends:
  ${misc:Pre-Depends}
 Depends:
@@ -291,7 +289,7 @@ Architecture: any
 Section: metapackages
 Multi-Arch: same
 Depends:
- libavcodec-extra58,
+ libavcodec-extra58 (= ${binary:Version}),
  ${misc:Depends}
 Description: FFmpeg library with extra codecs (metapackage)
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
@@ -401,9 +399,7 @@ Architecture: any
 Section: libs
 Multi-Arch: same
 Conflicts: libavfilter7
-Provides:
- libavfilter7 (= ${binary:Version}),
- libavfilter-extra
+Provides: libavfilter7 (= ${binary:Version})
 Pre-Depends:
  ${misc:Pre-Depends}
 Depends:
@@ -434,7 +430,7 @@ Architecture: any
 Section: metapackages
 Multi-Arch: same
 Depends:
- libavfilter-extra7,
+ libavfilter-extra7 (= ${binary:Version}),
  ${misc:Depends}
 Description: FFmpeg library with extra filters (metapackage)
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
