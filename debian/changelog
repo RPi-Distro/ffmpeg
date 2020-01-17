@@ -1,3 +1,10 @@
+ffmpeg (7:4.1.4-1+rpt7~deb10u1) buster; urgency=medium
+
+  * Revert rpt6
+    - https://www.raspberrypi.org/forums/viewtopic.php?p=1594954
+
+ -- Serge Schneider <serge@raspberrypi.org>  Fri, 17 Jan 2020 12:55:10 +0000
+
 ffmpeg (7:4.1.4-1+rpt6~deb10u1) buster; urgency=medium
 
   * Disable vaapi and vdpau

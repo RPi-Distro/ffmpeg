@@ -106,8 +106,6 @@ ifeq ($(DEB_HOST_ARCH),armhf)
 	CONFIG += --enable-omx-rpi \
 		--enable-mmal \
 		--enable-neon \
-		--disable-vaapi \
-		--disable-vdpau \
 		--enable-rpi
 	CONFIG_v6 = --libdir=/usr/lib/$(DEB_HOST_MULTIARCH) \
 		--cpu=arm1176jzf-s \
