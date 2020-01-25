@@ -167,9 +167,8 @@ Build-Depends:
  libzmq3-dev,
 # --enable-libzvbi
  libzvbi-dev,
-# The opencl API is considered experimental.
-# # --enable-opencl
-# ocl-icd-opencl-dev [!hurd-any] | opencl-dev [!hurd-any],
+# --enable-opencl
+ ocl-icd-opencl-dev | opencl-dev,
 # used to detect libraries
  pkg-config,
 # HTML documentation

@@ -46,7 +46,6 @@ FLAVORS = standard extra static
 #   --enable-libsrt                 see #933180: links against OpenSSL (license incompatibility)
 #   --enable-libv4l2                This is only needed for very old devices and may cause problems for others.
 #                                   Should anyone need it, using LD_PRELOAD pointing on libv4l2 has the same effect.
-#   --enable-opencl                 This is considered an experimental API.
 #   --enable-opencv                 Does not build with OpenCV >= 3.4
 #   --enable-pocketsphinx           see #941377: package dependencies are slightly broken
 CONFIG := --prefix=/usr \
@@ -103,6 +102,7 @@ CONFIG := --prefix=/usr \
 	--enable-lv2 \
 	--enable-omx \
 	--enable-openal \
+	--enable-opencl \
 	--enable-opengl \
 	--enable-sdl2
 
