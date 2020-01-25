@@ -1,8 +1,18 @@
-ffmpeg (7:4.2.2-1) UNRELEASED; urgency=medium
+ffmpeg (7:4.2.2-1) unstable; urgency=medium
 
-  *
+  [ James Cowgill ]
+  * New upstream release.
 
- -- James Cowgill <jcowgill@debian.org>  Thu, 02 Jan 2020 19:33:12 +0000
+  * d/control:
+    - Change lib*-extra packages to arch any.
+    - Tighten dependencies from libav*-extra packages.
+    - Bump standards version to 4.5.0.
+  * d/rules: Enable opencl (Closes: #944005)
+
+  [ Steve Langasek ]
+  * d/tests: Make autopkgtests cross-test-friendly. (Closes: #946241)
+
+ -- James Cowgill <jcowgill@debian.org>  Sat, 25 Jan 2020 16:22:32 +0000
 
 ffmpeg (7:4.2.1-2) unstable; urgency=medium
 
