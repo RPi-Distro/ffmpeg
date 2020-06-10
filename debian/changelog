@@ -1,3 +1,10 @@
+ffmpeg (7:4.2.2-3) unstable; urgency=medium
+
+  * fix limit libmfx linking to amd64,
+    to match availability of the library
+
+ -- Jonas Smedegaard <dr@jones.dk>  Wed, 10 Jun 2020 17:10:49 +0200
+
 ffmpeg (7:4.2.2-2) unstable; urgency=medium
 
   * link with libsrt;
