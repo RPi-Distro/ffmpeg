@@ -43,7 +43,6 @@ FLAVORS = standard extra static
 #   --enable-librtmp                ffmpeg has better built-in RTMP support with listen mode.
 #   --enable-mbedtls                Already using gnutls as TLS implementation
 #   --enable-libmodplug             see #849840: replaced with libopenmpt
-#   --enable-libsrt                 see #933180: links against OpenSSL (license incompatibility)
 #   --enable-libv4l2                This is only needed for very old devices and may cause problems for others.
 #                                   Should anyone need it, using LD_PRELOAD pointing on libv4l2 has the same effect.
 #   --enable-opencv                 Does not build with OpenCV >= 3.4
@@ -86,6 +85,7 @@ CONFIG := --prefix=/usr \
 	--enable-libsnappy \
 	--enable-libsoxr \
 	--enable-libspeex \
+	--enable-libsrt \
 	--enable-libssh \
 	--enable-libtheora \
 	--enable-libtwolame \
