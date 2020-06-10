@@ -30,7 +30,6 @@ FLAVORS = standard extra static
 #   --enable-libilbc                (see #675959 for the RFP bug)
 #   --enable-libklvanc
 #   --enable-libkvazaar
-#   --enable-libmfx
 #   --enable-libopenh264
 #   --enable-libtensorflow
 #   --enable-libvmaf
@@ -74,6 +73,7 @@ CONFIG := --prefix=/usr \
 	--enable-libgsm \
 	--enable-libjack \
 	--enable-libmp3lame \
+	--enable-libmfx \
 	--enable-libmysofa \
 	--enable-libopenjpeg \
 	--enable-libopenmpt \
