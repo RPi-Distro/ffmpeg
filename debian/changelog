@@ -1,3 +1,15 @@
+ffmpeg (7:4.2.2-2) unstable; urgency=medium
+
+  * link with libsrt;
+    build-depend on libsrt-gnutls-dev;
+    closes: bug#960140, thanks to Kyle Robbertze
+  * add myself as uploader
+  * link with libmfx;
+    build-depend on libmfx-dev;
+    closes: bug#955130, thanks to Tom Yang
+
+ -- Jonas Smedegaard <dr@jones.dk>  Wed, 10 Jun 2020 13:53:47 +0200
+
 ffmpeg (7:4.2.2-1) unstable; urgency=medium
 
   [ James Cowgill ]
