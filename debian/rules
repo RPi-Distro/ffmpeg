@@ -73,7 +73,6 @@ CONFIG := --prefix=/usr \
 	--enable-libgsm \
 	--enable-libjack \
 	--enable-libmp3lame \
-	--enable-libmfx \
 	--enable-libmysofa \
 	--enable-libopenjpeg \
 	--enable-libopenmpt \
@@ -105,6 +104,10 @@ CONFIG := --prefix=/usr \
 	--enable-opencl \
 	--enable-opengl \
 	--enable-sdl2
+
+ifeq ($(DEB_HOST_ARCH),amd64)
+CONFIG += --enable-libmfx
+endif
 
 # The standard configuration only uses the shared CONFIG.
 CONFIG_standard = --enable-shared

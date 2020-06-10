@@ -84,7 +84,7 @@ Build-Depends:
 # autodetected for the tiff decoder
  liblzma-dev,
 # --enable-libmfx
- libmfx-dev,
+ libmfx-dev [amd64],
 # --enable-libmp3lame
  libmp3lame-dev,
 # --enable-libmysofa
