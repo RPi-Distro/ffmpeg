@@ -1,3 +1,20 @@
+ffmpeg (7:4.2.3-1) unstable; urgency=medium
+
+  * [ upstream ]
+    + new release
+
+  [ Jonas Smedegaard ]
+  * link with Pocket Sphinx where available (see bug#812335);
+    build-depend on recent libpocketsphinx-dev (see bug#941377)
+  * watch:
+    + use file format 4
+    + set pgpmode=auto
+    + set dversionmangle=auto
+    + use pattern strings
+    + add usage comment
+
+ -- Jonas Smedegaard <dr@jones.dk>  Tue, 16 Jun 2020 11:58:44 +0200
+
 ffmpeg (7:4.2.2-3) unstable; urgency=medium
 
   * fix limit libmfx linking to amd64,
