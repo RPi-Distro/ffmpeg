@@ -2,6 +2,7 @@
 libavcodec.so.58 libavcodec58 #MINVER#
 * Build-Depends-Package: libavcodec-dev
  LIBAVCODEC_58@LIBAVCODEC_58 7:4.0
+ (optional|regex)^avpriv_ 0
  av_ac3_parse_header@LIBAVCODEC_58 7:4.0
  av_adts_header_parse@LIBAVCODEC_58 7:4.0
  av_alloc_vdpaucontext@LIBAVCODEC_58 7:4.0
@@ -204,6 +205,3 @@ libavcodec.so.58 libavcodec58 #MINVER#
  avpicture_get_size@LIBAVCODEC_58 7:4.0
  avpicture_layout@LIBAVCODEC_58 7:4.0
  avsubtitle_free@LIBAVCODEC_58 7:4.0
-# Symbols starting with avpriv_ are not public and other packages must not use
-# them. Intra-library ABI is ensured by manual dependencies in d/control.
- (optional|regex)^avpriv_ 0

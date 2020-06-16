@@ -1,0 +1,5 @@
+## Symbols
+
+Symbols starting with avpriv_ are private;
+other packages must not use them.
+Intra-library ABI is ensured by manual dependencies in d/control.
