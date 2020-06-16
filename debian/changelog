@@ -1,3 +1,20 @@
+ffmpeg (7:4.2.3-2) unstable; urgency=medium
+
+  * copyright:
+    + use License-Grant and License-Reference;
+      add lintian overrides (see bug#786450)
+    + update coverage
+  * stop mention SOFAlizer in libavfilter-extra* long description:
+    dropped since upstream release 3.4
+  * simplify rules:
+    explicitly reuse symbols files (and drop symbolic links)
+  * watch: revert to set pgpsigurlmangle
+    (not pgpmode=auto: we want to fail if signature file is missing)
+  * use pkgkde-symbolshelper;
+    build-depend on pkg-kde-tools
+
+ -- Jonas Smedegaard <dr@jones.dk>  Tue, 16 Jun 2020 18:44:49 +0200
+
 ffmpeg (7:4.2.3-1) unstable; urgency=medium
 
   * [ upstream ]

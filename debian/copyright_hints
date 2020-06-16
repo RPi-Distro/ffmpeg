@@ -8733,6 +8733,18 @@ Copyright: - AVFormatContext.comment
 License: UNKNOWN
  FIXME
 
+Files: debian/source/lintian-overrides
+Copyright: GPL-2+
+  GPL-3+
+  LGPL-2+
+  LGPL-2.1+
+  gpl-2+
+  gpl-3+
+  lgpl-2+
+  lgpl-2.1+
+License: UNKNOWN
+ FIXME
+
 Files: doc/rate_distortion.txt
 Copyright: LGPL
 License: UNKNOWN
@@ -8782,17 +8794,6 @@ License: UNKNOWN
 
 Files: tests/ref/fate/sub-charenc
 Copyright: Ðµ Ð±ÑÐ´Ðµ ÐºÐ°ÐºÑÐ¾ Ð¿ÑÐµÐ´Ð¸.
-License: UNKNOWN
- FIXME
-
-Files: tests/reference.pnm
-Copyright: îæ¬îä©íé°îç¬îæ«îä§îâ¥ëÜ¡æÒÙÀÉ«kÇ§m²Ke&
-  îæ­íê·íê¸íë¹íë¸íë·ìì¹íê·íë¸îê¶îè³îæ°îç±îå°îä®îæ­îå­îç®îæ«îåªíá¦îá¤îã©íå§íë¯æëÉãæÕìâ£Õ»q®=
-  îç¥íè¦îç£íã
-  îç©îé¬íè¯åìÂíâ¢ãÐÓÀuª>u1L12c7j<	o:
-  îèªîæ§îä¦îã¥îä¦îå¦íä©îä¥îá
-  îè¬íé­íç«íßàÂ|ÁFÍO×©ÇFÁ?Ý³jåÄí×îà
-  ðæ´ïê¸íë»ëìºêì¿êíÀìî¹íí·ííÀíç´èÖÔ²vÇ¦jn2¤j1¥i,¥c"­o,£eÐOÂ?¨o(WO
 License: UNKNOWN
  FIXME
 
