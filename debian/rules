@@ -45,7 +45,6 @@ FLAVORS = standard extra static
 #   --enable-libv4l2                This is only needed for very old devices and may cause problems for others.
 #                                   Should anyone need it, using LD_PRELOAD pointing on libv4l2 has the same effect.
 #   --enable-opencv                 Does not build with OpenCV >= 3.4
-#   --enable-pocketsphinx           see #941377: package dependencies are slightly broken
 CONFIG := --prefix=/usr \
 	--extra-version="$(DEB_REVISION)" \
 	--toolchain=hardened \
@@ -104,6 +103,11 @@ CONFIG := --prefix=/usr \
 	--enable-opencl \
 	--enable-opengl \
 	--enable-sdl2
+
+# TODO: enable generally when available on mips* (see #812335)
+ifeq (,$(filter mips% s390x, $(DEB_HOST_ARCH)))
+	CONFIG += --enable-pocketsphinx
+endif
 
 ifeq ($(DEB_HOST_ARCH),amd64)
 CONFIG += --enable-libmfx

@@ -103,6 +103,8 @@ Build-Depends:
  libopenmpt-dev,
 # --enable-libopus
  libopus-dev,
+# --enable-pocketsphinx
+ libpocketsphinx-dev (>= 0.8+5prealpha+1-7~) [!mipsel !mips64el !s390x],
 # --enable-libpulse
  libpulse-dev,
 # --enable-librubberband
