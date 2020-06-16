@@ -854,7 +854,12 @@ static int vc1_decode_frame(AVCodecContext *avctx, void *data,
         ret = AVERROR_INVALIDDATA;
         goto err;
     }
-
+    if ((avctx->codec_id == AV_CODEC_ID_WMV3IMAGE || avctx->codec_id == AV_CODEC_ID_VC1IMAGE)
+        && v->field_mode) {
+        av_log(v->s.avctx, AV_LOG_ERROR, "Sprite decoder: expected Frames not Fields\n");
+        ret = AVERROR_INVALIDDATA;
+        goto err;
+    }
     if ((s->mb_height >> v->field_mode) == 0) {
         av_log(v->s.avctx, AV_LOG_ERROR, "image too short\n");
         ret = AVERROR_INVALIDDATA;
@@ -1033,7 +1038,7 @@ static int vc1_decode_frame(AVCodecContext *avctx, void *data,
 
         ff_mpeg_er_frame_start(s);
 
-        v->bits = buf_size * 8;
+        v->bits = FFMIN(buf_size * 8, s->gb.size_in_bits);
         v->end_mb_x = s->mb_width;
         if (v->field_mode) {
             s->current_picture.f->linesize[0] <<= 1;
@@ -1107,8 +1112,10 @@ static int vc1_decode_frame(AVCodecContext *avctx, void *data,
                 continue;
             }
             ff_vc1_decode_blocks(v);
-            if (i != n_slices)
+            if (i != n_slices) {
                 s->gb = slices[i].gb;
+                v->bits = FFMIN(buf_size * 8, s->gb.size_in_bits);
+            }
         }
         if (v->field_mode) {
             v->second_field = 0;

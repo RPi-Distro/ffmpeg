@@ -228,7 +228,7 @@ static void lpc_prediction(int32_t *error_buffer, uint32_t *buffer_out,
                 sign = sign_only(val) * error_sign;
                 lpc_coefs[j] -= sign;
                 val *= (unsigned)sign;
-                error_val -= (val >> lpc_quant) * (j + 1);
+                error_val -= (val >> lpc_quant) * (j + 1U);
             }
         }
     }
@@ -397,13 +397,13 @@ static int decode_element(AVCodecContext *avctx, AVFrame *frame, int ch_index,
     case 20: {
         for (ch = 0; ch < channels; ch++) {
             for (i = 0; i < alac->nb_samples; i++)
-                alac->output_samples_buffer[ch][i] *= 1 << 12;
+                alac->output_samples_buffer[ch][i] *= 1U << 12;
         }}
         break;
     case 24: {
         for (ch = 0; ch < channels; ch++) {
             for (i = 0; i < alac->nb_samples; i++)
-                alac->output_samples_buffer[ch][i] *= 1 << 8;
+                alac->output_samples_buffer[ch][i] *= 1U << 8;
         }}
         break;
     }

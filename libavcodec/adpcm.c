@@ -1204,7 +1204,7 @@ static int adpcm_decode_frame(AVCodecContext *avctx, void *data,
         }
         for (i=0; i<=st; i++) {
             c->status[i].predictor  = bytestream2_get_le32u(&gb);
-            if (FFABS(c->status[i].predictor) > (1<<16))
+            if (FFABS((int64_t)c->status[i].predictor) > (1<<16))
                 return AVERROR_INVALIDDATA;
         }
 
@@ -1253,8 +1253,8 @@ static int adpcm_decode_frame(AVCodecContext *avctx, void *data,
 
             for (count2 = 0; count2 < 28; count2++) {
                 byte = bytestream2_get_byteu(&gb);
-                next_left_sample  = sign_extend(byte >> 4, 4) << shift_left;
-                next_right_sample = sign_extend(byte,      4) << shift_right;
+                next_left_sample  = sign_extend(byte >> 4, 4) * (1 << shift_left);
+                next_right_sample = sign_extend(byte,      4) * (1 << shift_right);
 
                 next_left_sample = (next_left_sample +
                     (current_left_sample * coeff1l) +
@@ -1293,7 +1293,7 @@ static int adpcm_decode_frame(AVCodecContext *avctx, void *data,
             if (st) byte[1] = bytestream2_get_byteu(&gb);
             for(i = 4; i >= 0; i-=4) { /* Pairwise samples LL RR (st) or LL LL (mono) */
                 for(channel = 0; channel < avctx->channels; channel++) {
-                    int sample = sign_extend(byte[channel] >> i, 4) << shift[channel];
+                    int sample = sign_extend(byte[channel] >> i, 4) * (1 << shift[channel]);
                     sample = (sample +
                              c->status[channel].sample1 * coeff[channel][0] +
                              c->status[channel].sample2 * coeff[channel][1] + 0x80) >> 8;
@@ -1408,11 +1408,11 @@ static int adpcm_decode_frame(AVCodecContext *avctx, void *data,
                     int level, pred;
                     int byte = bytestream2_get_byteu(&gb);
 
-                    level = sign_extend(byte >> 4, 4) << shift[n];
+                    level = sign_extend(byte >> 4, 4) * (1 << shift[n]);
                     pred  = s[-1] * coeff[0][n] + s[-2] * coeff[1][n];
                     s[0]  = av_clip_int16((level + pred + 0x80) >> 8);
 
-                    level = sign_extend(byte, 4) << shift[n];
+                    level = sign_extend(byte, 4) * (1 << shift[n]);
                     pred  = s[0] * coeff[0][n] + s[-1] * coeff[1][n];
                     s[1]  = av_clip_int16((level + pred + 0x80) >> 8);
                 }
@@ -1569,8 +1569,8 @@ static int adpcm_decode_frame(AVCodecContext *avctx, void *data,
                         sampledat = sign_extend(byte >> 4, 4);
                     }
 
-                    sampledat = ((prev1 * factor1 + prev2 * factor2) +
-                                 ((sampledat * scale) << 11)) >> 11;
+                    sampledat = ((prev1 * factor1 + prev2 * factor2) >> 11) +
+                                sampledat * scale;
                     *samples = av_clip_int16(sampledat);
                     prev2 = prev1;
                     prev1 = *samples++;
@@ -1632,8 +1632,8 @@ static int adpcm_decode_frame(AVCodecContext *avctx, void *data,
                 int byte = bytestream2_get_byteu(&gb);
                 int index = (byte >> 4) & 7;
                 unsigned int exp = byte & 0x0F;
-                int factor1 = table[ch][index * 2];
-                int factor2 = table[ch][index * 2 + 1];
+                int64_t factor1 = table[ch][index * 2];
+                int64_t factor2 = table[ch][index * 2 + 1];
 
                 /* Decode 14 samples.  */
                 for (n = 0; n < 14 && (i * 14 + n < nb_samples); n++) {
@@ -1647,7 +1647,7 @@ static int adpcm_decode_frame(AVCodecContext *avctx, void *data,
                     }
 
                     sampledat = ((c->status[ch].sample1 * factor1
-                                + c->status[ch].sample2 * factor2) >> 11) + (sampledat << exp);
+                                + c->status[ch].sample2 * factor2) >> 11) + sampledat * (1 << exp);
                     *samples = av_clip_int16(sampledat);
                     c->status[ch].sample2 = c->status[ch].sample1;
                     c->status[ch].sample1 = *samples++;
@@ -1731,7 +1731,7 @@ static int adpcm_decode_frame(AVCodecContext *avctx, void *data,
                             scale = sign_extend(byte, 4);
                         }
 
-                        scale  = scale << 12;
+                        scale  = scale * (1 << 12);
                         sample = (int)((scale >> shift) + (c->status[channel].sample1 * xa_adpcm_table[filter][0] + c->status[channel].sample2 * xa_adpcm_table[filter][1]) / 64);
                     }
                     *samples++ = av_clip_int16(sample);
