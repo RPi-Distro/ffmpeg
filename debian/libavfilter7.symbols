@@ -1,4 +1,4 @@
-# SymbolsHelper-Confirmed: 7:4.2 amd64
+# SymbolsHelper-Confirmed: 7:4.3 amd64
 libavfilter.so.7 libavfilter7 #MINVER#
 * Build-Depends-Package: libavfilter-dev
  LIBAVFILTER_7@LIBAVFILTER_7 7:4.0
@@ -29,13 +29,11 @@ libavfilter.so.7 libavfilter7 #MINVER#
  av_filter_ffversion@LIBAVFILTER_7 7:4.0
  av_filter_iterate@LIBAVFILTER_7 7:4.0
  avfilter_add_matrix@LIBAVFILTER_7 7:4.0
- avfilter_all_channel_layouts@LIBAVFILTER_7 7:4.0
  avfilter_config_links@LIBAVFILTER_7 7:4.0
  avfilter_configuration@LIBAVFILTER_7 7:4.0
  avfilter_free@LIBAVFILTER_7 7:4.0
  avfilter_get_by_name@LIBAVFILTER_7 7:4.0
  avfilter_get_class@LIBAVFILTER_7 7:4.0
- avfilter_get_matrix@LIBAVFILTER_7 7:4.0
  avfilter_graph_alloc@LIBAVFILTER_7 7:4.0
  avfilter_graph_alloc_filter@LIBAVFILTER_7 7:4.0
  avfilter_graph_config@LIBAVFILTER_7 7:4.0

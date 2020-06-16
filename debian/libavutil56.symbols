@@ -1,4 +1,4 @@
-# SymbolsHelper-Confirmed: 7:4.2 amd64
+# SymbolsHelper-Confirmed: 7:4.3 amd64
 libavutil.so.56 libavutil56 #MINVER#
 * Build-Depends-Package: libavutil-dev
  LIBAVUTIL_56@LIBAVUTIL_56 7:4.0
@@ -61,6 +61,7 @@ libavutil.so.56 libavutil56 #MINVER#
  av_buffer_get_ref_count@LIBAVUTIL_56 7:4.0
  av_buffer_is_writable@LIBAVUTIL_56 7:4.0
  av_buffer_make_writable@LIBAVUTIL_56 7:4.0
+ av_buffer_pool_buffer_get_opaque@LIBAVUTIL_56 7:4.3
  av_buffer_pool_get@LIBAVUTIL_56 7:4.0
  av_buffer_pool_init2@LIBAVUTIL_56 7:4.0
  av_buffer_pool_init@LIBAVUTIL_56 7:4.0
@@ -121,6 +122,7 @@ libavutil.so.56 libavutil56 #MINVER#
  av_display_rotation_set@LIBAVUTIL_56 7:4.0
  av_div_i@LIBAVUTIL_56 7:4.0
  av_div_q@LIBAVUTIL_56 7:4.0
+ av_dovi_alloc@LIBAVUTIL_56 7:4.3
  av_downmix_info_update_side_data@LIBAVUTIL_56 7:4.0
  av_dynamic_hdr_plus_alloc@LIBAVUTIL_56 7:4.2
  av_dynamic_hdr_plus_create_side_data@LIBAVUTIL_56 7:4.2
@@ -137,6 +139,8 @@ libavutil.so.56 libavutil56 #MINVER#
  av_encryption_init_info_free@LIBAVUTIL_56 7:4.0
  av_encryption_init_info_get_side_data@LIBAVUTIL_56 7:4.1
  av_escape@LIBAVUTIL_56 7:4.0
+ av_expr_count_func@LIBAVUTIL_56 7:4.3
+ av_expr_count_vars@LIBAVUTIL_56 7:4.3
  av_expr_eval@LIBAVUTIL_56 7:4.0
  av_expr_free@LIBAVUTIL_56 7:4.0
  av_expr_parse@LIBAVUTIL_56 7:4.0
@@ -211,6 +215,7 @@ libavutil.so.56 libavutil56 #MINVER#
  av_free@LIBAVUTIL_56 7:4.0
  av_freep@LIBAVUTIL_56 7:4.0
  av_gcd@LIBAVUTIL_56 7:4.0
+ av_gcd_q@LIBAVUTIL_56 7:4.3
  av_get_alt_sample_fmt@LIBAVUTIL_56 7:4.0
  av_get_bits_per_pixel@LIBAVUTIL_56 7:4.0
  av_get_bytes_per_sample@LIBAVUTIL_56 7:4.0
@@ -264,6 +269,7 @@ libavutil.so.56 libavutil56 #MINVER#
  av_hwdevice_ctx_alloc@LIBAVUTIL_56 7:4.0
  av_hwdevice_ctx_create@LIBAVUTIL_56 7:4.0
  av_hwdevice_ctx_create_derived@LIBAVUTIL_56 7:4.0
+ av_hwdevice_ctx_create_derived_opts@LIBAVUTIL_56 7:4.3
  av_hwdevice_ctx_init@LIBAVUTIL_56 7:4.0
  av_hwdevice_find_type_by_name@LIBAVUTIL_56 7:4.0
  av_hwdevice_get_hwframe_constraints@LIBAVUTIL_56 7:4.0
@@ -307,6 +313,7 @@ libavutil.so.56 libavutil56 #MINVER#
  av_log_format_line@LIBAVUTIL_56 7:4.0
  av_log_get_flags@LIBAVUTIL_56 7:4.0
  av_log_get_level@LIBAVUTIL_56 7:4.0
+ av_log_once@LIBAVUTIL_56 7:4.3
  av_log_set_callback@LIBAVUTIL_56 7:4.0
  av_log_set_flags@LIBAVUTIL_56 7:4.0
  av_log_set_level@LIBAVUTIL_56 7:4.0
@@ -509,6 +516,8 @@ libavutil.so.56 libavutil56 #MINVER#
  av_util_ffversion@LIBAVUTIL_56 7:4.0
  av_vbprintf@LIBAVUTIL_56 7:4.0
  av_version_info@LIBAVUTIL_56 7:4.0
+ av_video_enc_params_alloc@LIBAVUTIL_56 7:4.3
+ av_video_enc_params_create_side_data@LIBAVUTIL_56 7:4.3
  av_vlog@LIBAVUTIL_56 7:4.0
  av_write_image_line2@LIBAVUTIL_56 7:4.1
  av_write_image_line@LIBAVUTIL_56 7:4.0

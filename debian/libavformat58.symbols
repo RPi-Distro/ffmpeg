@@ -1,4 +1,4 @@
-# SymbolsHelper-Confirmed: 7:4.2 amd64
+# SymbolsHelper-Confirmed: 7:4.3 amd64
 libavformat.so.58 libavformat58 #MINVER#
 * Build-Depends-Package: libavformat-dev
  LIBAVFORMAT_58@LIBAVFORMAT_58 7:4.0
@@ -134,7 +134,9 @@ libavformat.so.58 libavformat58 #MINVER#
  avio_open_dir@LIBAVFORMAT_58 7:4.0
  avio_open_dyn_buf@LIBAVFORMAT_58 7:4.0
  avio_pause@LIBAVFORMAT_58 7:4.0
+ avio_print_string_array@LIBAVFORMAT_58 7:4.3
  avio_printf@LIBAVFORMAT_58 7:4.0
+ avio_protocol_get_class@LIBAVFORMAT_58 7:4.3
  avio_put_str16be@LIBAVFORMAT_58 7:4.0
  avio_put_str16le@LIBAVFORMAT_58 7:4.0
  avio_put_str@LIBAVFORMAT_58 7:4.0
