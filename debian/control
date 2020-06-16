@@ -425,7 +425,6 @@ Description: FFmpeg library with extra media filters - runtime files
  .
   * Lens correction using Lensfun
   * Optical Character Recognition (uses Tesseract)
-  * SOFAlizer (Spatially Oriented Format for Acoustics, uses netcdf)
  .
  Because this package links against libraries that are licensed under
  Apache License 2.0, the resulting binaries are distributed under the
