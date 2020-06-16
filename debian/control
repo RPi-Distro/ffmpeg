@@ -107,6 +107,8 @@ Build-Depends:
  libpocketsphinx-dev (>= 0.8+5prealpha+1-7~) [!mipsel !mips64el !s390x],
 # --enable-libpulse
  libpulse-dev,
+# --enable-librabbitmq
+ librabbitmq-dev,
 # --enable-librubberband
  librubberband-dev,
 # --enable-librsvg

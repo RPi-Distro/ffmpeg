@@ -77,6 +77,7 @@ CONFIG := --prefix=/usr \
 	--enable-libopenmpt \
 	--enable-libopus \
 	--enable-libpulse \
+	--enable-librabbitmq \
 	--enable-librsvg \
 	--enable-librubberband \
 	--enable-libshine \
