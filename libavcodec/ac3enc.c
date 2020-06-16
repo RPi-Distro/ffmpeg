@@ -63,7 +63,7 @@ static const float surmixlev_options[SURMIXLEV_NUM_OPTIONS] = {
 
 #define EXTMIXLEV_NUM_OPTIONS 8
 static const float extmixlev_options[EXTMIXLEV_NUM_OPTIONS] = {
-    LEVEL_PLUS_3DB,  LEVEL_PLUS_1POINT5DB,  LEVEL_ONE,       LEVEL_MINUS_4POINT5DB,
+    LEVEL_PLUS_3DB,  LEVEL_PLUS_1POINT5DB,  LEVEL_ONE,       LEVEL_MINUS_1POINT5DB,
     LEVEL_MINUS_3DB, LEVEL_MINUS_4POINT5DB, LEVEL_MINUS_6DB, LEVEL_ZERO
 };
 
@@ -1993,12 +1993,11 @@ int ff_ac3_validate_metadata(AC3EncodeContext *s)
     /* set bitstream id for alternate bitstream syntax */
     if (!s->eac3 && (opt->extended_bsi_1 || opt->extended_bsi_2)) {
         if (s->bitstream_id > 8 && s->bitstream_id < 11) {
-            static int warn_once = 1;
-            if (warn_once) {
+            if (!s->warned_alternate_bitstream) {
                 av_log(avctx, AV_LOG_WARNING, "alternate bitstream syntax is "
                        "not compatible with reduced samplerates. writing of "
                        "extended bitstream information will be disabled.\n");
-                warn_once = 0;
+                s->warned_alternate_bitstream = 1;
             }
         } else {
             s->bitstream_id = 6;

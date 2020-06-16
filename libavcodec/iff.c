@@ -723,7 +723,7 @@ static void decode_deep_rle32(uint8_t *dst, const uint8_t *src, int src_size, in
         if (opcode >= 0) {
             int size = opcode + 1;
             for (i = 0; i < size; i++) {
-                int length = FFMIN(size - i, width);
+                int length = FFMIN(size - i, width - x);
                 if (src_end - src < length * 4)
                     return;
                 memcpy(dst + y*linesize + x * 4, src, length * 4);
@@ -1362,6 +1362,9 @@ static void decode_delta_d(uint8_t *dst,
         bytestream2_init(&gb, buf + ofssrc, buf_end - (buf + ofssrc));
 
         entries = bytestream2_get_be32(&gb);
+        if (entries * 8LL > bytestream2_get_bytes_left(&gb))
+            return;
+
         while (entries && bytestream2_get_bytes_left(&gb) >= 8) {
             int32_t opcode  = bytestream2_get_be32(&gb);
             unsigned offset = bytestream2_get_be32(&gb);

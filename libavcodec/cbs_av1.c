@@ -214,8 +214,8 @@ static int cbs_av1_read_ns(CodedBitstreamContext *ctx, GetBitContext *gbc,
                            uint32_t n, const char *name,
                            const int *subscripts, uint32_t *write_to)
 {
-    uint32_t w, m, v, extra_bit, value;
-    int position;
+    uint32_t m, v, extra_bit, value;
+    int position, w;
 
     av_assert0(n > 0);
 
@@ -550,12 +550,12 @@ static size_t cbs_av1_get_payload_bytes_left(GetBitContext *gbc)
 #define SUBSCRIPTS(subs, ...) (subs > 0 ? ((int[subs + 1]){ subs, __VA_ARGS__ }) : NULL)
 
 #define fb(width, name) \
-        xf(width, name, current->name, 0, MAX_UINT_BITS(width), 0)
+        xf(width, name, current->name, 0, MAX_UINT_BITS(width), 0, )
 #define fc(width, name, range_min, range_max) \
-        xf(width, name, current->name, range_min, range_max, 0)
+        xf(width, name, current->name, range_min, range_max, 0, )
 #define flag(name) fb(1, name)
 #define su(width, name) \
-        xsu(width, name, current->name, 0)
+        xsu(width, name, current->name, 0, )
 
 #define fbs(width, name, subs, ...) \
         xf(width, name, current->name, 0, MAX_UINT_BITS(width), subs, __VA_ARGS__)
@@ -568,7 +568,7 @@ static size_t cbs_av1_get_payload_bytes_left(GetBitContext *gbc)
 
 #define fixed(width, name, value) do { \
         av_unused uint32_t fixed_value = value; \
-        xf(width, name, fixed_value, value, value, 0); \
+        xf(width, name, fixed_value, value, value, 0, ); \
     } while (0)
 
 
@@ -623,9 +623,9 @@ static size_t cbs_av1_get_payload_bytes_left(GetBitContext *gbc)
 #define delta_q(name) do { \
         uint8_t delta_coded; \
         int8_t delta_q; \
-        xf(1, name.delta_coded, delta_coded, 0, 1, 0); \
+        xf(1, name.delta_coded, delta_coded, 0, 1, 0, ); \
         if (delta_coded) \
-            xsu(1 + 6, name.delta_q, delta_q, 0); \
+            xsu(1 + 6, name.delta_q, delta_q, 0, ); \
         else \
             delta_q = 0; \
         current->name = delta_q; \
@@ -700,9 +700,9 @@ static size_t cbs_av1_get_payload_bytes_left(GetBitContext *gbc)
     } while (0)
 
 #define delta_q(name) do { \
-        xf(1, name.delta_coded, current->name != 0, 0, 1, 0); \
+        xf(1, name.delta_coded, current->name != 0, 0, 1, 0, ); \
         if (current->name) \
-            xsu(1 + 6, name.delta_q, current->name, 0); \
+            xsu(1 + 6, name.delta_q, current->name, 0, ); \
     } while (0)
 
 #define leb128(name) do { \
@@ -711,10 +711,11 @@ static size_t cbs_av1_get_payload_bytes_left(GetBitContext *gbc)
 
 #define infer(name, value) do { \
         if (current->name != (value)) { \
-            av_log(ctx->log_ctx, AV_LOG_WARNING, "Warning: " \
+            av_log(ctx->log_ctx, AV_LOG_ERROR, \
                    "%s does not match inferred value: " \
                    "%"PRId64", but should be %"PRId64".\n", \
                    #name, (int64_t)current->name, (int64_t)(value)); \
+            return AVERROR_INVALIDDATA; \
         } \
     } while (0)
 
@@ -771,14 +772,13 @@ static int cbs_av1_split_fragment(CodedBitstreamContext *ctx,
         if (err < 0)
             goto fail;
 
-        if (get_bits_left(&gbc) < 8) {
-            av_log(ctx->log_ctx, AV_LOG_ERROR, "Invalid OBU: fragment "
-                   "too short (%"SIZE_SPECIFIER" bytes).\n", size);
-            err = AVERROR_INVALIDDATA;
-            goto fail;
-        }
-
         if (header.obu_has_size_field) {
+            if (get_bits_left(&gbc) < 8) {
+                av_log(ctx->log_ctx, AV_LOG_ERROR, "Invalid OBU: fragment "
+                       "too short (%"SIZE_SPECIFIER" bytes).\n", size);
+                err = AVERROR_INVALIDDATA;
+                goto fail;
+            }
             err = cbs_av1_read_leb128(ctx, &gbc, "obu_size", &obu_size);
             if (err < 0)
                 goto fail;
@@ -832,7 +832,7 @@ static void cbs_av1_free_metadata(AV1RawMetadata *md)
     }
 }
 
-static void cbs_av1_free_obu(void *unit, uint8_t *content)
+static void cbs_av1_free_obu(void *opaque, uint8_t *content)
 {
     AV1RawOBU *obu = (AV1RawOBU*)content;
 

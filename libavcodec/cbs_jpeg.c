@@ -34,7 +34,7 @@
 #define SUBSCRIPTS(subs, ...) (subs > 0 ? ((int[subs + 1]){ subs, __VA_ARGS__ }) : NULL)
 
 #define u(width, name, range_min, range_max) \
-    xu(width, name, range_min, range_max, 0)
+    xu(width, name, range_min, range_max, 0, )
 #define us(width, name, sub, range_min, range_max) \
     xu(width, name, range_min, range_max, 1, sub)
 
@@ -82,21 +82,21 @@
 #undef xu
 
 
-static void cbs_jpeg_free_application_data(void *unit, uint8_t *content)
+static void cbs_jpeg_free_application_data(void *opaque, uint8_t *content)
 {
     JPEGRawApplicationData *ad = (JPEGRawApplicationData*)content;
     av_buffer_unref(&ad->Ap_ref);
     av_freep(&content);
 }
 
-static void cbs_jpeg_free_comment(void *unit, uint8_t *content)
+static void cbs_jpeg_free_comment(void *opaque, uint8_t *content)
 {
     JPEGRawComment *comment = (JPEGRawComment*)content;
     av_buffer_unref(&comment->Cm_ref);
     av_freep(&content);
 }
 
-static void cbs_jpeg_free_scan(void *unit, uint8_t *content)
+static void cbs_jpeg_free_scan(void *opaque, uint8_t *content)
 {
     JPEGRawScan *scan = (JPEGRawScan*)content;
     av_buffer_unref(&scan->data_ref);
@@ -227,11 +227,8 @@ static int cbs_jpeg_split_fragment(CodedBitstreamContext *ctx,
 
         err = ff_cbs_insert_unit_data(ctx, frag, unit, marker,
                                       data, data_size, data_ref);
-        if (err < 0) {
-            if (!data_ref)
-                av_freep(&data);
+        if (err < 0)
             return err;
-        }
 
         if (next_marker == -1)
             break;
@@ -332,7 +329,7 @@ static int cbs_jpeg_write_scan(CodedBitstreamContext *ctx,
                                PutBitContext *pbc)
 {
     JPEGRawScan *scan = unit->content;
-    int i, err;
+    int err;
 
     err = cbs_jpeg_write_scan_header(ctx, pbc, &scan->header);
     if (err < 0)
@@ -342,8 +339,12 @@ static int cbs_jpeg_write_scan(CodedBitstreamContext *ctx,
         if (scan->data_size * 8 > put_bits_left(pbc))
             return AVERROR(ENOSPC);
 
-        for (i = 0; i < scan->data_size; i++)
-            put_bits(pbc, 8, scan->data[i]);
+        av_assert0(put_bits_count(pbc) % 8 == 0);
+
+        flush_put_bits(pbc);
+
+        memcpy(put_bits_ptr(pbc), scan->data, scan->data_size);
+        skip_put_bytes(pbc, scan->data_size);
     }
 
     return 0;

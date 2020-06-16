@@ -348,7 +348,7 @@ void ff_cbs_fragment_free(CodedBitstreamContext *ctx,
 int ff_cbs_alloc_unit_content(CodedBitstreamContext *ctx,
                               CodedBitstreamUnit *unit,
                               size_t size,
-                              void (*free)(void *unit, uint8_t *content));
+                              void (*free)(void *opaque, uint8_t *content));
 
 /**
  * Allocate a new internal data buffer of the given size in the unit.
@@ -376,7 +376,8 @@ int ff_cbs_insert_unit_content(CodedBitstreamContext *ctx,
  * Insert a new unit into a fragment with the given data bitstream.
  *
  * If data_buf is not supplied then data must have been allocated with
- * av_malloc() and will become owned by the unit after this call.
+ * av_malloc() and will on success become owned by the unit after this
+ * call or freed on error.
  */
 int ff_cbs_insert_unit_data(CodedBitstreamContext *ctx,
                             CodedBitstreamFragment *frag,

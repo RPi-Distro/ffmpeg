@@ -29,6 +29,7 @@ Only mono files are supported.
 #include "libavutil/channel_layout.h"
 #include "avformat.h"
 #include "internal.h"
+#include "rawenc.h"
 
 typedef struct {
     uint64_t cumulated_size;
@@ -60,13 +61,6 @@ static int amr_write_header(AVFormatContext *s)
     } else {
         return -1;
     }
-    avio_flush(pb);
-    return 0;
-}
-
-static int amr_write_packet(AVFormatContext *s, AVPacket *pkt)
-{
-    avio_write(s->pb, pkt->data, pkt->size);
     return 0;
 }
 #endif /* CONFIG_AMR_MUXER */
@@ -156,7 +150,6 @@ static int amr_read_packet(AVFormatContext *s, AVPacket *pkt)
     read              = avio_read(s->pb, pkt->data + 1, size - 1);
 
     if (read != size - 1) {
-        av_packet_unref(pkt);
         if (read < 0)
             return read;
         return AVERROR(EIO);
@@ -298,7 +291,7 @@ AVOutputFormat ff_amr_muxer = {
     .audio_codec       = AV_CODEC_ID_AMR_NB,
     .video_codec       = AV_CODEC_ID_NONE,
     .write_header      = amr_write_header,
-    .write_packet      = amr_write_packet,
+    .write_packet      = ff_raw_write_packet,
     .flags             = AVFMT_NOTIMESTAMPS,
 };
 #endif

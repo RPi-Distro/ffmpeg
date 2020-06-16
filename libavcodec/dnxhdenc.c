@@ -26,7 +26,6 @@
 #include "libavutil/attributes.h"
 #include "libavutil/internal.h"
 #include "libavutil/opt.h"
-#include "libavutil/timer.h"
 
 #include "avcodec.h"
 #include "blockdsp.h"
@@ -34,6 +33,7 @@
 #include "internal.h"
 #include "mpegvideo.h"
 #include "pixblockdsp.h"
+#include "packet_internal.h"
 #include "profiles.h"
 #include "dnxhdenc.h"
 
@@ -542,6 +542,8 @@ FF_ENABLE_DEPRECATION_WARNINGS
     if (avctx->active_thread_type == FF_THREAD_SLICE) {
         for (i = 1; i < avctx->thread_count; i++) {
             ctx->thread[i] = av_malloc(sizeof(DNXHDEncContext));
+            if (!ctx->thread[i])
+                goto fail;
             memcpy(ctx->thread[i], ctx, sizeof(DNXHDEncContext));
         }
     }
@@ -931,9 +933,8 @@ static int dnxhd_encode_thread(AVCodecContext *avctx, void *arg,
             int last_index = ctx->m.dct_quantize(&ctx->m, block,
                                                  ctx->is_444 ? (((i >> 1) % 3) < 1 ? 0 : 4): 4 & (2*i),
                                                  qscale, &overflow);
-            // START_TIMER;
+
             dnxhd_encode_block(ctx, block, last_index, n);
-            // STOP_TIMER("encode_block");
         }
     }
     if (put_bits_count(&ctx->m.pb) & 31)
@@ -1396,7 +1397,7 @@ AVCodec ff_dnxhd_encoder = {
     .init           = dnxhd_encode_init,
     .encode2        = dnxhd_encode_picture,
     .close          = dnxhd_encode_end,
-    .capabilities   = AV_CODEC_CAP_SLICE_THREADS | AV_CODEC_CAP_FRAME_THREADS | AV_CODEC_CAP_INTRA_ONLY,
+    .capabilities   = AV_CODEC_CAP_SLICE_THREADS | AV_CODEC_CAP_FRAME_THREADS,
     .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
     .pix_fmts       = (const enum AVPixelFormat[]) {
         AV_PIX_FMT_YUV422P,

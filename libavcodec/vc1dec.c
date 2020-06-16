@@ -29,7 +29,7 @@
 #include "avcodec.h"
 #include "blockdsp.h"
 #include "get_bits.h"
-#include "hwaccel.h"
+#include "hwconfig.h"
 #include "internal.h"
 #include "mpeg_er.h"
 #include "mpegvideo.h"
@@ -695,13 +695,13 @@ static int vc1_decode_frame(AVCodecContext *avctx, void *data,
                     int buf_size3;
                     if (avctx->hwaccel)
                         buf_start_second_field = start;
-                    tmp = av_realloc_array(slices, sizeof(*slices), (n_slices+1));
+                    tmp = av_realloc_array(slices, sizeof(*slices), n_slices+1);
                     if (!tmp) {
                         ret = AVERROR(ENOMEM);
                         goto err;
                     }
                     slices = tmp;
-                    slices[n_slices].buf = av_mallocz(buf_size + AV_INPUT_BUFFER_PADDING_SIZE);
+                    slices[n_slices].buf = av_mallocz(size + AV_INPUT_BUFFER_PADDING_SIZE);
                     if (!slices[n_slices].buf) {
                         ret = AVERROR(ENOMEM);
                         goto err;
@@ -724,13 +724,13 @@ static int vc1_decode_frame(AVCodecContext *avctx, void *data,
                     break;
                 case VC1_CODE_SLICE: {
                     int buf_size3;
-                    tmp = av_realloc_array(slices, sizeof(*slices), (n_slices+1));
+                    tmp = av_realloc_array(slices, sizeof(*slices), n_slices+1);
                     if (!tmp) {
                         ret = AVERROR(ENOMEM);
                         goto err;
                     }
                     slices = tmp;
-                    slices[n_slices].buf = av_mallocz(buf_size + AV_INPUT_BUFFER_PADDING_SIZE);
+                    slices[n_slices].buf = av_mallocz(size + AV_INPUT_BUFFER_PADDING_SIZE);
                     if (!slices[n_slices].buf) {
                         ret = AVERROR(ENOMEM);
                         goto err;
@@ -759,7 +759,7 @@ static int vc1_decode_frame(AVCodecContext *avctx, void *data,
             } else { // found field marker, unescape second field
                 if (avctx->hwaccel)
                     buf_start_second_field = divider;
-                tmp = av_realloc_array(slices, sizeof(*slices), (n_slices+1));
+                tmp = av_realloc_array(slices, sizeof(*slices), n_slices+1);
                 if (!tmp) {
                     ret = AVERROR(ENOMEM);
                     goto err;
@@ -1038,7 +1038,6 @@ static int vc1_decode_frame(AVCodecContext *avctx, void *data,
 
         ff_mpeg_er_frame_start(s);
 
-        v->bits = FFMIN(buf_size * 8, s->gb.size_in_bits);
         v->end_mb_x = s->mb_width;
         if (v->field_mode) {
             s->current_picture.f->linesize[0] <<= 1;
@@ -1114,7 +1113,6 @@ static int vc1_decode_frame(AVCodecContext *avctx, void *data,
             ff_vc1_decode_blocks(v);
             if (i != n_slices) {
                 s->gb = slices[i].gb;
-                v->bits = FFMIN(buf_size * 8, s->gb.size_in_bits);
             }
         }
         if (v->field_mode) {
