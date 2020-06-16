@@ -308,7 +308,13 @@ override_dh_shlibdeps:
 		ver=${DEB_VERSION}; \
 		echo "$$lib $$abi $$pkg (= $$ver)" >> debian/shlibs.local; \
 	done
-	dh_shlibdeps
+	set -e && for pkg in $(EXTRA_PKGS); do \
+		mainpkg=`echo $$pkg | sed 's/-extra//'`; \
+		cp -f debian/$$mainpkg.symbols debian/$$pkg.symbols; \
+		dh_shlibdeps -p$$pkg; \
+		rm -f debian/$$pkg.symbols; \
+	done
+	dh_shlibdeps --remaining-packages
 
 override_dh_missing:
 	dh_missing --list-missing

@@ -2,6 +2,7 @@
 libavformat.so.58 libavformat58 #MINVER#
 * Build-Depends-Package: libavformat-dev
  LIBAVFORMAT_58@LIBAVFORMAT_58 7:4.0
+ (optional|regex)^avpriv_ 0
  av_add_index_entry@LIBAVFORMAT_58 7:4.0
  av_append_packet@LIBAVFORMAT_58 7:4.0
  av_apply_bitstream_filters@LIBAVFORMAT_58 7:4.0
@@ -165,6 +166,3 @@ libavformat.so.58 libavformat58 #MINVER#
  avio_wl64@LIBAVFORMAT_58 7:4.0
  avio_write@LIBAVFORMAT_58 7:4.0
  avio_write_marker@LIBAVFORMAT_58 7:4.0
-# Symbols starting with avpriv_ are not public and other packages must not use
-# them. Intra-library ABI is ensured by manual dependencies in d/control.
- (optional|regex)^avpriv_ 0
