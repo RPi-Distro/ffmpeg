@@ -23,18 +23,18 @@ FLAVORS = standard extra static
 # The following flags (and build-dependencies) are not added, because they would require a libavformat-extra flavor:
 #   --enable-libsmbclient           (libsmbclient-dev [!hurd-i386 !m68k !sparc64])
 # The following flags are not added, because the necessary libraries are not in Debian:
-#   --enable-decklink
+#   --enable-decklink               (see #839941 for discussion of freeness)
 #   --enable-libcelt                (see #676592: removed from Debian as abandoned upstream, replaced by opus)
-#   --enable-libdav1d
+#   --enable-libdav1d               (see #916333 for the ITP bug)
 #   --enable-libdavs2               (only in experimental)
 #   --enable-libilbc                (see #675959 for the RFP bug)
 #   --enable-libklvanc
 #   --enable-libkvazaar
 #   --enable-libopenh264
-#   --enable-libtensorflow
+#   --enable-libtensorflow          (see #959765 for the RFP bug)
 #   --enable-libvmaf
-#   --enable-libxavs2
-#   --enable-libxavs                (only in experimental)
+#   --enable-libxavs
+#   --enable-libxavs2               (only in experimental)
 #   --enable-libzimg                (see #864888 for the RFP bug)
 #   --enable-vapoursynth            (see #833942 for the RFP bug)
 # The following flags are not added for various reasons:
@@ -44,7 +44,7 @@ FLAVORS = standard extra static
 #   --enable-libmodplug             see #849840: replaced with libopenmpt
 #   --enable-libv4l2                This is only needed for very old devices and may cause problems for others.
 #                                   Should anyone need it, using LD_PRELOAD pointing on libv4l2 has the same effect.
-#   --enable-opencv                 Does not build with OpenCV >= 3.4
+#   --enable-opencv                 Does not build with OpenCV >= 3.4 - see <https://trac.ffmpeg.org/ticket/7059>
 CONFIG := --prefix=/usr \
 	--extra-version="$(DEB_REVISION)" \
 	--toolchain=hardened \
