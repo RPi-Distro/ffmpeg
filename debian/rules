@@ -25,6 +25,7 @@ FLAVORS = standard extra static
 #   --enable-libsmbclient           (libsmbclient-dev [!hurd-i386 !m68k !sparc64])
 #   --enable-vulkan                 (libvulkan-dev)
 # The following flags are not added, because the necessary libraries are not in Debian:
+#   --enable-avisynth               (should link with AviSynth+, embedded avisynth code dropped upstream)
 #   --enable-decklink               (see #839941 for discussion of freeness)
 #   --enable-libcelt                (see #676592: removed from Debian as abandoned upstream, replaced by opus)
 #   --enable-libdav1d               (see #916333 for the ITP bug)
@@ -57,7 +58,6 @@ CONFIG := --prefix=/usr \
 	--enable-gpl \
 	--disable-stripping \
 	--enable-avresample --disable-filter=resample \
-	--enable-avisynth \
 	--enable-gnutls \
 	--enable-ladspa \
 	--enable-libaom \
