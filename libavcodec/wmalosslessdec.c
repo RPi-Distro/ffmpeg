@@ -184,18 +184,15 @@ static av_cold int decode_init(AVCodecContext *avctx)
     unsigned int channel_mask;
     int i, log2_max_num_subframes;
 
-    if (avctx->block_align <= 0) {
+    if (avctx->block_align <= 0 || avctx->block_align > (1<<21)) {
         av_log(avctx, AV_LOG_ERROR, "block_align is not set or invalid\n");
         return AVERROR(EINVAL);
     }
 
-    if (avctx->channels < 0) {
-        av_log(avctx, AV_LOG_ERROR, "invalid number of channels %d\n",
-               avctx->channels);
-        return AVERROR_INVALIDDATA;
-    } else if (avctx->channels > WMALL_MAX_CHANNELS) {
+    av_assert0(avctx->channels >= 0);
+    if (avctx->channels > WMALL_MAX_CHANNELS) {
         avpriv_request_sample(avctx,
-                              "More than %d channels", WMALL_MAX_CHANNELS);
+                              "More than " AV_STRINGIFY(WMALL_MAX_CHANNELS) " channels");
         return AVERROR_PATCHWELCOME;
     }
 
@@ -679,7 +676,7 @@ static void mclms_predict(WmallDecodeCtx *s, int icoef, int *pred)
         for (i = 0; i < ich; i++)
             pred[ich] += (uint32_t)s->channel_residues[i][icoef] *
                          s->mclms_coeffs_cur[i + num_channels * ich];
-        pred[ich] += (1 << s->mclms_scaling) >> 1;
+        pred[ich] += (1U << s->mclms_scaling) >> 1;
         pred[ich] >>= s->mclms_scaling;
         s->channel_residues[ich][icoef] += (unsigned)pred[ich];
     }
@@ -1333,6 +1330,7 @@ AVCodec ff_wmalossless_decoder = {
     .decode         = decode_packet,
     .flush          = flush,
     .capabilities   = AV_CODEC_CAP_SUBFRAMES | AV_CODEC_CAP_DR1 | AV_CODEC_CAP_DELAY,
+    .caps_internal  = FF_CODEC_CAP_INIT_CLEANUP,
     .sample_fmts    = (const enum AVSampleFormat[]) { AV_SAMPLE_FMT_S16P,
                                                       AV_SAMPLE_FMT_S32P,
                                                       AV_SAMPLE_FMT_NONE },

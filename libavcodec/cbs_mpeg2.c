@@ -41,9 +41,9 @@
 #define SUBSCRIPTS(subs, ...) (subs > 0 ? ((int[subs + 1]){ subs, __VA_ARGS__ }) : NULL)
 
 #define ui(width, name) \
-        xui(width, name, current->name, 0, MAX_UINT_BITS(width), 0)
+        xui(width, name, current->name, 0, MAX_UINT_BITS(width), 0, )
 #define uir(width, name) \
-        xui(width, name, current->name, 1, MAX_UINT_BITS(width), 0)
+        xui(width, name, current->name, 1, MAX_UINT_BITS(width), 0, )
 #define uis(width, name, subs, ...) \
         xui(width, name, current->name, 0, MAX_UINT_BITS(width), subs, __VA_ARGS__)
 #define uirs(width, name, subs, ...) \
@@ -57,7 +57,7 @@
         bit("marker_bit", 1)
 #define bit(string, value) do { \
         av_unused uint32_t bit = value; \
-        xuia(1, string, bit, value, value, 0); \
+        xuia(1, string, bit, value, value, 0, ); \
     } while (0)
 
 
@@ -140,21 +140,21 @@
 #undef infer
 
 
-static void cbs_mpeg2_free_picture_header(void *unit, uint8_t *content)
+static void cbs_mpeg2_free_picture_header(void *opaque, uint8_t *content)
 {
     MPEG2RawPictureHeader *picture = (MPEG2RawPictureHeader*)content;
     av_buffer_unref(&picture->extra_information_picture.extra_information_ref);
     av_freep(&content);
 }
 
-static void cbs_mpeg2_free_user_data(void *unit, uint8_t *content)
+static void cbs_mpeg2_free_user_data(void *opaque, uint8_t *content)
 {
     MPEG2RawUserData *user = (MPEG2RawUserData*)content;
     av_buffer_unref(&user->user_data_ref);
     av_freep(&content);
 }
 
-static void cbs_mpeg2_free_slice(void *unit, uint8_t *content)
+static void cbs_mpeg2_free_slice(void *opaque, uint8_t *content)
 {
     MPEG2RawSlice *slice = (MPEG2RawSlice*)content;
     av_buffer_unref(&slice->header.extra_information_slice.extra_information_ref);
@@ -244,6 +244,9 @@ static int cbs_mpeg2_read_unit(CodedBitstreamContext *ctx,
         err = cbs_mpeg2_read_slice_header(ctx, &gbc, &slice->header);
         if (err < 0)
             return err;
+
+        if (!get_bits_left(&gbc))
+            return AVERROR_INVALIDDATA;
 
         pos = get_bits_count(&gbc);
         len = unit->data_size;

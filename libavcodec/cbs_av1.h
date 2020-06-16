@@ -105,7 +105,7 @@ typedef struct AV1RawSequenceHeader {
     uint8_t use_128x128_superblock;
     uint8_t enable_filter_intra;
     uint8_t enable_intra_edge_filter;
-    uint8_t enable_intraintra_compound;
+    uint8_t enable_interintra_compound;
     uint8_t enable_masked_compound;
     uint8_t enable_warped_motion;
     uint8_t enable_dual_filter;
@@ -260,11 +260,11 @@ typedef struct AV1RawFrameHeader {
     uint8_t  point_y_scaling[14];
     uint8_t  chroma_scaling_from_luma;
     uint8_t  num_cb_points;
-    uint8_t  point_cb_value[16];
-    uint8_t  point_cb_scaling[16];
+    uint8_t  point_cb_value[10];
+    uint8_t  point_cb_scaling[10];
     uint8_t  num_cr_points;
-    uint8_t  point_cr_value[16];
-    uint8_t  point_cr_scaling[16];
+    uint8_t  point_cr_value[10];
+    uint8_t  point_cr_scaling[10];
     uint8_t  grain_scaling_minus_8;
     uint8_t  ar_coeff_lag;
     uint8_t  ar_coeffs_y_plus_128[24];
