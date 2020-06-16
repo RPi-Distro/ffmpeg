@@ -1,3 +1,8 @@
-version=3
-opts="pgpsigurlmangle=s/$/.asc/" \
-  https://ffmpeg.org/releases/ffmpeg-([0-9.]+)\.tar\.xz
+version=4
+# check: uscan --report
+# update: gbp import-orig --upstream-vcs-tag=vX.Y.Z --uscan
+
+opts=\
+pgpmode=auto,\
+dversionmangle=auto \
+https://ffmpeg.org/releases/ffmpeg@ANY_VERSION@@ARCHIVE_EXT@
