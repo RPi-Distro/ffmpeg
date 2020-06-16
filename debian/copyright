@@ -441,13 +441,6 @@ Copyright:
   2019, Xuewei Meng
 License: LGPL-2.1+
 Comment:
- You should have received a copy of the GNU Lesser General Public
- License along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- .
- On Debian systems, the full text of the GNU Lesser General Public License
- version 2.1 can be found in the file `/usr/share/common-licenses/LGPL-2.1'.
- .
  The copyright details for Joseph Artsimovich and UAB "DKD" were extracted
  from the referenced source:
  <http://samples.mplayerhq.hu/A-codecs/Nelly_Moser/ASAO/ASAO.zip>.
@@ -461,13 +454,6 @@ Copyright:
   2011, Mina Nagy Zaki
   2015, Paul B Mahol
 License: LGPL-2.1+ and Sundry
-Comment:
- On Debian systems, the full text of the GNU Lesser General Public License
- version 2.1 can be found in the file `/usr/share/common-licenses/LGPL-2.1'.
- .
- You should have received a copy of the GNU Lesser General Public
- License along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 Files:
   doc/texi2pod.pl
@@ -610,7 +596,7 @@ Copyright:
   2015-2016, Tiancheng "Timothy" Gu
   2015-2017, James Almer
   2017, Gerion Entrup
-License: GPL-2+
+License-Grant:
  FFmpeg is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
@@ -620,13 +606,7 @@ License: GPL-2+
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
-Comment:
- On Debian systems, the full text of the GNU General Public License
- version 2 can be found in the file `/usr/share/common-licenses/GPL-2'.
- .
- You should have received a copy of the GNU General Public License
- along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+License: GPL-2+
 
 Files:
   compat/avisynth/avisynth_c.h
@@ -636,16 +616,6 @@ Files:
   compat/avisynth/avxsynth_c.h
 Copyright: 2003, Kevin Atkinson
 License: GPL-2+ with Avisynth exception
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
- .
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- .
  As a special exception, I give you permission to link to the
  Avisynth C interface with independent modules that communicate with
  the Avisynth C interface solely through the interfaces defined in
@@ -659,14 +629,6 @@ License: GPL-2+ with Avisynth exception
  independent module is a module which is not derived from or based
  on Avisynth C Interface, such as 3rd-party filters, import and
  export plugins, or graphical user interfaces.
-Comment:
- On Debian systems, the full text of the GNU General Public License
- version 2 can be found in the file `/usr/share/common-licenses/GPL-2'.
- .
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA,
- or visit <http://www.gnu.org/copyleft/gpl.html>.
 
 Files:
   compat/solaris/make_sunver.pl
@@ -678,7 +640,7 @@ Copyright:
   2014, Andreas Cadhalpun <Andreas.Cadhalpun@googlemail.com>
   2014, Tiancheng "Timothy" Gu <timothygu99@gmail.com>
   2018, Stephen Seo
-License: GPL-3+
+License-Grant:
  FFmpeg is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 3 of the License, or
@@ -688,13 +650,7 @@ License: GPL-3+
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  Lesser General Public License for more details.
-Comment:
- On Debian systems, the full text of the GNU General Public License
- version 3 can be found in the file `/usr/share/common-licenses/GPL-3'.
- .
- You should have received a copy of the GNU General Public
- License along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+License: GPL-3+
 
 Files:
   compat/cuda/ptx2c.sh
@@ -839,13 +795,6 @@ Copyright:
   2012-2013, MIPS Technologies, Inc., California
   2013, The WebRTC project authors
 License: LGPL-2.1+ and BSD-3-clause
-Comment:
- On Debian systems, the full text of the GNU Lesser General Public License
- version 2.1 can be found in the file `/usr/share/common-licenses/LGPL-2.1'.
- .
- You should have received a copy of the GNU Lesser General Public
- License along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 Files:
   tools/cws2fws.c
@@ -1007,8 +956,7 @@ Files: libavcodec/libzvbi-teletextdec.c
 Copyright:
   2005-2012, Wolfram Gloger
   2013, Marton Balint
-License: LGPL-2+
- This library is free software; you can redistribute it and/or
+License-Grant:
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
  version 2 of the License, or (at your option) any later version.
@@ -1017,13 +965,7 @@ License: LGPL-2+
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  Lesser General Public License for more details.
-Comment:
- On Debian systems, the full text of the GNU Lesser General Public License
- version 2 can be found in the file `/usr/share/common-licenses/GPL-2'.
- .
- You should have received a copy of the GNU Lesser General Public
- License along with this library; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+License: LGPL-2+
 
 Files: libswresample/resample.c
 Copyright:
@@ -1037,13 +979,6 @@ Copyright:
   2016, Sebastian Ramacher <sramacher@debian.org>
   2017-2018, James Cowgill <jcowgill@debian.org>
 License: LGPL-2.1+
-Comment:
- On Debian systems, the full text of the GNU Lesser General Public License
- version 2.1 can be found in the file `/usr/share/common-licenses/LGPL-2.1'.
- .
- You should have received a copy of the GNU Lesser General Public
- License along with this packaging; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 Files: debian/missing-sources/ffmpeg-web/src/less/style.less
 Copyright: 2014, Barbara Lepage <db0company@gmail.com>
@@ -1148,16 +1083,17 @@ License: Expat
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
 
+License: GPL-2+
+License-Reference: /usr/share/common-licenses/GPL-2
+
+License: GPL-3+
+License-Reference: /usr/share/common-licenses/GPL-3
+
+License: LGPL-2+
+License-Reference: /usr/share/common-licenses/LGPL-2
+
 License: LGPL-2.1+
- FFmpeg is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
- License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
- .
- FFmpeg is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
+License-Reference: /usr/share/common-licenses/LGPL-2.1
 
 License: Sundry
  This source code is freely redistributable and may be used for
