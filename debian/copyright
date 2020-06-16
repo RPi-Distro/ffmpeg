@@ -178,7 +178,7 @@ Copyright:
   2007-2015, Collabora Ltd
   2007-2015, Edward Hervey
   2007-2016, David Robillard
-  2007-2016, Nicolas George <nicolas.george@normalesup.org>
+  2007-2016,2020, Nicolas George <nicolas.george@normalesup.org>
   2007-2018, Ronald S. Bultje <rsbultje@gmail.com>
   2008, Affine Systems, Inc (Michael Sullivan, Bobby Impollonia)
   2008, Alessandro Sappia
@@ -225,7 +225,7 @@ Copyright:
   2009-2015, James Darnley <james.darnley@gmail.com>
   2009-2016, Thilo Borgmann <thilo.borgmann@mail.de>
   2009-2018, Kostya Shishkov
-  2009-2019, Martin Storsjo
+  2009-2020, Martin Storsjo
   2010, Adrian Daerr
   2010, Amanda, Y.N. Wu <amanda11192003@gmail.com>
   2010, Andrzej Szombierski
@@ -279,10 +279,10 @@ Copyright:
   2011-2012, Michael Bradshaw <mjbshaw@gmail.com>
   2011-2012, Smartjog S.A.S, Clément Bœsch <clement.boesch@smartjog.com>
   2011-2013, Daniel Kang <daniel.d.kang@gmail.com>
-  2011-2015, Derek Buitenhuis
+  2011-2015,2019, Derek Buitenhuis
   2011-2016, Kieran Kunhya <kieran@kunhya.com>
   2011-2018, Clément Bœsch <u@pkh.me> <clement@stupeflix.com>
-  2011-2019, Paul B Mahol
+  2011-2020, Paul B Mahol
   2012, Aleksi Nurmi
   2012, Andrew D'Addesio
   2012, Antti Seppälä
@@ -298,6 +298,7 @@ Copyright:
   2012, Samuel Pitoiset
   2012, Sebastien Zwickert
   2012, Steven Robertson
+  2012, Youness Alaoui <kakaroto@kakaroto.homelinux.net>
   2012, Vitaliy E Sugrobov
   2012-2013, Andrey Utkin <andrey.krieger.utkin@gmail.com>
   2012-2013, Aneesh Dogra (lionaneesh) <lionaneesh@gmail.com>
@@ -340,7 +341,7 @@ Copyright:
   2013-2016, Vittorio Giovara <vittorio.giovara@gmail.com>
   2013-2018, Andreas Unterweger
   2013-2018, Calvin Walton <calvin.walton@kepstin.ca>
-  2013-2018, Marton Balint
+  2013-2018,2020, Marton Balint
   2014, Aman Gupta <ffmpeg@tmm1.net>
   2014, Daniel Oberhoff
   2014, Dave Rice @dericed
@@ -396,7 +397,7 @@ Copyright:
   2015-2017, Matthieu Bouron <matthieu.bouron@stupeflix.com>
   2015-2017, Rostislav Pehlivanov <atomnuker@gmail.com>
   2015-2018, Henrik Gramner <henrik@gramner.com>
-  2015-2018, Loongson Technology Corporation Limited
+  2015-2019, Loongson Technology Corporation Limited
   2015-2019, Rodger Combs <rodger.combs@gmail.com>
   2016, Davinder Singh (DSM_) <ds.mudhar<@gmail.com>
   2016, Floris Sluiter
@@ -412,6 +413,7 @@ Copyright:
   2016, William Ma, Sofia Kim, Dustin Woo
   2016, foo86
   2016-2018, Jokyo Images
+  2016-2019, Jai Luthra
   2017, Felix Matouschek
   2017, Maksym Veremeyenko
   2017, Meng Wang <wangmeng.kids@bytedance.com>
@@ -435,10 +437,22 @@ Copyright:
   2018, Yingming Fan <yingmingfan@gmail.com>
   2018, Yiqun Xu <yiqun.xu@vipl.ict.ac.cn>
   2018-2019, Shiyou Yin <yinshiyou-hf@loongson.cn>
+  2019, Eugene Lyapustin
   2019, Guo Yejun
+  2019, Leo Zhang <leozhang@qiyi.com>
   2019, Lynne <dev@lynne.ee>
+  2019, Manoj Gupta Bonda
   2019, Swaraj Hota
+  2019, Vladimir Panteleev
   2019, Xuewei Meng
+  2019-2020, Andriy Gelman
+  2020, Alyssa Milburn <amilburn@zall.org>
+  2020, David Bryant
+  2020, Gautam Ramakrishnan
+  2020, Jun Zhao <barryjzhao@tencent.com>
+  2020, Vacing Fang <vacingfang@tencent.com>
+  2020, Yaroslav Pogrebnyak <yyyaroslav@gmail.com>
+  2020, Zane van Iperen (zane@zanevaniperen.com)
 License: LGPL-2.1+
 Comment:
  The copyright details for Joseph Artsimovich and UAB "DKD" were extracted
@@ -473,7 +487,6 @@ Files:
   libavfilter/vf_find_rect.c
   libavfilter/vf_fspp.c
   libavfilter/vf_fspp.h
-  libavfilter/vf_geq.c
   libavfilter/vf_histeq.c
   libavfilter/vf_hqdn3d.c
   libavfilter/vf_hqdn3d.h
@@ -501,7 +514,8 @@ Files:
   libavfilter/vf_uspp.c
   libavfilter/vf_vaguedenoiser.c
   libavfilter/vsrc_mptestsrc.c
-  libavfilter/x86/vf_eq.c
+  libavfilter/x86/vf_eq.asm
+  libavfilter/x86/vf_eq_init.c
   libavfilter/x86/vf_fspp.asm
   libavfilter/x86/vf_fspp_init.c
   libavfilter/x86/vf_hqdn3d_init.c
@@ -541,12 +555,15 @@ Files:
   tests/checkasm/hevc_idct.c
   tests/checkasm/jpeg2000dsp.c
   tests/checkasm/llviddsp.c
+  tests/checkasm/opusdsp.c
   tests/checkasm/pixblockdsp.c
   tests/checkasm/sbrdsp.c
+  tests/checkasm/sw_scale.c
   tests/checkasm/synth_filter.c
   tests/checkasm/v210dec.c
   tests/checkasm/v210enc.c
   tests/checkasm/vf_blend.c
+  tests/checkasm/vf_eq.c
   tests/checkasm/videodsp.c
   tests/checkasm/vp8dsp.c
   tests/checkasm/vp9dsp.c
@@ -609,28 +626,6 @@ License-Grant:
 License: GPL-2+
 
 Files:
-  compat/avisynth/avisynth_c.h
-  compat/avisynth/avs/capi.h
-  compat/avisynth/avs/config.h
-  compat/avisynth/avs/types.h
-  compat/avisynth/avxsynth_c.h
-Copyright: 2003, Kevin Atkinson
-License: GPL-2+ with Avisynth exception
- As a special exception, I give you permission to link to the
- Avisynth C interface with independent modules that communicate with
- the Avisynth C interface solely through the interfaces defined in
- avisynth_c.h, regardless of the license terms of these independent
- modules, and to copy and distribute the resulting combined work
- under terms of your choice, provided that every copy of the
- combined work is accompanied by a complete copy of the source code
- of the Avisynth C interface and Avisynth itself (with the version
- used to produce the combined work), being distributed under the
- terms of the GNU General Public License plus this exception.  An
- independent module is a module which is not derived from or based
- on Avisynth C Interface, such as 3rd-party filters, import and
- export plugins, or graphical user interfaces.
-
-Files:
   compat/solaris/make_sunver.pl
   doc/t2h.pm
   libavfilter/vf_lensfun.c
@@ -655,7 +650,7 @@ License: GPL-3+
 Files:
   compat/cuda/ptx2c.sh
   doc/bootstrap.min.css
-  doc/examples/avio_dir_cmd.c
+  doc/examples/avio_list_dir.c
   doc/examples/avio_reading.c
   doc/examples/decode_audio.c
   doc/examples/decode_video.c
@@ -688,6 +683,7 @@ Files:
   libavcodec/x86/vc1dsp_mmx.c
   libavfilter/af_deesser.c
   libavfilter/vf_avgblur.c
+  libavfilter/vf_bilateral.c
   libavfilter/vf_bm3d.c
   libavfilter/vf_deband.c
   libavfilter/vf_scale_cuda.c
@@ -740,8 +736,9 @@ Copyright:
   2015, Niklas Haas
   2015, Stephan Holljes
   2015, Vittorio Giovara <vittorio.giovara@gmail.com>
-  2015-2018, Paul B Mahol
+  2015-2019, Paul B Mahol
   2015-2016, mawen1250
+  2017, Ming Yang
   2018, Chris Johnson
 License: Expat
 
@@ -779,21 +776,26 @@ Files:
   libavcodec/mips/mpegaudiodsp_mips_fixed.c
   libavcodec/mips/mpegaudiodsp_mips_float.c
   libavcodec/mips/sbrdsp_mips.c
+  libavfilter/opencl/deshake.cl
+  libavfilter/vf_deshake_opencl.c
   libavutil/fixed_dsp.c
   libavutil/fixed_dsp.h
   libavutil/mips/float_dsp_mips.c
   libavutil/mips/libm_mips.h
   libavutil/softfloat_tables.h
 Copyright:
+  2000-2008, Intel Corporation
   2005-2006, Oded Shimon <ods15@ods15.dyndns.org>
   2006-2007, Maxim Gavrilov <maxim.gavrilov@gmail.com>
   2008-2009, Robert Swain <rob@opendot.cl>
+  2009, Willow Garage Inc.
   2009-2010, Alex Converse <alex.converse@gmail.com>
   2010, Google Inc
   2010, Rob Clark <rob@ti.com>
   2011, Mans Rullgard <mans@mansr.com>
   2012-2013, MIPS Technologies, Inc., California
   2013, The WebRTC project authors
+  2013, OpenCV Foundation
 License: LGPL-2.1+ and BSD-3-clause
 
 Files:
@@ -922,11 +924,18 @@ Copyright:
 License: LGPL-2.1+ and Expat
 
 Files:
+  libavfilter/af_arnndn.c
   libavfilter/gblur.h
   libavfilter/vf_gblur.c
 Copyright:
+  2005-2009 Xiph.Org Foundation
+  2007-2008 CSIRO
+  2008-2011 Octasic Inc.
   2011, Pascal Getreuer
-  2016, Paul B Mahol
+  2016,2019, Paul B Mahol
+  2017 Mozilla
+  2018 Gregor Richards
+  Jean-Marc Valin
 License: BSD-2-clause
 
 Files: libavformat/aadec.c
@@ -957,6 +966,7 @@ Copyright:
   2005-2012, Wolfram Gloger
   2013, Marton Balint
 License-Grant:
+ This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
  version 2 of the License, or (at your option) any later version.

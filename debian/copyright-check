@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright 2016-2019  Jonas Smedegaard <dr@jones.dk>
+# Copyright 2016-2020  Jonas Smedegaard <dr@jones.dk>
 # Description: helper script to update copyright_hints
 #
 # This program is free software; you can redistribute it and/or modify
