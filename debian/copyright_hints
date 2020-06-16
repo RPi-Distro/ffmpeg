@@ -12,8 +12,6 @@ Files: CONTRIBUTING.md
  RELEASE
  RELEASE_NOTES
  VERSION
- compat/avisynth/windowsPorts/basicDataTypeConversions.h
- compat/avisynth/windowsPorts/windows2linux.h
  compat/windows/mslink
  debian/clean
  debian/ffmpeg-doc.doc-base.api
@@ -78,7 +76,6 @@ Files: CONTRIBUTING.md
  debian/libswscale5.symbols
  debian/not-installed
  debian/patches/0001-avcodec-arm-sbcenc-avoid-callee-preserved-vfp-regist.patch
- debian/patches/0002-avcodec-libtwolame-fix-mono-default-bitrate.patch
  debian/patches/series
  debian/qt-faststart.1
  debian/rules
@@ -189,7 +186,7 @@ Files: CONTRIBUTING.md
  libavdevice/reverse.c
  libavfilter/Makefile
  libavfilter/aarch64/Makefile
- libavfilter/all_channel_layouts.inc
+ libavfilter/dnn/Makefile
  libavfilter/libavfilter.v
  libavfilter/log2_tab.c
  libavfilter/x86/Makefile
@@ -234,6 +231,7 @@ Files: CONTRIBUTING.md
  tests/api/Makefile
  tests/checkasm/Makefile
  tests/copycooker.sh
+ tests/dnn/Makefile
  tests/extended.ffconcat
  tests/fate-run.sh
  tests/fate-valgrind.supp
@@ -261,6 +259,7 @@ Files: CONTRIBUTING.md
  tests/fate/dca.mak
  tests/fate/demux.mak
  tests/fate/dfa.mak
+ tests/fate/dnn.mak
  tests/fate/dnxhd.mak
  tests/fate/dpcm.mak
  tests/fate/ea.mak
@@ -323,6 +322,7 @@ Files: CONTRIBUTING.md
  tests/fate/source.mak
  tests/fate/speedhq.mak
  tests/fate/subtitles.mak
+ tests/fate/truehd.mak
  tests/fate/utvideo.mak
  tests/fate/vcodec.mak
  tests/fate/video.mak
@@ -341,6 +341,7 @@ Files: CONTRIBUTING.md
  tests/filtergraphs/colorkey
  tests/filtergraphs/compand
  tests/filtergraphs/concat
+ tests/filtergraphs/concat-vfr
  tests/filtergraphs/firequalizer
  tests/filtergraphs/gradfun
  tests/filtergraphs/hqdn3d
@@ -365,6 +366,7 @@ Files: CONTRIBUTING.md
  tests/ref/acodec/adpcm-adx-trellis
  tests/ref/acodec/adpcm-ima_qt
  tests/ref/acodec/adpcm-ima_qt-trellis
+ tests/ref/acodec/adpcm-ima_ssi
  tests/ref/acodec/adpcm-ima_wav
  tests/ref/acodec/adpcm-ima_wav-trellis
  tests/ref/acodec/adpcm-ms
@@ -418,6 +420,8 @@ Files: CONTRIBUTING.md
  tests/ref/fate/acodec-aref
  tests/ref/fate/adpcm-4xm
  tests/ref/fate/adpcm-afc
+ tests/ref/fate/adpcm-argo-mono
+ tests/ref/fate/adpcm-argo-stereo
  tests/ref/fate/adpcm-creative
  tests/ref/fate/adpcm-creative-8-2.6bit
  tests/ref/fate/adpcm-creative-8-2bit
@@ -429,8 +433,21 @@ Files: CONTRIBUTING.md
  tests/ref/fate/adpcm-ea-r1
  tests/ref/fate/adpcm-ea-r2
  tests/ref/fate/adpcm-ea-r3
+ tests/ref/fate/adpcm-ima-alp-mono
+ tests/ref/fate/adpcm-ima-alp-stereo
  tests/ref/fate/adpcm-ima-amv
  tests/ref/fate/adpcm-ima-apc
+ tests/ref/fate/adpcm-ima-apm-mono
+ tests/ref/fate/adpcm-ima-apm-stereo
+ tests/ref/fate/adpcm-ima-cunning-single
+ tests/ref/fate/adpcm-ima-cunning-track0
+ tests/ref/fate/adpcm-ima-cunning-track1
+ tests/ref/fate/adpcm-ima-cunning-trunc-h2
+ tests/ref/fate/adpcm-ima-cunning-trunc-t1
+ tests/ref/fate/adpcm-ima-cunning-trunc-t2-track0
+ tests/ref/fate/adpcm-ima-cunning-trunc-t2-track1
+ tests/ref/fate/adpcm-ima-cunning-trunc-t2a-track0
+ tests/ref/fate/adpcm-ima-cunning-trunc-t2a-track1
  tests/ref/fate/adpcm-ima-dk3
  tests/ref/fate/adpcm-ima-dk4
  tests/ref/fate/adpcm-ima-ea-eacs
@@ -439,6 +456,8 @@ Files: CONTRIBUTING.md
  tests/ref/fate/adpcm-ima-oki
  tests/ref/fate/adpcm-ima-rad
  tests/ref/fate/adpcm-ima-smjpeg
+ tests/ref/fate/adpcm-ima-ssi-mono
+ tests/ref/fate/adpcm-ima-ssi-stereo
  tests/ref/fate/adpcm-ima-ws
  tests/ref/fate/adpcm-ima_wav-stereo
  tests/ref/fate/adpcm-ms-mono
@@ -521,6 +540,7 @@ Files: CONTRIBUTING.md
  tests/ref/fate/audiomatch-square-mp3
  tests/ref/fate/auravision-v1
  tests/ref/fate/auravision-v2
+ tests/ref/fate/av1-annexb-demux
  tests/ref/fate/avio-direct
  tests/ref/fate/avstring
  tests/ref/fate/base64
@@ -568,6 +588,22 @@ Files: CONTRIBUTING.md
  tests/ref/fate/canopus-hqx422
  tests/ref/fate/canopus-hqx422a
  tests/ref/fate/cavs
+ tests/ref/fate/cbs-av1-av1-1-b10-23-film_grain-50
+ tests/ref/fate/cbs-av1-av1-1-b8-02-allintra
+ tests/ref/fate/cbs-av1-av1-1-b8-03-sizedown
+ tests/ref/fate/cbs-av1-av1-1-b8-03-sizeup
+ tests/ref/fate/cbs-av1-av1-1-b8-04-cdfupdate
+ tests/ref/fate/cbs-av1-av1-1-b8-05-mv
+ tests/ref/fate/cbs-av1-av1-1-b8-06-mfmv
+ tests/ref/fate/cbs-av1-av1-1-b8-22-svc-L1T2
+ tests/ref/fate/cbs-av1-av1-1-b8-22-svc-L2T1
+ tests/ref/fate/cbs-av1-av1-1-b8-22-svc-L2T2
+ tests/ref/fate/cbs-av1-av1-1-b8-23-film_grain-50
+ tests/ref/fate/cbs-av1-decode_model
+ tests/ref/fate/cbs-av1-frames_refs_short_signaling
+ tests/ref/fate/cbs-av1-non_uniform_tiling
+ tests/ref/fate/cbs-av1-seq_hdr_op_param_info
+ tests/ref/fate/cbs-av1-switch_frame
  tests/ref/fate/cbs-h264-AUD_MW_E
  tests/ref/fate/cbs-h264-BASQP1_Sony_C
  tests/ref/fate/cbs-h264-CABACI3_Sony_B
@@ -858,6 +894,7 @@ Files: CONTRIBUTING.md
  tests/ref/fate/ffmpeg-filter_complex
  tests/ref/fate/ffmpeg-filter_complex_audio
  tests/ref/fate/ffmpeg-lavfi
+ tests/ref/fate/ffmpeg-streamloop
  tests/ref/fate/ffprobe_compact
  tests/ref/fate/ffprobe_csv
  tests/ref/fate/ffprobe_default
@@ -902,12 +939,20 @@ Files: CONTRIBUTING.md
  tests/ref/fate/filter-atrim-time
  tests/ref/fate/filter-boxblur
  tests/ref/fate/filter-chorus
+ tests/ref/fate/filter-codecview
  tests/ref/fate/filter-codecview-mvs
+ tests/ref/fate/filter-colorbalance
+ tests/ref/fate/filter-colorbalance-gbrap
+ tests/ref/fate/filter-colorbalance-gbrap-16
+ tests/ref/fate/filter-colorbalance-rgba64
  tests/ref/fate/filter-colorchannelmixer
+ tests/ref/fate/filter-colorlevels
+ tests/ref/fate/filter-colorlevels-16
  tests/ref/fate/filter-colormatrix1
  tests/ref/fate/filter-colormatrix2
  tests/ref/fate/filter-compand
  tests/ref/fate/filter-concat
+ tests/ref/fate/filter-concat-vfr
  tests/ref/fate/filter-crop
  tests/ref/fate/filter-crop_scale
  tests/ref/fate/filter-crop_scale_vflip
@@ -973,10 +1018,16 @@ Files: CONTRIBUTING.md
  tests/ref/fate/filter-metadata-avf-aphase-meter-out-of-phase
  tests/ref/fate/filter-metadata-cropdetect
  tests/ref/fate/filter-metadata-ebur128
+ tests/ref/fate/filter-metadata-freezedetect
  tests/ref/fate/filter-metadata-readvitc-def
  tests/ref/fate/filter-metadata-readvitc-thr
+ tests/ref/fate/filter-metadata-scdet
  tests/ref/fate/filter-metadata-scenedetect
+ tests/ref/fate/filter-metadata-signalstats-yuv420p
+ tests/ref/fate/filter-metadata-signalstats-yuv420p10
  tests/ref/fate/filter-metadata-silencedetect
+ tests/ref/fate/filter-minterpolate-down
+ tests/ref/fate/filter-minterpolate-up
  tests/ref/fate/filter-mpdecimate
  tests/ref/fate/filter-negate
  tests/ref/fate/filter-null
@@ -1042,6 +1093,8 @@ Files: CONTRIBUTING.md
  tests/ref/fate/filter-pixdesc-gbrap12le
  tests/ref/fate/filter-pixdesc-gbrap16be
  tests/ref/fate/filter-pixdesc-gbrap16le
+ tests/ref/fate/filter-pixdesc-gbrapf32be
+ tests/ref/fate/filter-pixdesc-gbrapf32le
  tests/ref/fate/filter-pixdesc-gbrp
  tests/ref/fate/filter-pixdesc-gbrp10be
  tests/ref/fate/filter-pixdesc-gbrp10le
@@ -1053,6 +1106,8 @@ Files: CONTRIBUTING.md
  tests/ref/fate/filter-pixdesc-gbrp16le
  tests/ref/fate/filter-pixdesc-gbrp9be
  tests/ref/fate/filter-pixdesc-gbrp9le
+ tests/ref/fate/filter-pixdesc-gbrpf32be
+ tests/ref/fate/filter-pixdesc-gbrpf32le
  tests/ref/fate/filter-pixdesc-gray
  tests/ref/fate/filter-pixdesc-gray10be
  tests/ref/fate/filter-pixdesc-gray10le
@@ -1199,6 +1254,7 @@ Files: CONTRIBUTING.md
  tests/ref/fate/filter-pp4
  tests/ref/fate/filter-pp5
  tests/ref/fate/filter-pp6
+ tests/ref/fate/filter-pp7
  tests/ref/fate/filter-qp
  tests/ref/fate/filter-refcmp-psnr-rgb
  tests/ref/fate/filter-refcmp-psnr-yuv
@@ -1247,6 +1303,7 @@ Files: CONTRIBUTING.md
  tests/ref/fate/filter-silenceremove
  tests/ref/fate/filter-smptebars
  tests/ref/fate/filter-smptehdbars
+ tests/ref/fate/filter-spp
  tests/ref/fate/filter-stereo3d-abr-ml
  tests/ref/fate/filter-stereo3d-abr-mr
  tests/ref/fate/filter-stereo3d-al-sbsl
@@ -1280,12 +1337,12 @@ Files: CONTRIBUTING.md
  tests/ref/fate/filter-thumbnail
  tests/ref/fate/filter-tile
  tests/ref/fate/filter-transpose
- tests/ref/fate/filter-tremolo
  tests/ref/fate/filter-trim-duration
  tests/ref/fate/filter-trim-frame
  tests/ref/fate/filter-trim-mixed
  tests/ref/fate/filter-trim-time
  tests/ref/fate/filter-unsharp
+ tests/ref/fate/filter-untile
  tests/ref/fate/filter-vectorscope_color
  tests/ref/fate/filter-vectorscope_color2
  tests/ref/fate/filter-vectorscope_color3
@@ -1570,6 +1627,7 @@ Files: CONTRIBUTING.md
  tests/ref/fate/h264-crop-to-container
  tests/ref/fate/h264-direct-bff
  tests/ref/fate/h264-dts_5frames
+ tests/ref/fate/h264-encparams
  tests/ref/fate/h264-extradata-reload
  tests/ref/fate/h264-extreme-plane-pred
  tests/ref/fate/h264-interlace-crop
@@ -1611,6 +1669,7 @@ Files: CONTRIBUTING.md
  tests/ref/fate/hapqa-snappy16-127x71
  tests/ref/fate/hapy
  tests/ref/fate/hash
+ tests/ref/fate/hevc-cabac-tudepth
  tests/ref/fate/hevc-conformance-ADJUST_IPRED_ANGLE_A_RExt_Mitsubishi_1
  tests/ref/fate/hevc-conformance-AMP_A_Samsung_4
  tests/ref/fate/hevc-conformance-AMP_A_Samsung_6
@@ -1781,6 +1840,7 @@ Files: CONTRIBUTING.md
  tests/ref/fate/hls-fmp4
  tests/ref/fate/hls-init-time
  tests/ref/fate/hls-list-size
+ tests/ref/fate/hls-segment-single
  tests/ref/fate/hls-segment-size
  tests/ref/fate/hmac
  tests/ref/fate/id-cin-video
@@ -1833,8 +1893,6 @@ Files: CONTRIBUTING.md
  tests/ref/fate/lossless-monkeysaudio-399
  tests/ref/fate/lossless-shorten
  tests/ref/fate/lossless-tak
- tests/ref/fate/lossless-truehd-5.1
- tests/ref/fate/lossless-truehd-5.1-downmix-2.0
  tests/ref/fate/lossless-tta
  tests/ref/fate/lossless-tta-encrypted
  tests/ref/fate/lossless-wma
@@ -1855,12 +1913,21 @@ Files: CONTRIBUTING.md
  tests/ref/fate/mapchan-6ch-extract-2
  tests/ref/fate/mapchan-6ch-extract-2-downmix-mono
  tests/ref/fate/mapchan-silent-mono
+ tests/ref/fate/matroska-flac-channel-mapping
+ tests/ref/fate/matroska-flac-extradata-update
+ tests/ref/fate/matroska-lzo-decompression
+ tests/ref/fate/matroska-prores-header-insertion-bz2
+ tests/ref/fate/matroska-prores-zlib
  tests/ref/fate/matroska-spherical-mono
+ tests/ref/fate/matroska-wavpack-missing-codecprivate
+ tests/ref/fate/matroska-xiph-lacing
+ tests/ref/fate/matroska-zlib-decompression
  tests/ref/fate/maxis-xa
  tests/ref/fate/md5
  tests/ref/fate/mdec
  tests/ref/fate/mdec-v3
  tests/ref/fate/mimic
+ tests/ref/fate/mjpeg-ticket3229
  tests/ref/fate/mjpegb
  tests/ref/fate/mkv
  tests/ref/fate/mkv-1242
@@ -1909,6 +1976,7 @@ Files: CONTRIBUTING.md
  tests/ref/fate/mpeg4-als-conformance-03
  tests/ref/fate/mpeg4-als-conformance-04
  tests/ref/fate/mpeg4-als-conformance-05
+ tests/ref/fate/mpeg4-als-conformance-09
  tests/ref/fate/mpeg4-bsf-unpack-bframes
  tests/ref/fate/mpeg4-packed
  tests/ref/fate/mpeg4-resolution-change-down-down
@@ -2122,6 +2190,8 @@ Files: CONTRIBUTING.md
  tests/ref/fate/sub-webvtt
  tests/ref/fate/sub-webvttenc
  tests/ref/fate/sub2video
+ tests/ref/fate/sub2video_basic
+ tests/ref/fate/sub2video_time_limited
  tests/ref/fate/sunraster-1bit-raw
  tests/ref/fate/sunraster-1bit-rle
  tests/ref/fate/sunraster-24bit-raw
@@ -2472,6 +2542,7 @@ Files: CONTRIBUTING.md
  tests/ref/fate/vp9-15-segkey_adpq
  tests/ref/fate/vp9-16-intra-only
  tests/ref/fate/vp9-2pass-akiyo
+ tests/ref/fate/vp9-encparams
  tests/ref/fate/vp9-parallelmode-akiyo
  tests/ref/fate/vp9-segmentation-aq-akiyo
  tests/ref/fate/vp9-segmentation-sf-akiyo
@@ -2520,6 +2591,7 @@ Files: CONTRIBUTING.md
  tests/ref/fate/wavpack-speed-vhigh
  tests/ref/fate/wavpack-zerolsbs
  tests/ref/fate/wc3movie-xan
+ tests/ref/fate/webm-dash-chapters
  tests/ref/fate/webm-dash-manifest
  tests/ref/fate/webm-dash-manifest-live
  tests/ref/fate/webm-dash-manifest-live-bandwidth
@@ -2555,7 +2627,10 @@ Files: CONTRIBUTING.md
  tests/ref/fate/zmbv-16bit
  tests/ref/fate/zmbv-32bit
  tests/ref/fate/zmbv-8bit
+ tests/ref/lavf-fate/av1.mkv
+ tests/ref/lavf-fate/av1.mp4
  tests/ref/lavf-fate/cram.avi
+ tests/ref/lavf-fate/h264.mp4
  tests/ref/lavf-fate/latm
  tests/ref/lavf-fate/mp3
  tests/ref/lavf-fate/qtrle_mace6.mov
@@ -2575,7 +2650,6 @@ Files: CONTRIBUTING.md
  tests/ref/lavf/dv
  tests/ref/lavf/dv_ntsc
  tests/ref/lavf/dv_pal
- tests/ref/lavf/fits
  tests/ref/lavf/flm
  tests/ref/lavf/flv
  tests/ref/lavf/gbrap.fits
@@ -2827,6 +2901,8 @@ Files: CONTRIBUTING.md
  tests/ref/vsynth/vsynth1-dv
  tests/ref/vsynth/vsynth1-dv-411
  tests/ref/vsynth/vsynth1-dv-50
+ tests/ref/vsynth/vsynth1-dv-fhd
+ tests/ref/vsynth/vsynth1-dv-hd
  tests/ref/vsynth/vsynth1-dv_411
  tests/ref/vsynth/vsynth1-ffv1
  tests/ref/vsynth/vsynth1-ffv1-v0
@@ -2953,6 +3029,8 @@ Files: CONTRIBUTING.md
  tests/ref/vsynth/vsynth2-dv
  tests/ref/vsynth/vsynth2-dv-411
  tests/ref/vsynth/vsynth2-dv-50
+ tests/ref/vsynth/vsynth2-dv-fhd
+ tests/ref/vsynth/vsynth2-dv-hd
  tests/ref/vsynth/vsynth2-ffv1
  tests/ref/vsynth/vsynth2-ffv1-v0
  tests/ref/vsynth/vsynth2-ffv1-v3-bgr0
@@ -3068,6 +3146,8 @@ Files: CONTRIBUTING.md
  tests/ref/vsynth/vsynth3-dnxhd-hr-lb-mov
  tests/ref/vsynth/vsynth3-dnxhd-hr-sq-mov
  tests/ref/vsynth/vsynth3-dnxhd-uhd-hr-sq
+ tests/ref/vsynth/vsynth3-dv-fhd
+ tests/ref/vsynth/vsynth3-dv-hd
  tests/ref/vsynth/vsynth3-ffv1
  tests/ref/vsynth/vsynth3-ffv1-v0
  tests/ref/vsynth/vsynth3-ffv1-v3-bgr0
@@ -3168,6 +3248,8 @@ Files: CONTRIBUTING.md
  tests/ref/vsynth/vsynth_lena-dv
  tests/ref/vsynth/vsynth_lena-dv-411
  tests/ref/vsynth/vsynth_lena-dv-50
+ tests/ref/vsynth/vsynth_lena-dv-fhd
+ tests/ref/vsynth/vsynth_lena-dv-hd
  tests/ref/vsynth/vsynth_lena-dv_411
  tests/ref/vsynth/vsynth_lena-ffv1
  tests/ref/vsynth/vsynth_lena-ffv1-v0
@@ -3387,6 +3469,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/aarch64/mdct_neon.S
  libavcodec/aarch64/mpegaudiodsp_neon.S
  libavcodec/aarch64/neontest.c
+ libavcodec/aarch64/pixblockdsp_neon.S
  libavcodec/aarch64/simple_idct_neon.S
  libavcodec/aarch64/synth_filter_init.c
  libavcodec/aarch64/synth_filter_neon.S
@@ -3402,6 +3485,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/aarch64/vp9lpf_16bpp_neon.S
  libavcodec/aarch64/vp9lpf_neon.S
  libavcodec/aarch64/vp9mc_16bpp_neon.S
+ libavcodec/aarch64/vp9mc_aarch64.S
  libavcodec/aarch64/vp9mc_neon.S
  libavcodec/aasc.c
  libavcodec/ac3.c
@@ -3466,6 +3550,9 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/apedec.c
  libavcodec/apng.h
  libavcodec/aptx.c
+ libavcodec/aptx.h
+ libavcodec/aptxdec.c
+ libavcodec/aptxenc.c
  libavcodec/arbc.c
  libavcodec/arm/aac.h
  libavcodec/arm/aacpsdsp_init_arm.c
@@ -3542,6 +3629,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/arm/neon.S
  libavcodec/arm/neontest.c
  libavcodec/arm/pixblockdsp_armv6.S
+ libavcodec/arm/pixblockdsp_neon.S
  libavcodec/arm/rdft_neon.S
  libavcodec/arm/rv34dsp_init_arm.c
  libavcodec/arm/rv34dsp_neon.S
@@ -3611,6 +3699,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/audio_frame_queue.h
  libavcodec/audiotoolboxdec.c
  libavcodec/audiotoolboxenc.c
+ libavcodec/av1_frame_merge_bsf.c
  libavcodec/av1_frame_split_bsf.c
  libavcodec/av1_parser.c
  libavcodec/avcodec.h
@@ -3669,6 +3758,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/cbrt_tablegen_template.c
  libavcodec/ccaption_dec.c
  libavcodec/cdgraphics.c
+ libavcodec/cdtoons.c
  libavcodec/cdxl.c
  libavcodec/celp_filters.c
  libavcodec/celp_filters.h
@@ -3739,8 +3829,6 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/dirac_dwt.h
  libavcodec/dirac_dwt_template.c
  libavcodec/dirac_parser.c
- libavcodec/dirac_vlc.c
- libavcodec/dirac_vlc.h
  libavcodec/diracdec.c
  libavcodec/diracdsp.c
  libavcodec/diracdsp.h
@@ -3778,6 +3866,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/dvd_nav_parser.c
  libavcodec/dvdata.c
  libavcodec/dvdec.c
+ libavcodec/dvdsub.c
  libavcodec/dvdsub_parser.c
  libavcodec/dvdsubdec.c
  libavcodec/dvdsubenc.c
@@ -3968,6 +4057,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/imcdata.h
  libavcodec/imgconvert.c
  libavcodec/imm4.c
+ libavcodec/imm5.c
  libavcodec/imx_dump_header_bsf.c
  libavcodec/indeo2.c
  libavcodec/indeo2data.h
@@ -3990,6 +4080,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/jni.h
  libavcodec/jpeg2000.c
  libavcodec/jpeg2000.h
+ libavcodec/jpeg2000_parser.c
  libavcodec/jpeg2000dec.c
  libavcodec/jpeg2000dsp.c
  libavcodec/jpeg2000dsp.h
@@ -4034,6 +4125,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/libopus.h
  libavcodec/libopusdec.c
  libavcodec/libopusenc.c
+ libavcodec/librav1e.c
  libavcodec/librsvgdec.c
  libavcodec/libshine.c
  libavcodec/libspeexdec.c
@@ -4093,6 +4185,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/metasound_data.c
  libavcodec/metasound_data.h
  libavcodec/microdvddec.c
+ libavcodec/midivid.c
  libavcodec/mimic.c
  libavcodec/mips/blockdsp_init_mips.c
  libavcodec/mips/blockdsp_mips.h
@@ -4165,6 +4258,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/mips/vc1dsp_init_mips.c
  libavcodec/mips/vc1dsp_mips.h
  libavcodec/mips/vc1dsp_mmi.c
+ libavcodec/mips/vc1dsp_msa.c
  libavcodec/mips/videodsp_init.c
  libavcodec/mips/vp3dsp_idct_mmi.c
  libavcodec/mips/vp3dsp_idct_msa.c
@@ -4296,11 +4390,14 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/mss4.c
  libavcodec/msvideo1.c
  libavcodec/msvideo1enc.c
+ libavcodec/mv30.c
  libavcodec/mvcdec.c
+ libavcodec/mvha.c
  libavcodec/mwsc.c
  libavcodec/mxpegdec.c
  libavcodec/neon/mpegvideo.c
  libavcodec/noise_bsf.c
+ libavcodec/notchlc.c
  libavcodec/nuv.c
  libavcodec/nvdec.c
  libavcodec/nvdec.h
@@ -4347,6 +4444,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/pcm-dvd.c
  libavcodec/pcm-dvdenc.c
  libavcodec/pcm.c
+ libavcodec/pcm_rechunk_bsf.c
  libavcodec/pcm_tablegen.c
  libavcodec/pcm_tablegen.h
  libavcodec/pcx.c
@@ -4530,6 +4628,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/sipr16k.c
  libavcodec/sipr16kdata.h
  libavcodec/siprdata.h
+ libavcodec/siren.c
  libavcodec/smacker.c
  libavcodec/smc.c
  libavcodec/smvjpegdec.c
@@ -4616,6 +4715,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/utvideo.h
  libavcodec/utvideodec.c
  libavcodec/utvideoenc.c
+ libavcodec/v210_template.c
  libavcodec/v210dec.c
  libavcodec/v210enc.c
  libavcodec/v210x.c
@@ -4671,6 +4771,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavcodec/vdpau_mpeg12.c
  libavcodec/vdpau_mpeg4.c
  libavcodec/vdpau_vc1.c
+ libavcodec/vdpau_vp9.c
  libavcodec/videodsp.c
  libavcodec/videodsp.h
  libavcodec/videodsp_template.c
@@ -5008,6 +5109,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/af_anequalizer.c
  libavfilter/af_anlmdn.c
  libavfilter/af_anlmdndsp.h
+ libavfilter/af_anlms.c
  libavfilter/af_anull.c
  libavfilter/af_apad.c
  libavfilter/af_aphaser.c
@@ -5020,6 +5122,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/af_asr.c
  libavfilter/af_astats.c
  libavfilter/af_atempo.c
+ libavfilter/af_axcorrelate.c
  libavfilter/af_biquads.c
  libavfilter/af_channelmap.c
  libavfilter/af_chorus.c
@@ -5055,12 +5158,14 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/af_volumedetect.c
  libavfilter/allfilters.c
  libavfilter/asink_anullsink.c
+ libavfilter/asrc_afirsrc.c
  libavfilter/asrc_anoisesrc.c
  libavfilter/asrc_anullsrc.c
  libavfilter/asrc_flite.c
  libavfilter/asrc_hilbert.c
  libavfilter/asrc_sinc.c
  libavfilter/asrc_sine.c
+ libavfilter/atadenoise.h
  libavfilter/avf_abitscope.c
  libavfilter/avf_ahistogram.c
  libavfilter/avf_aphasemeter.c
@@ -5091,12 +5196,27 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/colorspacedsp.h
  libavfilter/colorspacedsp_template.c
  libavfilter/colorspacedsp_yuv2yuv_template.c
+ libavfilter/convolution.h
  libavfilter/deshake.h
- libavfilter/dnn_backend_native.c
- libavfilter/dnn_backend_native.h
- libavfilter/dnn_backend_tf.c
- libavfilter/dnn_backend_tf.h
- libavfilter/dnn_interface.c
+ libavfilter/dnn/dnn_backend_native.c
+ libavfilter/dnn/dnn_backend_native.h
+ libavfilter/dnn/dnn_backend_native_layer_conv2d.c
+ libavfilter/dnn/dnn_backend_native_layer_conv2d.h
+ libavfilter/dnn/dnn_backend_native_layer_depth2space.c
+ libavfilter/dnn/dnn_backend_native_layer_depth2space.h
+ libavfilter/dnn/dnn_backend_native_layer_mathbinary.c
+ libavfilter/dnn/dnn_backend_native_layer_mathbinary.h
+ libavfilter/dnn/dnn_backend_native_layer_mathunary.c
+ libavfilter/dnn/dnn_backend_native_layer_mathunary.h
+ libavfilter/dnn/dnn_backend_native_layer_maximum.c
+ libavfilter/dnn/dnn_backend_native_layer_maximum.h
+ libavfilter/dnn/dnn_backend_native_layer_pad.c
+ libavfilter/dnn/dnn_backend_native_layer_pad.h
+ libavfilter/dnn/dnn_backend_native_layers.c
+ libavfilter/dnn/dnn_backend_native_layers.h
+ libavfilter/dnn/dnn_backend_tf.c
+ libavfilter/dnn/dnn_backend_tf.h
+ libavfilter/dnn/dnn_interface.c
  libavfilter/dnn_interface.h
  libavfilter/drawutils.c
  libavfilter/ebur128.h
@@ -5126,7 +5246,10 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/graphparser.c
  libavfilter/hflip.h
  libavfilter/lavfutils.c
+ libavfilter/maskedclamp.h
  libavfilter/maskedmerge.h
+ libavfilter/median.h
+ libavfilter/median_template.c
  libavfilter/motion_estimation.c
  libavfilter/motion_estimation.h
  libavfilter/opencl/avgblur.cl
@@ -5134,7 +5257,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/opencl/neighbor.cl
  libavfilter/psnr.h
  libavfilter/removegrain.h
- libavfilter/scale.c
+ libavfilter/scale_eval.c
  libavfilter/setpts.c
  libavfilter/settb.c
  libavfilter/split.c
@@ -5147,6 +5270,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/transform.c
  libavfilter/transform.h
  libavfilter/unsharp.h
+ libavfilter/v360.h
  libavfilter/vaf_spectrumsynth.c
  libavfilter/vf_alphamerge.c
  libavfilter/vf_amplify.c
@@ -5175,6 +5299,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/vf_crop.c
  libavfilter/vf_curves.c
  libavfilter/vf_datascope.c
+ libavfilter/vf_dblur.c
  libavfilter/vf_dctdnoiz.c
  libavfilter/vf_deblock.c
  libavfilter/vf_decimate.c
@@ -5186,6 +5311,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/vf_despill.c
  libavfilter/vf_detelecine.c
  libavfilter/vf_displace.c
+ libavfilter/vf_dnn_processing.c
  libavfilter/vf_drawbox.c
  libavfilter/vf_drawtext.c
  libavfilter/vf_edgedetect.c
@@ -5204,6 +5330,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/vf_framepack.c
  libavfilter/vf_framerate.c
  libavfilter/vf_framestep.c
+ libavfilter/vf_freezeframes.c
  libavfilter/vf_frei0r.c
  libavfilter/vf_gradfun.c
  libavfilter/vf_hflip.c
@@ -5222,7 +5349,10 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/vf_lut3d.c
  libavfilter/vf_maskedclamp.c
  libavfilter/vf_maskedmerge.c
+ libavfilter/vf_maskedminmax.c
+ libavfilter/vf_maskedthreshold.c
  libavfilter/vf_maskfun.c
+ libavfilter/vf_median.c
  libavfilter/vf_mergeplanes.c
  libavfilter/vf_mestimate.c
  libavfilter/vf_midequalizer.c
@@ -5236,9 +5366,12 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/vf_normalize.c
  libavfilter/vf_ocr.c
  libavfilter/vf_overlay.c
+ libavfilter/vf_overlay_cuda.c
+ libavfilter/vf_overlay_cuda.cu
  libavfilter/vf_pad.c
  libavfilter/vf_palettegen.c
  libavfilter/vf_paletteuse.c
+ libavfilter/vf_photosensitivity.c
  libavfilter/vf_pixdesctest.c
  libavfilter/vf_premultiply.c
  libavfilter/vf_pseudocolor.c
@@ -5252,6 +5385,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/vf_removelogo.c
  libavfilter/vf_rotate.c
  libavfilter/vf_scale.c
+ libavfilter/vf_scroll.c
  libavfilter/vf_selectivecolor.c
  libavfilter/vf_separatefields.c
  libavfilter/vf_setparams.c
@@ -5272,6 +5406,8 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/vf_tpad.c
  libavfilter/vf_transpose.c
  libavfilter/vf_unsharp.c
+ libavfilter/vf_untile.c
+ libavfilter/vf_v360.c
  libavfilter/vf_vectorscope.c
  libavfilter/vf_vflip.c
  libavfilter/vf_vfrdet.c
@@ -5284,17 +5420,21 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/vf_waveform.c
  libavfilter/vf_weave.c
  libavfilter/vf_xbr.c
+ libavfilter/vf_xfade.c
  libavfilter/vf_xmedian.c
  libavfilter/vf_yadif.c
  libavfilter/vf_yadif_cuda.c
  libavfilter/vf_yadif_cuda.cu
+ libavfilter/vf_yaepblur.c
  libavfilter/vf_zoompan.c
  libavfilter/vf_zscale.c
  libavfilter/video.h
  libavfilter/vidstabutils.c
  libavfilter/vidstabutils.h
  libavfilter/vmaf_motion.h
+ libavfilter/vsrc_gradients.c
  libavfilter/vsrc_mandelbrot.c
+ libavfilter/vsrc_sierpinski.c
  libavfilter/vsrc_testsrc.c
  libavfilter/w3fdif.h
  libavfilter/window_func.h
@@ -5306,6 +5446,8 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/x86/colorspacedsp.asm
  libavfilter/x86/colorspacedsp_init.c
  libavfilter/x86/scene_sad.asm
+ libavfilter/x86/vf_atadenoise.asm
+ libavfilter/x86/vf_atadenoise_init.c
  libavfilter/x86/vf_blend.asm
  libavfilter/x86/vf_blend_init.c
  libavfilter/x86/vf_bwdif.asm
@@ -5316,6 +5458,8 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/x86/vf_hflip_init.c
  libavfilter/x86/vf_hqdn3d.asm
  libavfilter/x86/vf_idet.asm
+ libavfilter/x86/vf_maskedclamp.asm
+ libavfilter/x86/vf_maskedclamp_init.c
  libavfilter/x86/vf_maskedmerge.asm
  libavfilter/x86/vf_maskedmerge_init.c
  libavfilter/x86/vf_noise.c
@@ -5330,6 +5474,8 @@ Files: compat/atomics/dummy/stdatomic.h
  libavfilter/x86/vf_stereo3d_init.c
  libavfilter/x86/vf_threshold.asm
  libavfilter/x86/vf_threshold_init.c
+ libavfilter/x86/vf_transpose.asm
+ libavfilter/x86/vf_transpose_init.c
  libavfilter/x86/vf_w3fdif.asm
  libavfilter/x86/vf_w3fdif_init.c
  libavfilter/x86/vf_yadif.asm
@@ -5354,16 +5500,19 @@ Files: compat/atomics/dummy/stdatomic.h
  libavformat/aiffenc.c
  libavformat/aixdec.c
  libavformat/allformats.c
+ libavformat/alp.c
  libavformat/amr.c
  libavformat/anm.c
  libavformat/apc.c
  libavformat/ape.c
  libavformat/apetag.c
  libavformat/apetag.h
+ libavformat/apm.c
  libavformat/apngdec.c
  libavformat/apngenc.c
  libavformat/aptxdec.c
  libavformat/aqtitledec.c
+ libavformat/argo_asf.c
  libavformat/asf.c
  libavformat/asf.h
  libavformat/asfcrypt.c
@@ -5379,9 +5528,8 @@ Files: compat/atomics/dummy/stdatomic.h
  libavformat/astenc.c
  libavformat/async.c
  libavformat/au.c
- libavformat/audiointerleave.c
- libavformat/audiointerleave.h
  libavformat/av1.c
+ libavformat/av1dec.c
  libavformat/avc.c
  libavformat/avc.h
  libavformat/avformatres.rc
@@ -5428,6 +5576,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavformat/daudenc.c
  libavformat/davs2.c
  libavformat/dcstr.c
+ libavformat/derf.c
  libavformat/dfa.c
  libavformat/dhav.c
  libavformat/diracdec.c
@@ -5472,6 +5621,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavformat/frmdec.c
  libavformat/fsb.c
  libavformat/ftp.c
+ libavformat/fwse.c
  libavformat/g722.c
  libavformat/g723_1.c
  libavformat/g726.c
@@ -5489,6 +5639,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavformat/h263dec.c
  libavformat/h264dec.c
  libavformat/hashenc.c
+ libavformat/hca.c
  libavformat/hcom.c
  libavformat/hdsenc.c
  libavformat/hevc.c
@@ -5537,11 +5688,14 @@ Files: compat/atomics/dummy/stdatomic.h
  libavformat/ivfenc.c
  libavformat/jacosubdec.c
  libavformat/jvdec.c
+ libavformat/kvag.c
  libavformat/latmenc.c
+ libavformat/libamqp.c
  libavformat/libopenmpt.c
  libavformat/librtmp.c
  libavformat/libsmbclient.c
  libavformat/libssh.c
+ libavformat/libzmq.c
  libavformat/lmlm4.c
  libavformat/loasdec.c
  libavformat/lrc.c
@@ -5621,7 +5775,6 @@ Files: compat/atomics/dummy/stdatomic.h
  libavformat/nuv.c
  libavformat/oggenc.c
  libavformat/oggparsecelt.c
- libavformat/oggparsedaala.c
  libavformat/oggparsedirac.c
  libavformat/oggparseflac.c
  libavformat/oggparseopus.c
@@ -5640,6 +5793,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavformat/pcmenc.c
  libavformat/pjsdec.c
  libavformat/pmpdec.c
+ libavformat/pp_bnk.c
  libavformat/prompeg.c
  libavformat/psxstr.c
  libavformat/pva.c
@@ -5954,6 +6108,8 @@ Files: compat/atomics/dummy/stdatomic.h
  libavutil/dict.c
  libavutil/display.c
  libavutil/display.h
+ libavutil/dovi_meta.c
+ libavutil/dovi_meta.h
  libavutil/downmix_info.c
  libavutil/downmix_info.h
  libavutil/eval.h
@@ -6064,7 +6220,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libavutil/tree.h
  libavutil/twofish.c
  libavutil/twofish.h
- libavutil/tx.c
+ libavutil/tx_template.c
  libavutil/version.h
  libavutil/x86/asm.h
  libavutil/x86/cpu.c
@@ -6117,6 +6273,7 @@ Files: compat/atomics/dummy/stdatomic.h
  libswresample/x86/w64xmmtest.c
  libswscale/aarch64/hscale.S
  libswscale/aarch64/output.S
+ libswscale/aarch64/rgb2rgb_neon.S
  libswscale/aarch64/yuv2rgb_neon.S
  libswscale/alphablend.c
  libswscale/arm/hscale.S
@@ -6159,10 +6316,17 @@ Files: compat/atomics/dummy/stdatomic.h
  libswscale/x86/w64xmmtest.c
  libswscale/x86/yuv2rgb.c
  libswscale/x86/yuv2rgb_template.c
+ libswscale/x86/yuv_2_rgb.asm
  libswscale/yuv2rgb.c
  tests/audiogen.c
  tests/checkasm/vf_colorspace.c
  tests/checkasm/vf_nlmeans.c
+ tests/dnn/dnn-layer-conv2d-test.c
+ tests/dnn/dnn-layer-depth2space-test.c
+ tests/dnn/dnn-layer-mathbinary-test.c
+ tests/dnn/dnn-layer-mathunary-test.c
+ tests/dnn/dnn-layer-maximum-test.c
+ tests/dnn/dnn-layer-pad-test.c
  tests/tiny_psnr.c
  tests/videogen.c
  tools/aviocat.c
@@ -6182,6 +6346,7 @@ Files: compat/atomics/dummy/stdatomic.h
  tools/probetest.c
  tools/python/convert.py
  tools/python/convert_from_tensorflow.py
+ tools/python/convert_header.py
  tools/seek_print.c
  tools/sidxindex.c
  tools/sofa2wavs.c
@@ -6644,12 +6809,12 @@ Copyright: 1990, James Ashton - Sydney University
   2009-2010, Maxim Poliakovski
   2009-2011, Maxim Poliakovski
   2009-2013, Maxim Poliakovski
+  2010, 2020, Anssi Hannula
   2010, Alex Converse <alex.converse@gmail.com>
   2010, Alexander Strange <astrange@ithinksw.com>
   2010, Amanda, Y.N. Wu <amanda11192003@gmail.com>
   2010, Anatoly Nenashev
   2010, Andrzej Szombierski
-  2010, Anssi Hannula
   2010, Anssi Hannula <anssi.hannula at iki.fi>
   2010, Anton Khirnov
   2010, Aurelien Jacobs <aurel@gnuage.org>
@@ -6842,6 +7007,7 @@ Copyright: 1990, James Ashton - Sydney University
   2012, Steven Robertson
   2012, VLC authors and VideoLAN
   2012, Vitaliy E Sugrobov
+  2012, Youness Alaoui <kakaroto@kakaroto.homelinux.net>
   2012-2013, ClÃ©ment BÅsch
   2012-2013, ClÃ©ment BÅsch <u pkh me>
   2012-2013, Derek Buitenhuis
@@ -6851,13 +7017,13 @@ Copyright: 1990, James Ashton - Sydney University
   2012-2013, Michael Niedermayer (michaelni@gmx.at)
   2012-2013, Mickael Raulet
   2012-2013, Oka Motofumi (chikuzen.mo at gmail dot com)
-  2012-2013, Paul B Mahol
   2012-2013, Wassim Hamidouche
   2012-2014, Christophe Gisquet <christophe.gisquet@gmail.com>
   2012-2014, ClÃ©ment BÅsch <u pkh me>
   2012-2014, Intel Corporation
   2012-2016, Paul B Mahol
   2012-2018, Konstantin Shishkov
+  2012-2019, Paul B Mahol
   2012-2103, Guillaume Martres
   2012-2103, Mickael Raulet
   2013, Anand Meher Kotra
@@ -7050,7 +7216,6 @@ Copyright: 1990, James Ashton - Sydney University
   2015, Ronald S. Bultje <rsbultje@gmail.com>
   2015, Rostislav Pehlivanov
   2015, Rostislav Pehlivanov ( atomnuker gmail com )
-  2015, Rostislav Pehlivanov <atomnuker gmail com>
   2015, Rostislav Pehlivanov <atomnuker@gmail.com>
   2015, Sebastian DrÃ¶ge <sebastian@centricular.com>
   2015, Shivraj Patil (Shivraj.Patil@imgtec.com)
@@ -7067,7 +7232,6 @@ Copyright: 1990, James Ashton - Sydney University
   2015, Vesselin Bontchev
   2015, Vignesh Venkatasubramanian
   2015, Vittorio Giovara
-  2015, Vittorio Giovara <vittorio.giovara gmail com>
   2015, Vittorio Giovara <vittorio.giovara@gmail.com>
   2015, Zhang Rui <bbcallen@gmail.com>
   2015, Zhou Xiaoyong <zhouxiaoyong@loongson.cn>
@@ -7122,6 +7286,7 @@ Copyright: 1990, James Ashton - Sydney University
   2016, William Ma, Ted Ying, Jerry Jiang
   2016, Zhou Xiaoyong <zhouxiaoyong@loongson.cn>
   2016, foo86
+  2016-2019, Jai Luthra
   2017, Akamai Technologies, Inc.
   2017, Alexandra HÃ¡jkovÃ¡
   2017, Alexis Ballier <aballier@gentoo.org>
@@ -7185,10 +7350,17 @@ Copyright: 1990, James Ashton - Sydney University
   2018, Thomas Volkert
   2018, Yiqun Xu, <yiqun.xu@vipl.ict.ac.cn>
   2018, gxw <guxiwei-hf@loongson.cn>
+  2019
+  2019, Andriy Gelman
+  2019, Derek Buitenhuis
+  2019, Eugene Lyapustin
   2019, Guo Yejun
   2019, James Almer <jamrial@gmail.com>
   2019, Jan EkstrÃ¶m
+  2019, Leo Zhang <leozhang@qiyi.com>
+  2019, Loongson Technology Corporation Limited
   2019, Lynne <dev@lynne.ee>
+  2019, Manoj Gupta Bonda
   2019, Martin Storsjo <martin@martin.st>
   2019, Paul B Mahol
   2019, Peter Ross
@@ -7196,8 +7368,22 @@ Copyright: 1990, James Ashton - Sydney University
   2019, Shiyou Yin (yinshiyou-hf@loongson.cn)
   2019, Swaraj Hota
   2019, The FFmpeg Project
+  2019, Vladimir Panteleev
   2019, Xuewei Meng
   2019, gxw <guxiwei-hf@loongson.cn>
+  2020
+  2020, Alyssa Milburn <amilburn@zall.org>
+  2020, Andriy Gelman
+  2020, David Bryant
+  2020, Gautam Ramakrishnan
+  2020, Jun Zhao<barryjzhao@tencent.com>
+  2020, Martin Storsjo
+  2020, Marton Balint
+  2020, Nicolas George
+  2020, Paul B Mahol
+  2020, Vacing Fang <vacingfang@tencent.com>
+  2020, Yaroslav Pogrebnyak <yyyaroslav@gmail.com>
+  2020, Zane van Iperen (zane@zanevaniperen.com)
 License: LGPL-2.1+
  FIXME
 
@@ -7213,7 +7399,6 @@ Files: compat/aix/math.h
  compat/getopt.c
  compat/w32dlfcn.h
  fftools/ffmpeg.h
- fftools/ffmpeg_cuvid.c
  fftools/ffmpeg_filter.c
  fftools/ffmpeg_hw.c
  fftools/ffmpeg_opt.c
@@ -7232,6 +7417,7 @@ Files: compat/aix/math.h
  libavcodec/aarch64/neon.S
  libavcodec/aarch64/opusdsp_init.c
  libavcodec/aarch64/opusdsp_neon.S
+ libavcodec/aarch64/pixblockdsp_init_aarch64.c
  libavcodec/aarch64/rv40dsp_init_aarch64.c
  libavcodec/aarch64/sbrdsp_init_aarch64.c
  libavcodec/aarch64/sbrdsp_neon.S
@@ -7293,6 +7479,7 @@ Files: compat/aix/math.h
  libavcodec/blockdsp.h
  libavcodec/bsf.c
  libavcodec/bsf.h
+ libavcodec/bsf_internal.h
  libavcodec/bswapdsp.c
  libavcodec/bswapdsp.h
  libavcodec/cbs.c
@@ -7318,7 +7505,11 @@ Files: compat/aix/math.h
  libavcodec/cbs_vp9_syntax_template.c
  libavcodec/cga_data.c
  libavcodec/cga_data.h
+ libavcodec/codec.h
  libavcodec/codec_desc.c
+ libavcodec/codec_desc.h
+ libavcodec/codec_id.h
+ libavcodec/codec_par.h
  libavcodec/copy_block.h
  libavcodec/dca_syncwords.h
  libavcodec/dcadata.h
@@ -7327,6 +7518,8 @@ Files: compat/aix/math.h
  libavcodec/dct32_float.c
  libavcodec/decode.c
  libavcodec/decode.h
+ libavcodec/dirac_vlc.c
+ libavcodec/dirac_vlc.h
  libavcodec/dv_profile.c
  libavcodec/dv_profile.h
  libavcodec/dv_profile_internal.h
@@ -7374,6 +7567,8 @@ Files: compat/aix/math.h
  libavcodec/h265_metadata_bsf.c
  libavcodec/h265_profile_level.c
  libavcodec/h265_profile_level.h
+ libavcodec/hca_data.h
+ libavcodec/hcadec.c
  libavcodec/hcom.c
  libavcodec/hevc.h
  libavcodec/hevc_data.c
@@ -7397,8 +7592,8 @@ Files: compat/aix/math.h
  libavcodec/huffyuvdsp.h
  libavcodec/huffyuvencdsp.c
  libavcodec/huffyuvencdsp.h
- libavcodec/hwaccel.h
  libavcodec/hwaccels.h
+ libavcodec/hwconfig.h
  libavcodec/idctdsp.c
  libavcodec/idctdsp.h
  libavcodec/intelh263dec.c
@@ -7420,6 +7615,9 @@ Files: compat/aix/math.h
  libavcodec/mdct_fixed.c
  libavcodec/mdct_float.c
  libavcodec/me_cmp.h
+ libavcodec/mf_utils.c
+ libavcodec/mf_utils.h
+ libavcodec/mfenc.c
  libavcodec/mjpegenc_common.h
  libavcodec/motion_est.h
  libavcodec/mpeg12framerate.c
@@ -7448,8 +7646,11 @@ Files: compat/aix/math.h
  libavcodec/nvenc.h
  libavcodec/nvenc_h264.c
  libavcodec/nvenc_hevc.c
+ libavcodec/opus_metadata_bsf.c
  libavcodec/opusdsp.c
  libavcodec/opusdsp.h
+ libavcodec/packet.h
+ libavcodec/packet_internal.h
  libavcodec/parsers.c
  libavcodec/pel_template.c
  libavcodec/pixblockdsp.c
@@ -7469,6 +7670,7 @@ Files: compat/aix/math.h
  libavcodec/qsvenc_hevc.c
  libavcodec/qsvenc_jpeg.c
  libavcodec/qsvenc_mpeg2.c
+ libavcodec/qsvenc_vp9.c
  libavcodec/rl.c
  libavcodec/rle.h
  libavcodec/rv10.h
@@ -7479,7 +7681,6 @@ Files: compat/aix/math.h
  libavcodec/sinewin_fixed.c
  libavcodec/sipr_parser.c
  libavcodec/startcode.h
- libavcodec/svq13.c
  libavcodec/svq1enc.h
  libavcodec/takdsp.h
  libavcodec/targa.h
@@ -7526,6 +7727,7 @@ Files: compat/aix/math.h
  libavcodec/vaapi_encode_mpeg2.c
  libavcodec/vaapi_encode_vp8.c
  libavcodec/vaapi_encode_vp9.c
+ libavcodec/vaapi_hevc.h
  libavcodec/vaapi_mjpeg.c
  libavcodec/vaapi_vp8.c
  libavcodec/version.h
@@ -7543,6 +7745,7 @@ Files: compat/aix/math.h
  libavcodec/vt_internal.h
  libavcodec/wavpackenc.c
  libavcodec/wavpackenc.h
+ libavcodec/webp_parser.c
  libavcodec/wma_common.c
  libavcodec/wma_common.h
  libavcodec/wma_freqs.c
@@ -7606,6 +7809,7 @@ Files: compat/aix/math.h
  libavfilter/af_acopy.c
  libavfilter/af_acrossover.c
  libavfilter/af_aderivative.c
+ libavfilter/af_asubboost.c
  libavfilter/af_bs2b.c
  libavfilter/af_channelsplit.c
  libavfilter/af_crossfeed.c
@@ -7624,6 +7828,8 @@ Files: compat/aix/math.h
  libavfilter/framerate.h
  libavfilter/generate_wave_table.c
  libavfilter/generate_wave_table.h
+ libavfilter/glslang.cpp
+ libavfilter/glslang.h
  libavfilter/hermite.h
  libavfilter/internal.h
  libavfilter/lavfutils.h
@@ -7636,14 +7842,16 @@ Files: compat/aix/math.h
  libavfilter/opencl/colorspace_common.cl
  libavfilter/opencl/nlmeans.cl
  libavfilter/opencl/overlay.cl
+ libavfilter/opencl/pad.cl
  libavfilter/opencl/tonemap.cl
  libavfilter/opencl/transpose.cl
  libavfilter/opencl/unsharp.cl
+ libavfilter/opencl/xfade.cl
  libavfilter/opencl_source.h
  libavfilter/pthread.c
  libavfilter/qsvvpp.c
  libavfilter/qsvvpp.h
- libavfilter/scale.h
+ libavfilter/scale_eval.h
  libavfilter/scene_sad.c
  libavfilter/scene_sad.h
  libavfilter/tests/drawutils.c
@@ -7654,6 +7862,10 @@ Files: compat/aix/math.h
  libavfilter/vaapi_vpp.c
  libavfilter/vaapi_vpp.h
  libavfilter/version.h
+ libavfilter/vf_addroi.c
+ libavfilter/vf_avgblur_vulkan.c
+ libavfilter/vf_cas.c
+ libavfilter/vf_chromaber_vulkan.c
  libavfilter/vf_colorkey_opencl.c
  libavfilter/vf_copy.c
  libavfilter/vf_deinterlace_qsv.c
@@ -7673,24 +7885,34 @@ Files: compat/aix/math.h
  libavfilter/vf_overlay.h
  libavfilter/vf_overlay_opencl.c
  libavfilter/vf_overlay_qsv.c
+ libavfilter/vf_overlay_vulkan.c
+ libavfilter/vf_pad_opencl.c
  libavfilter/vf_procamp_vaapi.c
  libavfilter/vf_program_opencl.c
  libavfilter/vf_scale_npp.c
  libavfilter/vf_scale_qsv.c
  libavfilter/vf_scale_vaapi.c
+ libavfilter/vf_scale_vulkan.c
+ libavfilter/vf_scdet.c
  libavfilter/vf_showpalette.c
  libavfilter/vf_shuffleplanes.c
  libavfilter/vf_tonemap_opencl.c
+ libavfilter/vf_tonemap_vaapi.c
  libavfilter/vf_transpose_npp.c
  libavfilter/vf_transpose_opencl.c
  libavfilter/vf_transpose_vaapi.c
  libavfilter/vf_unsharp_opencl.c
  libavfilter/vf_vpp_qsv.c
+ libavfilter/vf_xfade_opencl.c
  libavfilter/vsink_nullsink.c
+ libavfilter/vulkan.c
+ libavfilter/vulkan.h
  libavfilter/x86/af_afir_init.c
  libavfilter/x86/af_anlmdn_init.c
  libavfilter/x86/af_volume_init.c
  libavfilter/x86/scene_sad_init.c
+ libavfilter/x86/vf_convolution.asm
+ libavfilter/x86/vf_convolution_init.c
  libavfilter/x86/vf_framerate_init.c
  libavfilter/x86/vf_gblur.asm
  libavfilter/x86/vf_gblur_init.c
@@ -7698,6 +7920,8 @@ Files: compat/aix/math.h
  libavfilter/x86/vf_idet_init.c
  libavfilter/x86/vf_limiter.asm
  libavfilter/x86/vf_limiter_init.c
+ libavfilter/x86/vf_v360.asm
+ libavfilter/x86/vf_v360_init.c
  libavfilter/yadif.h
  libavformat/av1.h
  libavformat/avio_internal.h
@@ -7790,6 +8014,8 @@ Files: compat/aix/math.h
  libavutil/hwcontext_vdpau.h
  libavutil/hwcontext_videotoolbox.c
  libavutil/hwcontext_videotoolbox.h
+ libavutil/hwcontext_vulkan.c
+ libavutil/hwcontext_vulkan.h
  libavutil/imgutils.c
  libavutil/imgutils.h
  libavutil/imgutils_internal.h
@@ -7845,8 +8071,15 @@ Files: compat/aix/math.h
  libavutil/threadmessage.h
  libavutil/time_internal.h
  libavutil/timestamp.h
+ libavutil/tx.c
  libavutil/tx.h
+ libavutil/tx_double.c
+ libavutil/tx_float.c
+ libavutil/tx_int32.c
+ libavutil/tx_priv.h
  libavutil/utils.c
+ libavutil/video_enc_params.c
+ libavutil/video_enc_params.h
  libavutil/wchar_filename.h
  libavutil/x86/bswap.h
  libavutil/x86/cpu.h
@@ -7863,6 +8096,7 @@ Files: compat/aix/math.h
  libswresample/arm/audio_convert_init.c
  libswresample/dither_template.c
  libswresample/version.h
+ libswscale/aarch64/rgb2rgb.c
  libswscale/aarch64/swscale.c
  libswscale/aarch64/swscale_unscaled.c
  libswscale/arm/swscale.c
@@ -7875,19 +8109,17 @@ Files: compat/aix/math.h
  tests/audiomatch.c
  tests/base64.c
  tools/cl2c
+ tools/target_bsf_fuzzer.c
  tools/target_dec_fuzzer.c
  tools/target_dem_fuzzer.c
+ tools/venc_data_dump.c
 Copyright: NONE
 License: LGPL-2.1+
  FIXME
 
-Files: compat/avisynth/avisynth_c.h
- compat/avisynth/avs/capi.h
- compat/avisynth/avs/config.h
- compat/avisynth/avs/types.h
- compat/avisynth/avxsynth_c.h
- doc/texi2pod.pl
+Files: doc/texi2pod.pl
  libavcodec/x86/flac_dsp_gpl.asm
+ libavfilter/phase_template.c
  libavfilter/signature.h
  libavfilter/signature_lookup.c
  libavfilter/tinterlace.h
@@ -7984,7 +8216,6 @@ Copyright: 1999-2001, Free Software Foundation, Inc.
   2002-2003, Brian J. Murrell
   2003, Daniel Moreno <comac AT comac DOT darktech DOT org>
   2003, Donald A. Graft
-  2003, Kevin Atkinson
   2003, LeFunGus, lefungus@altern.org
   2003, Michael Niedermayer <michaelni@gmx.at>
   2003, Michael Zucchi <notzed@ximian.com>
@@ -8047,7 +8278,7 @@ License: GPL-2+
 
 Files: compat/cuda/ptx2c.sh
  debian/missing-sources/ffmpeg-web/src/less/style.less
- doc/examples/avio_dir_cmd.c
+ doc/examples/avio_list_dir.c
  doc/examples/avio_reading.c
  doc/examples/decode_audio.c
  doc/examples/decode_video.c
@@ -8077,6 +8308,7 @@ Files: compat/cuda/ptx2c.sh
  libavcodec/x86/vc1dsp_mmx.c
  libavfilter/af_deesser.c
  libavfilter/vf_avgblur.c
+ libavfilter/vf_bilateral.c
  libavfilter/vf_bm3d.c
  libavfilter/vf_deband.c
  libavfilter/vf_scale_cuda.c
@@ -8131,9 +8363,11 @@ Copyright: 2001, Fabrice Bellard
   2016, Paul B Mahol
   2017, Jun Zhao
   2017, Kaixuan Liu
+  2017, Ming Yang
   2017, NVIDIA CORPORATION.
   2018, Chris Johnson
   2018, Paul B Mahol
+  2019, Paul B Mahol
 License: Expat
  FIXME
 
@@ -8185,7 +8419,8 @@ License: BSD-3-clause and/or LGPL-2.1+
 
 Files: LICENSE.md
  libavfilter/vf_pullup.h
- libavfilter/x86/vf_eq.c
+ libavfilter/x86/vf_eq.asm
+ libavfilter/x86/vf_eq_init.c
  libavfilter/x86/vf_pullup.asm
  libavfilter/x86/vf_pullup_init.c
  tests/checkasm/aacpsdsp.c
@@ -8193,8 +8428,11 @@ Files: LICENSE.md
  tests/checkasm/audiodsp.c
  tests/checkasm/float_dsp.c
  tests/checkasm/g722dsp.c
+ tests/checkasm/opusdsp.c
  tests/checkasm/sbrdsp.c
  tests/checkasm/sw_rgb.c
+ tests/checkasm/sw_scale.c
+ tests/checkasm/vf_eq.c
  tests/checkasm/vf_gblur.c
  tests/checkasm/vf_hflip.c
  tests/checkasm/vf_threshold.c
@@ -8297,16 +8535,6 @@ Copyright: 2004-2012, Michael Niedermayer <michaelni@gmx.at>
 License: BSL-1.0 and/or LGPL-2.1+
  FIXME
 
-Files: libavfilter/vf_geq.c
- libavfilter/vf_spp.c
-Copyright: 2003, Michael Niedermayer <michaelni@gmx.at>
-  2006, Michael Niedermayer <michaelni@gmx.at>
-  2012, ClÃ©ment BÅsch <u pkh me>
-  2013, ClÃ©ment BÅsch <u pkh me>
-  ment BÅsch for FFmpeg.
-License: GPL-2+
- FIXME
-
 Files: libavcodec/ppc/hevcdsp.c
  libavcodec/ppc/hevcdsp_template.c
 Copyright: Alexandra Hajkova
@@ -8337,6 +8565,17 @@ Copyright: NONE
 License: Apache-2.0 and/or GPL-3+
  FIXME
 
+Files: libavfilter/af_arnndn.c
+Copyright: 2005-2009, Xiph.Org Foundation
+  2007-2008, CSIRO
+  2008-2011, Octasic Inc.
+  2017, Mozilla
+  2018, Gregor Richards
+  2019, Paul B Mahol
+  Jean-Marc Valin
+License: BSD-2-clause
+ FIXME
+
 Files: libavcodec/j2kenc.c
 Copyright: 2001-2003, David Janssens
   2002-2003, Yannick Verschueren
@@ -8347,6 +8586,21 @@ Copyright: 2001-2003, David Janssens
   2007, Callum Lerwick <seg@haxxed.com>
   2007, Kamil Nowosad
 License: BSD-2-clause and/or LGPL-2.1+
+ FIXME
+
+Files: libavfilter/vf_deshake_opencl.c
+Copyright: 2000-2008, Intel Corporation
+  2009, Willow Garage Inc.
+  2013, OpenCV Foundation
+  s are property of their respective owners.
+License: BSD-3-clause and/or LGPL-2.1+
+ FIXME
+
+Files: libavfilter/opencl/deshake.cl
+Copyright: 2000, Intel Corporation
+  2013, OpenCV Foundation
+  s are property of their respective owners.
+License: BSD-3-clause and/or LGPL-2.1+
  FIXME
 
 Files: libavcodec/arm/jrevdct_arm.S
@@ -8407,6 +8661,13 @@ Copyright: 1997-2001, ZSNES Team ( zsknight@zsnes.com
 License: GPL-2+
  FIXME
 
+Files: libavfilter/vf_spp.c
+Copyright: 2003, Michael Niedermayer <michaelni@gmx.at>
+  2013, ClÃ©ment BÅsch <u pkh me>
+  ment BÅsch for FFmpeg.
+License: GPL-2+
+ FIXME
+
 Files: libavfilter/vf_colormatrix.c
 Copyright: 2006-2007, Kevin Stone
   Wilbert Dijkhof
@@ -8436,7 +8697,7 @@ License: GPL-3
  FIXME
 
 Files: debian/copyright-check
-Copyright: 2016-2019, Jonas Smedegaard <dr@jones.dk>
+Copyright: 2016-2020, Jonas Smedegaard <dr@jones.dk>
   check
 License: GPL-3+
  FIXME
@@ -8552,6 +8813,13 @@ Files: libavfilter/vf_fieldmatch.c
 Copyright: 2012, Fredrik Mellbin
   2013, ClÃ©ment BÅsch
   ment.
+License: LGPL-2.1+
+ FIXME
+
+Files: libavfilter/vf_geq.c
+Copyright: 2006, Michael Niedermayer <michaelni@gmx.at>
+  2012, ClÃ©ment BÅsch <u pkh me>
+  ment BÅsch for FFmpeg.
 License: LGPL-2.1+
  FIXME
 
@@ -8729,7 +8997,7 @@ License: UNKNOWN
  FIXME
 
 Files: doc/APIchanges
-Copyright: - AVFormatContext.comment
+Copyright: AVFormatContext.comment
 License: UNKNOWN
  FIXME
 

@@ -1,3 +1,24 @@
+ffmpeg (7:4.3-1) experimental; urgency=medium
+
+  [ upstream ]
+  * new feature release
+
+  [ Jonas Smedegaard ]
+  * link with RabbitMQ;
+    build-depend on librabbitmq-dev
+  * update comments in rules file about omitted linkage
+  * stop enable AviSynth: embedded code dropped upstream
+  * drop patch 002, applied upstream
+  * explicitly reuse symbols files (drop symbolic links),
+    to not confuse pkgkde-symbolshelper
+  * sort symbols, and move comments to README.source
+  * briefly document use of pkgkde-symbolshelper in README.source
+  * update symbols, including dropped avfilter symbols
+    avfilter_all_channel_layouts avfilter_get_matrix
+    (seemingly private and unused anywhere in Debian)
+
+ -- Jonas Smedegaard <dr@jones.dk>  Tue, 16 Jun 2020 19:20:15 +0200
+
 ffmpeg (7:4.2.3-2) unstable; urgency=medium
 
   * copyright:
@@ -17,8 +38,8 @@ ffmpeg (7:4.2.3-2) unstable; urgency=medium
 
 ffmpeg (7:4.2.3-1) unstable; urgency=medium
 
-  * [ upstream ]
-    + new release
+  [ upstream ]
+  * new maintenance release
 
   [ Jonas Smedegaard ]
   * link with Pocket Sphinx where available (see bug#812335);
