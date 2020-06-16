@@ -21,7 +21,9 @@ FLAVORS = standard extra static
 
 # Enable as many features as possible, as long as the result is still GPLv2+ (a GPLv3+ variant is built as libavcodec-extra/libavfilter-extra flavor).
 # The following flags (and build-dependencies) are not added, because they would require a libavformat-extra flavor:
+#   --enable-libglslang             (glslang-dev)
 #   --enable-libsmbclient           (libsmbclient-dev [!hurd-i386 !m68k !sparc64])
+#   --enable-vulkan                 (libvulkan-dev)
 # The following flags are not added, because the necessary libraries are not in Debian:
 #   --enable-decklink               (see #839941 for discussion of freeness)
 #   --enable-libcelt                (see #676592: removed from Debian as abandoned upstream, replaced by opus)
@@ -31,6 +33,7 @@ FLAVORS = standard extra static
 #   --enable-libklvanc
 #   --enable-libkvazaar
 #   --enable-libopenh264
+#   --enable-librav1e               (see #920842 for the RFP bug)
 #   --enable-libtensorflow          (see #959765 for the RFP bug)
 #   --enable-libvmaf
 #   --enable-libxavs
