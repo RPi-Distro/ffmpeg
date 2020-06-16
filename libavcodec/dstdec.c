@@ -85,6 +85,10 @@ static av_cold int decode_init(AVCodecContext *avctx)
         return AVERROR_PATCHWELCOME;
     }
 
+    if (DST_SAMPLES_PER_FRAME(avctx->sample_rate) & 7) {
+        return AVERROR_PATCHWELCOME;
+    }
+
     avctx->sample_fmt = AV_SAMPLE_FMT_FLT;
 
     for (i = 0; i < avctx->channels; i++)
@@ -155,7 +159,7 @@ static int read_table(GetBitContext *gb, Table *t, const int8_t code_pred_coeff[
             for (j = method + 1; j < t->length[i]; j++) {
                 int c, x = 0;
                 for (k = 0; k < method + 1; k++)
-                    x += code_pred_coeff[method][k] * t->coeff[i][j - k - 1];
+                    x += code_pred_coeff[method][k] * (unsigned)t->coeff[i][j - k - 1];
                 c = get_sr_golomb_dst(gb, lsb_size);
                 if (x >= 0)
                     c -= (x + 4) / 8;

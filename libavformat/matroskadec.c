@@ -707,7 +707,7 @@ static EbmlSyntax matroska_segments[] = {
 };
 
 static EbmlSyntax matroska_blockmore[] = {
-    { MATROSKA_ID_BLOCKADDID,      EBML_UINT, 0, offsetof(MatroskaBlock,additional_id) },
+    { MATROSKA_ID_BLOCKADDID,      EBML_UINT, 0, offsetof(MatroskaBlock,additional_id), { .u = 1 } },
     { MATROSKA_ID_BLOCKADDITIONAL, EBML_BIN,  0, offsetof(MatroskaBlock,additional) },
     CHILD_OF(matroska_blockadditions)
 };
@@ -1556,7 +1556,7 @@ static int matroska_probe(const AVProbeData *p)
 }
 
 static MatroskaTrack *matroska_find_track_by_num(MatroskaDemuxContext *matroska,
-                                                 int num)
+                                                 uint64_t num)
 {
     MatroskaTrack *tracks = matroska->tracks.elem;
     int i;
@@ -1565,7 +1565,7 @@ static MatroskaTrack *matroska_find_track_by_num(MatroskaDemuxContext *matroska,
         if (tracks[i].num == num)
             return &tracks[i];
 
-    av_log(matroska->ctx, AV_LOG_ERROR, "Invalid track number %d\n", num);
+    av_log(matroska->ctx, AV_LOG_ERROR, "Invalid track number %"PRIu64"\n", num);
     return NULL;
 }
 
@@ -1856,8 +1856,12 @@ static void matroska_execute_seekhead(MatroskaDemuxContext *matroska)
         MatroskaSeekhead *seekheads = seekhead_list->elem;
         uint32_t id = seekheads[i].id;
         int64_t pos = seekheads[i].pos + matroska->segment_start;
+        MatroskaLevel1Element *elem;
 
-        MatroskaLevel1Element *elem = matroska_find_level1_elem(matroska, id);
+        if (id != seekheads[i].id || pos < matroska->segment_start)
+            continue;
+
+        elem = matroska_find_level1_elem(matroska, id);
         if (!elem || elem->parsed)
             continue;
 
@@ -2558,6 +2562,19 @@ static int matroska_parse_tracks(AVFormatContext *s)
             memcpy(&extradata[12], track->codec_priv.data,
                    track->codec_priv.size);
         } else if (codec_id == AV_CODEC_ID_TTA) {
+            if (track->audio.channels > UINT16_MAX ||
+                track->audio.bitdepth > UINT16_MAX) {
+                av_log(matroska->ctx, AV_LOG_WARNING,
+                       "Too large audio channel number %"PRIu64
+                       " or bitdepth %"PRIu64". Skipping track.\n",
+                       track->audio.channels, track->audio.bitdepth);
+                if (matroska->ctx->error_recognition & AV_EF_EXPLODE)
+                    return AVERROR_INVALIDDATA;
+                else
+                    continue;
+            }
+            if (track->audio.out_samplerate < 0 || track->audio.out_samplerate > INT_MAX)
+                return AVERROR_INVALIDDATA;
             extradata_size = 30;
             extradata      = av_mallocz(extradata_size + AV_INPUT_BUFFER_PADDING_SIZE);
             if (!extradata)
@@ -2566,22 +2583,8 @@ static int matroska_parse_tracks(AVFormatContext *s)
                               NULL, NULL, NULL, NULL);
             avio_write(&b, "TTA1", 4);
             avio_wl16(&b, 1);
-            if (track->audio.channels > UINT16_MAX ||
-                track->audio.bitdepth > UINT16_MAX) {
-                av_log(matroska->ctx, AV_LOG_WARNING,
-                       "Too large audio channel number %"PRIu64
-                       " or bitdepth %"PRIu64". Skipping track.\n",
-                       track->audio.channels, track->audio.bitdepth);
-                av_freep(&extradata);
-                if (matroska->ctx->error_recognition & AV_EF_EXPLODE)
-                    return AVERROR_INVALIDDATA;
-                else
-                    continue;
-            }
             avio_wl16(&b, track->audio.channels);
             avio_wl16(&b, track->audio.bitdepth);
-            if (track->audio.out_samplerate < 0 || track->audio.out_samplerate > INT_MAX)
-                return AVERROR_INVALIDDATA;
             avio_wl32(&b, track->audio.out_samplerate);
             avio_wl32(&b, av_rescale((matroska->duration * matroska->time_scale),
                                      track->audio.out_samplerate,
@@ -3020,7 +3023,9 @@ static int matroska_parse_laces(MatroskaDemuxContext *matroska, uint8_t **buf,
         return 0;
     }
 
-    av_assert0(size > 0);
+    if (size <= 0)
+        return AVERROR_INVALIDDATA;
+
     *laces    = *data + 1;
     data     += 1;
     size     -= 1;
@@ -3050,7 +3055,7 @@ static int matroska_parse_laces(MatroskaDemuxContext *matroska, uint8_t **buf,
                     break;
             }
         }
-        if (size <= total) {
+        if (size < total) {
             res = AVERROR_INVALIDDATA;
             break;
         }
@@ -3097,7 +3102,7 @@ static int matroska_parse_laces(MatroskaDemuxContext *matroska, uint8_t **buf,
             lace_size[n] = lace_size[n - 1] + snum;
             total       += lace_size[n];
         }
-        if (size <= total) {
+        if (size < total) {
             res = AVERROR_INVALIDDATA;
             break;
         }
@@ -3419,7 +3424,7 @@ static int matroska_parse_frame(MatroskaDemuxContext *matroska,
 {
     MatroskaTrackEncoding *encodings = track->encodings.elem;
     uint8_t *pkt_data = data;
-    int res;
+    int res = 0;
     AVPacket pktl, *pkt = &pktl;
 
     if (encodings && !encodings->type && encodings->scope & 1) {
@@ -3454,6 +3459,9 @@ static int matroska_parse_frame(MatroskaDemuxContext *matroska,
             av_freep(&pkt_data);
         pkt_data = pr_data;
     }
+
+    if (!pkt_size && !additional_size)
+        goto no_output;
 
     av_init_packet(pkt);
     if (pkt_data != data)
@@ -3525,6 +3533,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
 
     return 0;
 
+no_output:
 fail:
     if (pkt_data != data)
         av_freep(&pkt_data);
@@ -3554,13 +3563,16 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, AVBufferRef *buf
     size -= n;
 
     track = matroska_find_track_by_num(matroska, num);
-    if (!track || !track->stream) {
-        av_log(matroska->ctx, AV_LOG_INFO,
-               "Invalid stream %"PRIu64"\n", num);
+    if (!track || size < 3)
         return AVERROR_INVALIDDATA;
-    } else if (size <= 3)
+
+    if (!(st = track->stream)) {
+        av_log(matroska->ctx, AV_LOG_VERBOSE,
+               "No stream associated to TrackNumber %"PRIu64". "
+               "Ignoring Block with this TrackNumber.\n", num);
         return 0;
-    st = track->stream;
+    }
+
     if (st->discard >= AVDISCARD_ALL)
         return res;
     av_assert1(block_duration != AV_NOPTS_VALUE);
