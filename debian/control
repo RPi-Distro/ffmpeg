@@ -182,6 +182,7 @@ Build-Depends:
  texinfo,
 # assembler optimizations
  nasm,
+ pkg-kde-tools,
 # autodetected zlib
  zlib1g-dev
 

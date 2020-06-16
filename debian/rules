@@ -224,7 +224,7 @@ endif
 
 # Use the default debhelper scripts, where possible.
 %:
-	dh $@
+	dh $@ --with pkgkde_symbolshelper
 
 # Add configuration options:
 override_dh_auto_configure:

@@ -1,3 +1,4 @@
+# SymbolsHelper-Confirmed: 7:4.2 amd64
 libavdevice.so.58 libavdevice58 #MINVER#
 * Build-Depends-Package: libavdevice-dev
  LIBAVDEVICE_58@LIBAVDEVICE_58 7:4.0

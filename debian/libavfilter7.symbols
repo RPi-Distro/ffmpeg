@@ -1,3 +1,4 @@
+# SymbolsHelper-Confirmed: 7:4.2 amd64
 libavfilter.so.7 libavfilter7 #MINVER#
 * Build-Depends-Package: libavfilter-dev
  LIBAVFILTER_7@LIBAVFILTER_7 7:4.0

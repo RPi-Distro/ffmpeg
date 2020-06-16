@@ -1,3 +1,4 @@
+# SymbolsHelper-Confirmed: 7:4.2 amd64
 libswresample.so.3 libswresample3 #MINVER#
 * Build-Depends-Package: libswresample-dev
  LIBSWRESAMPLE_3@LIBSWRESAMPLE_3 7:4.0

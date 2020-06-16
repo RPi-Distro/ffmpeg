@@ -1,3 +1,4 @@
+# SymbolsHelper-Confirmed: 7:4.2 amd64
 libavresample.so.4 libavresample4 #MINVER#
 * Build-Depends-Package: libavresample-dev
  LIBAVRESAMPLE_4@LIBAVRESAMPLE_4 7:4.0

@@ -1,3 +1,4 @@
+# SymbolsHelper-Confirmed: 7:4.2 amd64
 libswscale.so.5 libswscale5 #MINVER#
 * Build-Depends-Package: libswscale-dev
  LIBSWSCALE_5@LIBSWSCALE_5 7:4.0

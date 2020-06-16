@@ -1,3 +1,4 @@
+# SymbolsHelper-Confirmed: 7:4.2 amd64
 libpostproc.so.55 libpostproc55 #MINVER#
 * Build-Depends-Package: libpostproc-dev
  LIBPOSTPROC_55@LIBPOSTPROC_55 7:4.0
