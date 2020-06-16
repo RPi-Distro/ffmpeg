@@ -3,6 +3,6 @@ version=4
 # update: gbp import-orig --upstream-vcs-tag=vX.Y.Z --uscan
 
 opts=\
-pgpmode=auto,\
+pgpsigurlmangle=s/$/.asc/,\
 dversionmangle=auto \
 https://ffmpeg.org/releases/ffmpeg@ANY_VERSION@@ARCHIVE_EXT@
