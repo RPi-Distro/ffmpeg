@@ -261,24 +261,24 @@ prebuild_%:
 $(patsubst %,prebuild_%,$(filter %extra,$(FLAVORS))): prebuild_%: build_standard
 	$(info $()   debian/rules $@)
 	set -eu && \
-		flavor=$*; \
-			subdir=`[ "$$flavor" = "extra" ] && echo "debian/standard/" || echo "debian/altivec/"`; \
-			for dir in `cd ./$$subdir; find libavcodec libavdevice libavfilter libavformat libavresample libavutil libpostproc libswscale libswresample -type d`; do \
-				mkdir -p debian/"$$flavor"/"$$dir"; \
-				echo "$$subdir$$dir"/*.o | grep -q '*' || cp "$$subdir$$dir"/*.o debian/"$$flavor"/"$$dir"; \
-			done; \
-			rm debian/"$$flavor"/libavcodec/allcodecs.o; \
-			rm debian/"$$flavor"/libavfilter/allfilters.o; \
+	flavor=$*; \
+	subdir=`[ "$$flavor" = "extra" ] && echo "debian/standard/" || echo "debian/altivec/"`; \
+	for dir in `cd ./$$subdir; find libavcodec libavdevice libavfilter libavformat libavresample libavutil libpostproc libswscale libswresample -type d`; do \
+		mkdir -p debian/"$$flavor"/"$$dir"; \
+		echo "$$subdir$$dir"/*.o | grep -q '*' || cp "$$subdir$$dir"/*.o debian/"$$flavor"/"$$dir"; \
+	done; \
+	rm debian/"$$flavor"/libavcodec/allcodecs.o; \
+	rm debian/"$$flavor"/libavfilter/allfilters.o; \
 
 # Build qt-faststart here, to make it possible to build with 'nocheck'.
 prebuild_standard:
 	$(info $()   debian/rules $@)
-			$(MAKE) -C debian/standard tools/qt-faststart; \
+	$(MAKE) -C debian/standard tools/qt-faststart; \
 
 build_%: prebuild_%
 	$(info $()   debian/rules $@)
-		flavor=$*; \
-		dh_auto_build -a --sourcedirectory=debian/"$$flavor" || (cat debian/"$$flavor"/config.log && exit 1); \
+	flavor=$*; \
+	dh_auto_build -a --sourcedirectory=debian/"$$flavor" || (cat debian/"$$flavor"/config.log && exit 1); \
 
 # Set the library path for the dynamic linker, because the tests otherwise don't find the libraries.
 override_dh_auto_test-arch:
