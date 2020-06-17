@@ -262,13 +262,12 @@ $(patsubst %,prebuild_%,$(filter %extra,$(FLAVORS))): prebuild_%: build_standard
 	$(info $()   debian/rules $@)
 	$(eval subdir = debian/$(subst extra,standard,$(subst -extra,,$*)))
 	set -eu && \
-	flavor=$*; \
 	for dir in `cd $(subdir); find libavcodec libavdevice libavfilter libavformat libavresample libavutil libpostproc libswscale libswresample -type d`; do \
-		mkdir -p debian/"$$flavor"/"$$dir"; \
-		echo "$(subdir)/$$dir"/*.o | grep -q '*' || cp "$(subdir)/$$dir"/*.o debian/"$$flavor"/"$$dir"; \
+		mkdir -p debian/$*/"$$dir"; \
+		echo "$(subdir)/$$dir"/*.o | grep -q '*' || cp "$(subdir)/$$dir"/*.o debian/$*/"$$dir"; \
 	done; \
-	rm debian/"$$flavor"/libavcodec/allcodecs.o; \
-	rm debian/"$$flavor"/libavfilter/allfilters.o; \
+	rm debian/$*/libavcodec/allcodecs.o; \
+	rm debian/$*/libavfilter/allfilters.o; \
 
 # Build qt-faststart here, to make it possible to build with 'nocheck'.
 prebuild_standard:
@@ -277,8 +276,7 @@ prebuild_standard:
 
 build_%: prebuild_%
 	$(info $()   debian/rules $@)
-	flavor=$*; \
-	dh_auto_build -a --sourcedirectory=debian/"$$flavor" || (cat debian/"$$flavor"/config.log && exit 1); \
+	dh_auto_build -a --sourcedirectory=debian/$* || (cat debian/$*/config.log && exit 1); \
 
 # Set the library path for the dynamic linker, because the tests otherwise don't find the libraries.
 override_dh_auto_test-arch:
