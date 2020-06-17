@@ -261,11 +261,9 @@ prebuild_%:
 $(patsubst %,prebuild_%,$(filter %extra,$(FLAVORS))): prebuild_%: build_standard
 	$(info $()   debian/rules $@)
 	$(eval subdir = debian/$(subst extra,standard,$(subst -extra,,$*)))
-	set -eu && \
-	for dir in `cd $(subdir); find libavcodec libavdevice libavfilter libavformat libavresample libavutil libpostproc libswscale libswresample -type d`; do \
-		mkdir -p debian/$*/"$$dir"; \
-		echo "$(subdir)/$$dir"/*.o | grep -q '*' || cp "$(subdir)/$$dir"/*.o debian/$*/"$$dir"; \
-	done
+	cd $(subdir) && find libavcodec libavdevice libavfilter libavformat libavresample libavutil libpostproc libswscale libswresample \
+		-type f -name '*.o' \
+		-exec install -m 644 -D -T '{}' '../$*/{}' ';'
 	rm debian/$*/libavcodec/allcodecs.o
 	rm debian/$*/libavfilter/allfilters.o
 
