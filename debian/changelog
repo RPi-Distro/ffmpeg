@@ -1,3 +1,11 @@
+ffmpeg (7:4.3-2) unstable; urgency=medium
+
+  * use debhelper compatibility level 12 (not 11);
+    skip dwz for most libraries to avoid error: Unknown DWARF DW_OP_0
+  * reduce and simplify shell code in make rules
+
+ -- Jonas Smedegaard <dr@jones.dk>  Wed, 17 Jun 2020 15:15:20 +0200
+
 ffmpeg (7:4.3-1) experimental; urgency=medium
 
   [ upstream ]
