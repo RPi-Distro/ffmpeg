@@ -231,13 +231,15 @@ endif
 	dh $@ --with pkgkde_symbolshelper
 
 # Add configuration options:
-override_dh_auto_configure:
-	$(foreach flavor,$(FLAVORS),mkdir -p debian/$(flavor);)
-	$(foreach flavor,$(FLAVORS),set -e; echo " *** $(flavor) ***"; cd debian/$(flavor); ../../configure $(CONFIG) $(CONFIG_$(flavor)) || (cat ffbuild/config.log && exit 1); cd ../.. ;)
+override_dh_auto_configure: $(patsubst %,configure_%,$(FLAVORS))
+configure_%:
+	$(info $()   debian/rules $@)
+	mkdir -p debian/$*
+	cd debian/$* && ../../configure $(strip $(CONFIG) $(CONFIG_$*)) || (cat ffbuild/config.log && exit 1)
 
 # Remove the subdirectories generated for the flavors.
 override_dh_auto_clean:
-	$(foreach flavor,$(FLAVORS),[ ! -d debian/$(flavor) ] || rm -r debian/$(flavor);)
+	rm -rf $(patsubst %,debian/%,$(FLAVORS))
 
 # Create doxygen documentation:
 override_dh_auto_build-indep:
@@ -249,12 +251,17 @@ override_dh_auto_build-indep:
 	#  See: #895154
 	(lessc debian/missing-sources/ffmpeg-web/src/less/style.less | cleancss > debian/standard/doc/style.min.css) 2>&1 | cat >&2
 
-override_dh_auto_build-arch:
-	# Copy built object files to avoid building them again for the extra flavor.
-	# Build qt-faststart here, to make it possible to build with 'nocheck'.
-	set -e && for flavor in $(FLAVORS); do \
-		echo " *** $$flavor ***"; \
-		if echo "$$flavor" | grep -q "extra"; then \
+override_dh_auto_build-arch: $(patsubst %,build_%,$(FLAVORS))
+
+# noop fallback for below more specific targets
+prebuild_%:
+	:
+
+# Copy built object files to avoid building them again for the extra flavor.
+$(patsubst %,prebuild_%,$(filter %extra,$(FLAVORS))): prebuild_%: build_standard
+	$(info $()   debian/rules $@)
+	set -eu && \
+		flavor=$*; \
 			subdir=`[ "$$flavor" = "extra" ] && echo "debian/standard/" || echo "debian/altivec/"`; \
 			for dir in `cd ./$$subdir; find libavcodec libavdevice libavfilter libavformat libavresample libavutil libpostproc libswscale libswresample -type d`; do \
 				mkdir -p debian/"$$flavor"/"$$dir"; \
@@ -262,12 +269,16 @@ override_dh_auto_build-arch:
 			done; \
 			rm debian/"$$flavor"/libavcodec/allcodecs.o; \
 			rm debian/"$$flavor"/libavfilter/allfilters.o; \
-		fi; \
-		if [ "$$flavor" = "standard" ]; then \
+
+# Build qt-faststart here, to make it possible to build with 'nocheck'.
+prebuild_standard:
+	$(info $()   debian/rules $@)
 			$(MAKE) -C debian/standard tools/qt-faststart; \
-		fi; \
+
+build_%: prebuild_%
+	$(info $()   debian/rules $@)
+		flavor=$*; \
 		dh_auto_build -a --sourcedirectory=debian/"$$flavor" || (cat debian/"$$flavor"/config.log && exit 1); \
-	done
 
 # Set the library path for the dynamic linker, because the tests otherwise don't find the libraries.
 override_dh_auto_test-arch:
