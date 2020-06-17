@@ -316,9 +316,6 @@ override_dh_shlibdeps:
 	done
 	dh_shlibdeps --remaining-packages
 
-override_dh_missing:
-	dh_missing --list-missing
-
-# Don't compress the example source code files.
-override_dh_compress:
-	dh_compress -Xexamples
+# avoid error: Unknown DWARF DW_OP_0
+override_dh_dwz:
+	dh_dwz -Xlibavcodec -Xlibavfilter -Xlibavresample -Xlibavutil -Xlibswresample -Xlibswscale

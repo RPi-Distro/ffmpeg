@@ -24,7 +24,7 @@ Build-Depends-Indep:
  tree,
 Build-Depends:
 # needed for dh
- debhelper-compat (= 11),
+ debhelper-compat (= 12),
 # for build-profile support
  dpkg-dev (>= 1.17.14),
 # --enable-libflite
