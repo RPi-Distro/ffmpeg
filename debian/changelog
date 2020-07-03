@@ -1,3 +1,12 @@
+ffmpeg (7:4.3-3) unstable; urgency=medium
+
+  * link with dav1d;
+    build-depend on libdav1d-dev
+  * build-depend on libbrotli-dev
+    (as temporary workaround, see bug#964185)
+
+ -- Jonas Smedegaard <dr@jones.dk>  Fri, 03 Jul 2020 17:57:57 +0200
+
 ffmpeg (7:4.3-2) unstable; urgency=medium
 
   * use debhelper compatibility level 12 (not 11);
