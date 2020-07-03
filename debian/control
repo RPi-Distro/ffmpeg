@@ -53,6 +53,8 @@ Build-Depends:
  libchromaprint-dev <!pkg.ffmpeg.stage1>,
 # --enable-libcodec2
  libcodec2-dev,
+# --enable-libdav1d
+ libdav1d-dev,
 # --enable-libdc1394
  libdc1394-22-dev [linux-any],
 # --enable-libdrm
