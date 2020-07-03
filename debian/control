@@ -41,6 +41,8 @@ Build-Depends:
  libass-dev,
 # --enable-libbluray
  libbluray-dev,
+# TODO: drop when declared by libfreetype-dev (see bug#964185)
+ libbrotli-dev,
 # --enable-libbs2b
  libbs2b-dev,
 # autodetected: external library 'bzlib'
