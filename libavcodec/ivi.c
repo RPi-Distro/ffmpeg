@@ -429,6 +429,10 @@ av_cold int ff_ivi_init_tiles(IVIPlaneDesc *planes,
         t_height = !p ? tile_height : (tile_height + 3) >> 2;
 
         if (!p && planes[0].num_bands == 4) {
+            if (t_width % 2 || t_height % 2) {
+                avpriv_request_sample(NULL, "Odd tiles");
+                return AVERROR_PATCHWELCOME;
+            }
             t_width  >>= 1;
             t_height >>= 1;
         }
@@ -1178,6 +1182,8 @@ int ff_ivi_decode_frame(AVCodecContext *avctx, void *data, int *got_frame,
             AVPacket pkt;
             pkt.data = avpkt->data + (get_bits_count(&ctx->gb) >> 3);
             pkt.size = get_bits_left(&ctx->gb) >> 3;
+            ctx->got_p_frame = 0;
+            av_frame_unref(ctx->p_frame);
             ff_ivi_decode_frame(avctx, ctx->p_frame, &ctx->got_p_frame, &pkt);
         }
     }
