@@ -1,3 +1,3 @@
 0001-avcodec-omx-Fix-handling-of-fragmented-buffers.patch
-ffmpeg-4.1.4-mmal_5.patch
+ffmpeg-4.1.4-mmal_6.patch
 fix_flags.diff

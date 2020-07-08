@@ -1,3 +1,10 @@
+ffmpeg (7:4.1.6-1~deb10u1+rpt1) buster; urgency=medium
+
+  * New upstream release
+  * MMAL patch 6
+
+ -- Serge Schneider <serge@raspberrypi.com>  Wed, 08 Jul 2020 23:46:13 +0100
+
 ffmpeg (7:4.1.4-1+rpt7~deb10u1) buster; urgency=medium
 
   * Revert rpt6

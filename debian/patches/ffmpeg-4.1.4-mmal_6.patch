@@ -1,6 +1,6 @@
 --- a/configure
 +++ b/configure
-@@ -328,6 +328,7 @@
+@@ -328,6 +328,7 @@ External library support:
    --enable-libmfx          enable Intel MediaSDK (AKA Quick Sync Video) code via libmfx [no]
    --enable-libnpp          enable Nvidia Performance Primitives-based code [no]
    --enable-mmal            enable Broadcom Multi-Media Abstraction Layer (Raspberry Pi) via MMAL [no]
@@ -8,7 +8,7 @@
    --disable-nvdec          disable Nvidia video decoding acceleration (via hwaccel) [autodetect]
    --disable-nvenc          disable Nvidia video encoding code [autodetect]
    --enable-omx             enable OpenMAX IL code [no]
-@@ -1798,6 +1799,8 @@
+@@ -1798,6 +1799,8 @@ HWACCEL_LIBRARY_LIST="
      mmal
      omx
      opencl
@@ -17,7 +17,7 @@
  "
  
  DOCUMENT_LIST="
-@@ -1813,6 +1816,7 @@
+@@ -1813,6 +1816,7 @@ FEATURE_LIST="
      gray
      hardcoded_tables
      omx_rpi
@@ -25,7 +25,7 @@
      runtime_cpudetect
      safe_bitstream_reader
      shared
-@@ -1859,6 +1863,7 @@
+@@ -1859,6 +1863,7 @@ SUBSYSTEM_LIST="
      pixelutils
      network
      rdft
@@ -33,7 +33,7 @@
  "
  
  # COMPONENT_LIST needs to come last to ensure correct dependency checking
-@@ -2332,9 +2337,11 @@
+@@ -2332,9 +2337,11 @@ CONFIG_EXTRA="
      rangecoder
      riffdec
      riffenc
@@ -45,7 +45,7 @@
      sinewin
      snappy
      srtp
-@@ -2657,6 +2664,8 @@
+@@ -2657,6 +2664,8 @@ hap_decoder_select="snappy texturedsp"
  hap_encoder_deps="libsnappy"
  hap_encoder_select="texturedspenc"
  hevc_decoder_select="bswapdsp cabac golomb hevcparse videodsp"
@@ -54,7 +54,7 @@
  huffyuv_decoder_select="bswapdsp huffyuvdsp llviddsp"
  huffyuv_encoder_select="bswapdsp huffman huffyuvencdsp llvidencdsp"
  iac_decoder_select="imc_decoder"
-@@ -2843,6 +2852,10 @@
+@@ -2843,6 +2852,10 @@ hevc_dxva2_hwaccel_deps="dxva2 DXVA_PicP
  hevc_dxva2_hwaccel_select="hevc_decoder"
  hevc_nvdec_hwaccel_deps="nvdec"
  hevc_nvdec_hwaccel_select="hevc_decoder"
@@ -65,7 +65,7 @@
  hevc_vaapi_hwaccel_deps="vaapi VAPictureParameterBufferHEVC"
  hevc_vaapi_hwaccel_select="hevc_decoder"
  hevc_vdpau_hwaccel_deps="vdpau VdpPictureInfoHEVC"
-@@ -3283,6 +3296,8 @@
+@@ -3283,6 +3296,8 @@ v4l2_indev_deps_any="linux_videodev2_h s
  v4l2_indev_suggest="libv4l2"
  v4l2_outdev_deps_any="linux_videodev2_h sys_videoio_h"
  v4l2_outdev_suggest="libv4l2"
@@ -74,7 +74,7 @@
  vfwcap_indev_deps="vfw32 vfwcap_defines"
  xcbgrab_indev_deps="libxcb"
  xcbgrab_indev_suggest="libxcb_shm libxcb_shape libxcb_xfixes"
-@@ -3473,6 +3488,8 @@
+@@ -3473,6 +3488,8 @@ tinterlace_merge_test_deps="tinterlace_f
  tinterlace_pad_test_deps="tinterlace_filter"
  tonemap_filter_deps="const_nan"
  tonemap_opencl_filter_deps="opencl const_nan"
@@ -83,7 +83,7 @@
  unsharp_opencl_filter_deps="opencl"
  uspp_filter_deps="gpl avcodec"
  vaguedenoiser_filter_deps="gpl"
-@@ -6198,11 +6215,12 @@
+@@ -6198,11 +6215,12 @@ enabled mbedtls           && { check_pkg
                                 check_lib mbedtls mbedtls/ssl.h mbedtls_ssl_init -lmbedtls -lmbedx509 -lmbedcrypto ||
                                 die "ERROR: mbedTLS not found"; }
  enabled mediacodec        && { enabled jni || die "ERROR: mediacodec requires --enable-jni"; }
@@ -100,7 +100,7 @@
  enabled openal            && { { for al_extralibs in "${OPENAL_LIBS}" "-lopenal" "-lOpenAL32"; do
 --- a/fftools/ffmpeg.c
 +++ b/fftools/ffmpeg.c
-@@ -2147,8 +2147,8 @@
+@@ -2148,8 +2148,8 @@ static int ifilter_send_frame(InputFilte
                         ifilter->channel_layout != frame->channel_layout;
          break;
      case AVMEDIA_TYPE_VIDEO:
@@ -111,7 +111,7 @@
          break;
      }
  
-@@ -2398,6 +2398,8 @@
+@@ -2399,6 +2399,8 @@ static int decode_video(InputStream *ist
          if (ist->dec_ctx->codec_id == AV_CODEC_ID_H264) {
              ist->st->codecpar->video_delay = ist->dec_ctx->has_b_frames;
          } else
@@ -120,7 +120,7 @@
              av_log(ist->dec_ctx, AV_LOG_WARNING,
                     "video_delay is larger in decoder than demuxer %d > %d.\n"
                     "If you want to help, upload a sample "
-@@ -2405,6 +2407,8 @@
+@@ -2406,6 +2408,8 @@ static int decode_video(InputStream *ist
                     "and contact the ffmpeg-devel mailing list. (ffmpeg-devel@ffmpeg.org)\n",
                     ist->dec_ctx->has_b_frames,
                     ist->st->codecpar->video_delay);
@@ -129,7 +129,7 @@
      }
  
      if (ret != AVERROR_EOF)
-@@ -2944,6 +2948,15 @@
+@@ -2945,6 +2949,15 @@ static int init_input_stream(int ist_ind
              return ret;
          }
  
@@ -147,7 +147,7 @@
                  abort_codec_experimental(codec, 0);
 --- a/fftools/ffmpeg.h
 +++ b/fftools/ffmpeg.h
-@@ -62,6 +62,7 @@
+@@ -62,6 +62,7 @@ enum HWAccelID {
      HWACCEL_VIDEOTOOLBOX,
      HWACCEL_QSV,
      HWACCEL_CUVID,
@@ -155,7 +155,7 @@
  };
  
  typedef struct HWAccel {
-@@ -655,6 +656,7 @@
+@@ -655,6 +656,7 @@ int ffmpeg_parse_options(int argc, char
  int videotoolbox_init(AVCodecContext *s);
  int qsv_init(AVCodecContext *s);
  int cuvid_init(AVCodecContext *s);
@@ -165,7 +165,7 @@
  int hw_device_init_from_string(const char *arg, HWDevice **dev);
 --- a/fftools/ffmpeg_filter.c
 +++ b/fftools/ffmpeg_filter.c
-@@ -1180,8 +1180,8 @@
+@@ -1180,8 +1180,8 @@ int ifilter_parameters_from_frame(InputF
  
      ifilter->format = frame->format;
  
@@ -178,7 +178,7 @@
      ifilter->sample_rate         = frame->sample_rate;
 --- a/fftools/ffmpeg_opt.c
 +++ b/fftools/ffmpeg_opt.c
-@@ -65,6 +65,12 @@
+@@ -66,6 +66,12 @@
      }\
  }
  
@@ -191,7 +191,7 @@
  const HWAccel hwaccels[] = {
  #if CONFIG_VIDEOTOOLBOX
      { "videotoolbox", videotoolbox_init, HWACCEL_VIDEOTOOLBOX, AV_PIX_FMT_VIDEOTOOLBOX },
-@@ -75,6 +81,10 @@
+@@ -76,6 +82,10 @@ const HWAccel hwaccels[] = {
  #if CONFIG_CUVID
      { "cuvid", cuvid_init, HWACCEL_CUVID, AV_PIX_FMT_CUDA },
  #endif
@@ -202,7 +202,7 @@
      { 0 },
  };
  AVBufferRef *hw_device_ctx;
-@@ -688,7 +698,9 @@
+@@ -689,7 +699,9 @@ static AVCodec *choose_decoder(OptionsCo
          st->codecpar->codec_id = codec->id;
          return codec;
      } else
@@ -214,7 +214,7 @@
  /* Add all the streams from the given input file to the global
 --- a/libavcodec/Makefile
 +++ b/libavcodec/Makefile
-@@ -6,6 +6,7 @@
+@@ -6,6 +6,7 @@ HEADERS = ac3_parser.h
            avcodec.h                                                     \
            avdct.h                                                       \
            avfft.h                                                       \
@@ -222,7 +222,7 @@
            d3d11va.h                                                     \
            dirac.h                                                       \
            dv_profile.h                                                  \
-@@ -132,6 +133,7 @@
+@@ -132,6 +133,7 @@ OBJS-$(CONFIG_QSVDEC)                  +
  OBJS-$(CONFIG_QSVENC)                  += qsvenc.o
  OBJS-$(CONFIG_RANGECODER)              += rangecoder.o
  OBJS-$(CONFIG_RDFT)                    += rdft.o
@@ -230,7 +230,7 @@
  OBJS-$(CONFIG_RV34DSP)                 += rv34dsp.o
  OBJS-$(CONFIG_SHARED)                  += log2_tab.o reverse.o
  OBJS-$(CONFIG_SINEWIN)                 += sinewin.o sinewin_fixed.o
-@@ -365,6 +367,15 @@
+@@ -365,6 +367,15 @@ OBJS-$(CONFIG_HAP_ENCODER)             +
  OBJS-$(CONFIG_HEVC_DECODER)            += hevcdec.o hevc_mvs.o \
                                            hevc_cabac.o hevc_refs.o hevcpred.o    \
                                            hevcdsp.o hevc_filter.o hevc_data.o
@@ -246,7 +246,7 @@
  OBJS-$(CONFIG_HEVC_AMF_ENCODER)        += amfenc_hevc.o
  OBJS-$(CONFIG_HEVC_CUVID_DECODER)      += cuviddec.o
  OBJS-$(CONFIG_HEVC_MEDIACODEC_DECODER) += mediacodecdec.o
-@@ -872,6 +883,8 @@
+@@ -872,6 +883,8 @@ OBJS-$(CONFIG_HEVC_NVDEC_HWACCEL)
  OBJS-$(CONFIG_HEVC_QSV_HWACCEL)           += qsvdec_h2645.o
  OBJS-$(CONFIG_HEVC_VAAPI_HWACCEL)         += vaapi_hevc.o
  OBJS-$(CONFIG_HEVC_VDPAU_HWACCEL)         += vdpau_hevc.o
@@ -255,7 +255,7 @@
  OBJS-$(CONFIG_MJPEG_NVDEC_HWACCEL)        += nvdec_mjpeg.o
  OBJS-$(CONFIG_MJPEG_VAAPI_HWACCEL)        += vaapi_mjpeg.o
  OBJS-$(CONFIG_MPEG1_NVDEC_HWACCEL)        += nvdec_mpeg12.o
-@@ -1207,3 +1220,31 @@
+@@ -1207,3 +1220,31 @@ $(SUBDIR)qdm2.o: $(SUBDIR)qdm2_tables.h
  $(SUBDIR)sinewin.o: $(SUBDIR)sinewin_tables.h
  $(SUBDIR)sinewin_fixed.o: $(SUBDIR)sinewin_fixed_tables.h
  endif
@@ -289,7 +289,7 @@
 +endif
 --- a/libavcodec/allcodecs.c
 +++ b/libavcodec/allcodecs.c
-@@ -146,6 +146,7 @@
+@@ -146,6 +146,7 @@ extern AVCodec ff_hap_decoder;
  extern AVCodec ff_hevc_decoder;
  extern AVCodec ff_hevc_qsv_decoder;
  extern AVCodec ff_hevc_rkmpp_decoder;
@@ -297,7 +297,7 @@
  extern AVCodec ff_hevc_v4l2m2m_decoder;
  extern AVCodec ff_hnm4_video_decoder;
  extern AVCodec ff_hq_hqa_decoder;
-@@ -851,6 +852,41 @@
+@@ -851,6 +852,41 @@ static enum AVCodecID remap_deprecated_c
      }
  }
  
@@ -341,7 +341,7 @@
      const AVCodec *p, *experimental = NULL;
 --- a/libavcodec/arm/Makefile
 +++ b/libavcodec/arm/Makefile
-@@ -40,6 +40,8 @@
+@@ -40,6 +40,8 @@ OBJS-$(CONFIG_AAC_DECODER)             +
                                            arm/sbrdsp_init_arm.o
  OBJS-$(CONFIG_DCA_DECODER)             += arm/synth_filter_init_arm.o
  OBJS-$(CONFIG_HEVC_DECODER)            += arm/hevcdsp_init_arm.o
@@ -350,7 +350,7 @@
  OBJS-$(CONFIG_MLP_DECODER)             += arm/mlpdsp_init_arm.o
  OBJS-$(CONFIG_RV40_DECODER)            += arm/rv40dsp_init_arm.o
  OBJS-$(CONFIG_SBC_ENCODER)             += arm/sbcdsp_init_arm.o
-@@ -136,10 +138,24 @@
+@@ -136,10 +138,24 @@ NEON-OBJS-$(CONFIG_AAC_DECODER)        +
  NEON-OBJS-$(CONFIG_LLAUDDSP)           += arm/lossless_audiodsp_neon.o
  NEON-OBJS-$(CONFIG_DCA_DECODER)        += arm/synth_filter_neon.o
  NEON-OBJS-$(CONFIG_HEVC_DECODER)       += arm/hevcdsp_init_neon.o       \
@@ -15065,7 +15065,7 @@
 +endfunc
 --- a/libavcodec/avcodec.h
 +++ b/libavcodec/avcodec.h
-@@ -3223,8 +3223,7 @@
+@@ -3223,8 +3223,7 @@ typedef struct AVCodecContext {
  #define FF_SUB_TEXT_FMT_ASS_WITH_TIMINGS 1
  #endif
  
@@ -15075,7 +15075,7 @@
       * the end of the audio. I.e. this number of decoded samples must be
       * discarded by the caller from the end of the stream to get the original
       * audio without any trailing padding.
-@@ -3749,6 +3748,17 @@
+@@ -3749,6 +3748,17 @@ typedef struct AVHWAccel {
       * that avctx->hwaccel_priv_data is invalid.
       */
      int (*frame_params)(AVCodecContext *avctx, AVBufferRef *hw_frames_ctx);
@@ -15093,7 +15093,7 @@
  } AVHWAccel;
  
  /**
-@@ -4610,6 +4620,17 @@
+@@ -4610,6 +4620,17 @@ void av_packet_rescale_ts(AVPacket *pkt,
  AVCodec *avcodec_find_decoder(enum AVCodecID id);
  
  /**
@@ -15113,7 +15113,7 @@
   * @param name name of the requested decoder
 --- a/libavcodec/cabac.h
 +++ b/libavcodec/cabac.h
-@@ -43,7 +43,14 @@
+@@ -43,7 +43,14 @@ extern const uint8_t ff_h264_cabac_table
  typedef struct CABACContext{
      int low;
      int range;
@@ -15131,7 +15131,7 @@
      const uint8_t *bytestream_end;
 --- a/libavcodec/hevcdec.c
 +++ b/libavcodec/hevcdec.c
-@@ -364,12 +364,17 @@
+@@ -368,12 +368,17 @@ static enum AVPixelFormat get_format(HEV
                       CONFIG_HEVC_NVDEC_HWACCEL + \
                       CONFIG_HEVC_VAAPI_HWACCEL + \
                       CONFIG_HEVC_VIDEOTOOLBOX_HWACCEL + \
@@ -15149,7 +15149,7 @@
  #if CONFIG_HEVC_DXVA2_HWACCEL
          *fmt++ = AV_PIX_FMT_DXVA2_VLD;
  #endif
-@@ -391,6 +396,9 @@
+@@ -395,6 +400,9 @@ static enum AVPixelFormat get_format(HEV
  #endif
          break;
      case AV_PIX_FMT_YUV420P10:
@@ -15159,7 +15159,7 @@
  #if CONFIG_HEVC_DXVA2_HWACCEL
          *fmt++ = AV_PIX_FMT_DXVA2_VLD;
  #endif
-@@ -3072,6 +3080,10 @@
+@@ -3076,6 +3084,10 @@ static int decode_nal_units(HEVCContext
      }
  
  fail:
@@ -15170,7 +15170,7 @@
      if (s->ref && s->threads_type == FF_THREAD_FRAME)
          ff_thread_report_progress(&s->ref->tf, INT_MAX, 0);
  
-@@ -3571,6 +3583,12 @@
+@@ -3578,6 +3590,12 @@ AVCodec ff_hevc_decoder = {
  #if CONFIG_HEVC_VIDEOTOOLBOX_HWACCEL
                                 HWACCEL_VIDEOTOOLBOX(hevc),
  #endif
@@ -15193,7 +15193,7 @@
  
  
  typedef struct AVCodecHWConfigInternal {
-@@ -80,5 +81,9 @@
+@@ -80,5 +81,9 @@ typedef struct AVCodecHWConfigInternal {
      HW_CONFIG_HWACCEL(0, 0, 1, D3D11VA_VLD,  NONE,         ff_ ## codec ## _d3d11va_hwaccel)
  #define HWACCEL_XVMC(codec) \
      HW_CONFIG_HWACCEL(0, 0, 1, XVMC,         NONE,         ff_ ## codec ## _xvmc_hwaccel)
@@ -15205,7 +15205,7 @@
  #endif /* AVCODEC_HWACCEL_H */
 --- a/libavcodec/hwaccels.h
 +++ b/libavcodec/hwaccels.h
-@@ -74,5 +74,7 @@
+@@ -74,5 +74,7 @@ extern const AVHWAccel ff_wmv3_dxva2_hwa
  extern const AVHWAccel ff_wmv3_nvdec_hwaccel;
  extern const AVHWAccel ff_wmv3_vaapi_hwaccel;
  extern const AVHWAccel ff_wmv3_vdpau_hwaccel;
@@ -15235,7 +15235,7 @@
  #include "avcodec.h"
 --- a/libavcodec/pthread_frame.c
 +++ b/libavcodec/pthread_frame.c
-@@ -191,7 +191,8 @@
+@@ -191,7 +191,8 @@ static attribute_align_arg void *frame_w
  
          /* if the previous thread uses hwaccel then we take the lock to ensure
           * the threads don't run concurrently */
@@ -15245,7 +15245,7 @@
              pthread_mutex_lock(&p->parent->hwaccel_mutex);
              p->hwaccel_serializing = 1;
          }
-@@ -603,7 +604,9 @@
+@@ -603,7 +604,9 @@ void ff_thread_finish_setup(AVCodecConte
  
      if (!(avctx->active_thread_type&FF_THREAD_FRAME)) return;
  
@@ -15258,7 +15258,7 @@
      }
 --- a/libavcodec/raw.c
 +++ b/libavcodec/raw.c
-@@ -285,10 +285,20 @@
+@@ -285,10 +285,20 @@ const PixelFormatTag ff_raw_pix_fmt_tags
      { AV_PIX_FMT_YUV444P16LE, MKTAG('I', '4', 'F', 'L') },
      { AV_PIX_FMT_YUV444P16BE, MKTAG('I', '4', 'F', 'B') },
  
@@ -15300,7 +15300,7 @@
  
  static av_cold int raw_encode_init(AVCodecContext *avctx)
  {
-@@ -49,12 +54,95 @@
+@@ -49,12 +54,95 @@ FF_ENABLE_DEPRECATION_WARNINGS
      return 0;
  }
  
@@ -18619,10 +18619,10 @@
 +    const unsigned int log2_ctb_size = s->ps.sps->log2_ctb_size;
 +    const unsigned int log2_min_cb_size  = s->ps.sps->log2_min_cb_size;
 +    const unsigned int ctb_size = (1 << log2_ctb_size);
-+    const unsigned int cb_r = FFMIN(bounds.x + bounds.w, s->ps.sps->width) - (end_x ? 0 :  1);
++    const unsigned int cb_r = bounds.x + bounds.w - (end_x ? 0 :  1);
 +    const unsigned int ctb_n = (bounds.x + bounds.y * s->ps.sps->ctb_width) >> log2_ctb_size;
 +    const DBParams * cb_dbp = s->deblock + ctb_n;
-+    const unsigned int b_b = FFMIN(bounds.y + bounds.h, s->ps.sps->height) - (end_y ? 0 : 8);
++    const unsigned int b_b = bounds.y + bounds.h - (end_y ? 0 : 8);
 +
 +    unsigned int cb_x;
 +
@@ -18729,10 +18729,10 @@
 +    const unsigned int log2_ctb_size = s->ps.sps->log2_ctb_size;
 +    const unsigned int log2_min_cb_size  = s->ps.sps->log2_min_cb_size;
 +    const unsigned int ctb_size = (1 << log2_ctb_size);
-+    const unsigned int cb_r = FFMIN(bounds.x + bounds.w, s->ps.sps->width) - (end_x ? 0 :  8);
++    const unsigned int cb_r = bounds.x + bounds.w - (end_x ? 0 :  8);
 +    const unsigned int ctb_n = (bounds.x + bounds.y * s->ps.sps->ctb_width) >> log2_ctb_size;
 +    const DBParams * dbp = s->deblock + ctb_n;
-+    const unsigned int b_b = FFMIN(bounds.y + bounds.h, s->ps.sps->height) - (end_y ? 0 : 8);
++    const unsigned int b_b = bounds.y + bounds.h - (end_y ? 0 : 8);
 +    const uint8_t * const tcq_u = s->ps.pps->qp_dblk_x[1];
 +    const uint8_t * const tcq_v = s->ps.pps->qp_dblk_x[2];
 +
@@ -19124,8 +19124,8 @@
 +    const int ctb_size = (1 << s->ps.sps->log2_ctb_size);
 +    int x, y;
 +
-+    const unsigned int br = FFMIN(bounds.x + bounds.w, s->ps.sps->width);
-+    const unsigned int bb = FFMIN(bounds.y + bounds.h, s->ps.sps->height);
++    const unsigned int br = bounds.x + bounds.w;
++    const unsigned int bb = bounds.y + bounds.h;
 +
 +    const int x_end = (br >= s->ps.sps->width);
 +    const int y_end = (bb >= s->ps.sps->height);
@@ -28260,7 +28260,7 @@
 +};
 --- /dev/null
 +++ b/libavcodec/rpi_hevcdec.c
-@@ -0,0 +1,6146 @@
+@@ -0,0 +1,6149 @@
 +/*
 + * HEVC video Decoder
 + *
@@ -32178,6 +32178,9 @@
 +    bounds->y = (rs0 / ctb_width) << s->ps.sps->log2_ctb_size;
 +    bounds->w = ((rs1 - rs0) % ctb_width + 1) << s->ps.sps->log2_ctb_size;
 +    bounds->h = ((rs1 - rs0) / ctb_width + 1) << s->ps.sps->log2_ctb_size;
++
++    bounds->w = FFMIN(bounds->w, s->ps.sps->width - bounds->x);
++    bounds->h = FFMIN(bounds->h, s->ps.sps->height - bounds->y);
 +}
 +
 +#if RPI_PASSES == 2
@@ -40483,9 +40486,9 @@
 +    (void)flags;
 +
 +    if (vcsm_init_ex(wants_cma ? 1 : 0, -1) == 0)
-+        use_cma = 0;
-+    else if (vcsm_init_ex(wants_cma ? 0 : 1, -1) == 0)
 +        use_cma = 1;
++    else if (vcsm_init_ex(wants_cma ? 0 : 1, -1) == 0)
++        use_cma = 0;
 +    else
 +        return AVERROR(EINVAL);
 +
@@ -41644,7 +41647,7 @@
 +#endif
 --- /dev/null
 +++ b/libavcodec/rpi_zc.c
-@@ -0,0 +1,1208 @@
+@@ -0,0 +1,1227 @@
 +#include "config.h"
 +
 +#include "libavcodec/avcodec.h"
@@ -42192,6 +42195,13 @@
 +
 +            pthread_mutex_unlock(&sand_lock);
 +
++#if 0
++            printf("Req: %dx%d: stride=%d/%d, height=%d/%d, stripes=%d, img.pitch=%d\n",
++                   video_width, video_height,
++                   geo.stride_y, geo.stride_c,
++                   geo.height_y, geo.height_c,
++                   geo.stripes, img.pitch);
++#endif
 +            av_assert0((int)geo.height_y > 0 && (int)geo.height_c > 0);
 +            av_assert0(geo.height_y >= video_height && geo.height_c >= video_height / 2);
 +            break;
@@ -42323,6 +42333,12 @@
 +    return &pic_zbe_ptr(buf)->gmem;
 +}
 +
++unsigned int av_rpi_zc_vcsm_handle(const AVRpiZcRefPtr fr_ref)
++{
++    const GPU_MEM_PTR_T * const p = pic_gm_ptr(fr_ref);
++    return p == NULL ? 0 : p->vcsm_handle;
++}
++
 +int av_rpi_zc_vc_handle(const AVRpiZcRefPtr fr_ref)
 +{
 +    const GPU_MEM_PTR_T * const p = pic_gm_ptr(fr_ref);
@@ -42345,6 +42361,12 @@
 +{
 +    const GPU_MEM_PTR_T * const p = pic_gm_ptr(fr_ref);
 +    return p == NULL ? 0 : p->numbytes;
++}
++
++const AVRpiZcFrameGeometry * av_rpi_zc_geometry(const AVRpiZcRefPtr fr_ref)
++{
++    const ZcBufEnv * const zbe = pic_zbe_ptr(fr_ref);
++    return zbe == NULL ? NULL : &zbe->geo;
 +}
 +
 +AVRpiZcRefPtr av_rpi_zc_ref(void * const logctx, const AVZcEnvPtr zc,
@@ -42855,7 +42877,7 @@
 +
 --- /dev/null
 +++ b/libavcodec/rpi_zc.h
-@@ -0,0 +1,178 @@
+@@ -0,0 +1,174 @@
 +/*
 +Copyright (c) 2018 Raspberry Pi (Trading) Ltd.
 +All rights reserved.
@@ -42934,16 +42956,6 @@
 +    const int format,
 +    const unsigned int video_width, const unsigned int video_height);
 +
-+// Replacement fn for avctx->get_buffer2
-+// Should be set before calling avcodec_decode_open2
-+//
-+// N.B. in addition to to setting avctx->get_buffer2, avctx->refcounted_frames
-+// must be set to 1 as otherwise the buffer info is killed before being returned
-+// by avcodec_decode_video2.  Note also that this means that the AVFrame that is
-+// returned must be manually derefed with av_frame_unref.  This should be done
-+// after av_rpi_zc_ref has been called.
-+int av_rpi_zc_get_buffer2(struct AVCodecContext *s, AVFrame *frame, int flags);
-+
 +// Generate a ZC reference to the buffer(s) in this frame
 +// If the buffer doesn't appear to be one allocated by ZC
 +// then the behaviour depends on maycopy:
@@ -42958,6 +42970,9 @@
 +// Get the vc_handle from the frame ref
 +// Returns -1 if ref doesn't look valid
 +int av_rpi_zc_vc_handle(const AVRpiZcRefPtr fr_ref);
++// Get the vcsm_handle from the frame ref
++// Returns 0 if ref doesn't look valid
++unsigned int av_rpi_zc_vcsm_handle(const AVRpiZcRefPtr fr_ref);
 +// Get offset from the start of the memory referenced
 +// by the vc_handle to valid data
 +int av_rpi_zc_offset(const AVRpiZcRefPtr fr_ref);
@@ -42966,6 +42981,8 @@
 +// Get the number of bytes allocated from the frame ref
 +// Returns 0 if ref doesn't look valid
 +int av_rpi_zc_numbytes(const AVRpiZcRefPtr fr_ref);
++// Geometry this frame was allocated with
++const AVRpiZcFrameGeometry * av_rpi_zc_geometry(const AVRpiZcRefPtr fr_ref);
 +
 +// Unreference the buffer refed/allocated by _zc_ref
 +// If fr_ref is NULL then this will NOP
@@ -42975,8 +42992,11 @@
 +int av_rpi_zc_in_use(const struct AVCodecContext * const s);
 +
 +// Init ZC into a context
-+// There is nothing magic in this fn - it just packages setting
-+// get_buffer2 & get_buffer_context
++// Sets opaque, get_buffer2, thread_safe_callbacks
++// Use if you want to allocate your own pools and/or create ZC buffers for
++// all decoders
++// RPI HEVC decoders will allocate appropriate VCSM buffers which can be taken
++// apart by av_rpi_zc_xxx calls without this
 +
 +typedef AVBufferRef * av_rpi_zc_alloc_buf_fn_t(void * pool_env, size_t size,
 +                                               const AVRpiZcFrameGeometry * geo);
@@ -42987,8 +43007,6 @@
 +                    av_rpi_zc_free_pool_fn_t * free_pool_fn);
 +
 +// Free ZC from a context
-+// There is nothing magic in this fn - it just packages unsetting
-+// get_buffer2 & get_buffer_context
 +void av_rpi_zc_uninit2(struct AVCodecContext * const s);
 +
 +void av_rpi_zc_int_env_freep(AVZcEnvPtr * zc);
@@ -43181,7 +43199,7 @@
 +#endif
 --- /dev/null
 +++ b/libavcodec/rpivid_hevc.c
-@@ -0,0 +1,1934 @@
+@@ -0,0 +1,2032 @@
 +// FFMPEG HEVC decoder hardware accelerator
 +// Andrew Holme, Argon Design Ltd
 +// Copyright (c) June 2017 Raspberry Pi Ltd
@@ -43278,6 +43296,9 @@
 +#define RPI_CURRPOC       0x8040
 +
 +//////////////////////////////////////////////////////////////////////////////
++
++// Unused but left here to illustrate the diffrences between FFmpegs prob
++// structure and the rpivid one
 +
 +struct FFM_PROB {
 +    uint8_t  sao_merge_flag                   [ 1];
@@ -43379,6 +43400,9 @@
 +    RPIVID_DECODE_END,
 +} rpivid_decode_state_t;
 +
++#define RPI_PROB_VALS 154U
++#define RPI_PROB_ARRAY_SIZE ((154 + 3) & ~3)
++
 +typedef struct dec_env_s {
 +    const AVCodecContext * avctx;
 +
@@ -43393,20 +43417,16 @@
 +    struct RPI_CMD *cmd_fifo;
 +    unsigned int    bit_len, bit_max;
 +    unsigned int    cmd_len, cmd_max;
-+    struct RPI_PROB probabilities;
 +    unsigned int    num_slice_msgs;
 +    unsigned int    PicWidthInCtbsY;
 +    unsigned int    PicHeightInCtbsY;
 +    unsigned int    dpbno_col;
 +    uint32_t        reg_slicestart;
-+    int             collocated_from_l0_flag;
-+    unsigned int    max_num_merge_cand;
-+    unsigned int    collocated_ref_idx;
 +    unsigned int    wpp_entry_x;
 +    unsigned int    wpp_entry_y;
 +    uint16_t        slice_msgs[2*HEVC_MAX_REFS*8+3];
 +    uint8_t         scaling_factors[NUM_SCALING_FACTORS];
-+    unsigned int    RefPicList[2][HEVC_MAX_REFS];
++//    unsigned int    RefPicList[2][HEVC_MAX_REFS];
 +} dec_env_t;
 +
 +#define RPIVID_PHASES 3
@@ -43626,101 +43646,160 @@
 +}
 +#endif
 +
-+//////////////////////////////////////////////////////////////////////////////
-+
-+// Array of constants for scaling factors
-+static const uint32_t scaling_factor_offsets[4][6] = {
-+    // MID0    MID1    MID2    MID3    MID4    MID5
-+    {0x0000, 0x0010, 0x0020, 0x0030, 0x0040, 0x0050},   // SID0 (4x4)
-+    {0x0060, 0x00A0, 0x00E0, 0x0120, 0x0160, 0x01A0},   // SID1 (8x8)
-+    {0x01E0, 0x02E0, 0x03E0, 0x04E0, 0x05E0, 0x06E0},   // SID2 (16x16)
-+    {0x07E0,      0,      0, 0x0BE0,      0,      0}};  // SID3 (32x32)
-+
-+// ffmpeg places SID3,MID1 where matrixID 3 normally is
 +
 +//////////////////////////////////////////////////////////////////////////////
 +// Scaling factors
 +
 +static void expand_scaling_list(
-+    dec_env_t * const de,
-+    const ScalingList * const scaling_list, // scaling list structure from ffmpeg
 +    const unsigned int sizeID,
-+    const unsigned int matrixID)
++    const unsigned int matrixID,
++    uint8_t * const dst0,
++    const uint8_t * const src0,
++    uint8_t dc)
 +{
-+    unsigned int x, y, i, blkSize = 4<<sizeID;
-+    const uint32_t index_offset = scaling_factor_offsets[sizeID][matrixID];
-+
-+    for (x=0; x<blkSize; x++) {
-+        for (y=0; y<blkSize; y++) {
-+            uint32_t index = index_offset + x + y*blkSize;
-+            // Derivation of i to match indexing in ff_hevc_hls_residual_coding
-+            switch (sizeID) {
-+                case 0: i = (y<<2) + x;             break;
-+                case 1: i = (y<<3) + x;             break;
-+                case 2: i = ((y>>1)<<3) + (x>>1);   break;
-+                case 3: i = ((y>>2)<<3) + (x>>2);
++    switch (sizeID) {
++        case 0:
++            memcpy(dst0, src0, 16);
++            break;
++        case 1:
++            memcpy(dst0, src0, 64);
++            break;
++        case 2:
++        {
++            uint8_t * d = dst0;
++            for (unsigned int y=0; y != 16; y++) {
++                const uint8_t * s = src0 + (y >> 1) * 8;
++                for (unsigned int x = 0; x != 8; ++x) {
++                    *d++ = *s;
++                    *d++ = *s++;
++                }
 +            }
-+            de->scaling_factors[index] = scaling_list->sl[sizeID][matrixID][i];
++            dst0[0] = dc;
++            break;
++        }
++        default:
++        {
++            uint8_t * d = dst0;
++            for (unsigned int y=0; y != 32; y++) {
++                const uint8_t * s = src0 + (y >> 2) * 8;
++                for (unsigned int x = 0; x != 8; ++x) {
++                    *d++ = *s;
++                    *d++ = *s;
++                    *d++ = *s;
++                    *d++ = *s++;
++                }
++            }
++            dst0[0] = dc;
++            break;
 +        }
 +    }
-+    if (sizeID>1)
-+        de->scaling_factors[index_offset] =
-+            scaling_list->sl_dc[sizeID-2][matrixID];
 +}
 +
 +static void populate_scaling_factors(dec_env_t * const de, const HEVCContext * const s) {
++    // Array of constants for scaling factors
++    static const uint32_t scaling_factor_offsets[4][6] = {
++        // MID0    MID1    MID2    MID3    MID4    MID5
++        {0x0000, 0x0010, 0x0020, 0x0030, 0x0040, 0x0050},   // SID0 (4x4)
++        {0x0060, 0x00A0, 0x00E0, 0x0120, 0x0160, 0x01A0},   // SID1 (8x8)
++        {0x01E0, 0x02E0, 0x03E0, 0x04E0, 0x05E0, 0x06E0},   // SID2 (16x16)
++        {0x07E0,      0,      0, 0x0BE0,      0,      0}};  // SID3 (32x32)
++
++    // ffmpeg places SID3,MID1 where matrixID 3 normally is
 +    const ScalingList * const sl =
 +        s->ps.pps->scaling_list_data_present_flag ? &s->ps.pps->scaling_list
 +                                                  : &s->ps.sps->scaling_list;
-+    int sid, mid;
-+    for (sid=0; sid<3; sid++)
-+        for (mid=0; mid<6; mid++)
-+            expand_scaling_list(de, sl, sid, mid);
++    unsigned int mid;
 +
++    for (mid=0; mid<6; mid++)
++        expand_scaling_list(0, mid,
++            de->scaling_factors + scaling_factor_offsets[0][mid],
++            sl->sl[0][mid], 0);
++    for (mid=0; mid<6; mid++)
++        expand_scaling_list(1, mid,
++            de->scaling_factors + scaling_factor_offsets[1][mid],
++            sl->sl[1][mid], 0);
++    for (mid=0; mid<6; mid++)
++        expand_scaling_list(2, mid,
++            de->scaling_factors + scaling_factor_offsets[2][mid],
++            sl->sl[2][mid],
++            sl->sl_dc[0][mid]);
 +    // second scaling matrix for 32x32 is at matrixID 3 not 1 in ffmpeg
-+    expand_scaling_list(de, sl, 3, 0);
-+    expand_scaling_list(de, sl, 3, 3);
++    for (mid=0; mid<6; mid += 3)
++        expand_scaling_list(3, mid,
++            de->scaling_factors + scaling_factor_offsets[3][mid],
++            sl->sl[3][mid],
++            sl->sl_dc[1][mid]);
 +}
 +
 +//////////////////////////////////////////////////////////////////////////////
 +// Probabilities
 +
-+// **** Horrid type punning here &I don't understand why it is wanted
-+static void populate_prob_tables(dec_env_t * const de, const HEVCContext * const s) {
-+    struct RPI_PROB * const dst = &de->probabilities;
-+    const struct FFM_PROB * const src = (struct FFM_PROB *) s->HEVClc->cabac_state;
-+    #define PROB_CPSZ(to, from, sz) memcpy(dst->to, src->from, sz)
-+    #define PROB_COPY(to, from)     memcpy(dst->to, src->from, sizeof(dst->to))
-+    memset(dst, 0, sizeof(*dst));
-+    PROB_COPY(SAO_MERGE_FLAG           , sao_merge_flag                 );
-+    PROB_COPY(SAO_TYPE_IDX             , sao_type_idx                   );
-+    PROB_COPY(SPLIT_FLAG               , split_coding_unit_flag         );
-+    PROB_COPY(CU_SKIP_FLAG             , skip_flag                      );
-+    PROB_COPY(CU_TRANSQUANT_BYPASS_FLAG, cu_transquant_bypass_flag      );
-+    PROB_COPY(PRED_MODE                , pred_mode_flag                 );
-+    PROB_COPY(PART_SIZE                , part_mode                      );
-+    PROB_COPY(INTRA_PRED_MODE          , prev_intra_luma_pred_flag      );
-+    PROB_COPY(CHROMA_PRED_MODE         , intra_chroma_pred_mode         );
-+    PROB_COPY(MERGE_FLAG_EXT           , merge_flag                     );
-+    PROB_COPY(MERGE_IDX_EXT            , merge_idx                      );
-+    PROB_COPY(INTER_DIR                , inter_pred_idc                 );
-+    PROB_COPY(REF_PIC                  , ref_idx_l0                     );
-+    PROB_COPY(MVP_IDX                  , mvp_lx_flag                    );
-+    PROB_CPSZ(MVD+0                    , abs_mvd_greater0_flag+0    ,  1); // ABS_MVD_GREATER0_FLAG[1] not used
-+    PROB_CPSZ(MVD+1                    , abs_mvd_greater1_flag+1    ,  1); // ABS_MVD_GREATER1_FLAG[0] not used
-+    PROB_COPY(QT_ROOT_CBF              , no_residual_data_flag          );
-+    PROB_COPY(TRANS_SUBDIV_FLAG        , split_transform_flag           );
-+    PROB_CPSZ(QT_CBF                   , cbf_luma                   ,  2);
-+    PROB_CPSZ(QT_CBF+2                 , cbf_cb_cr                  ,  4);
-+    PROB_COPY(DQP                      , cu_qp_delta                    );
-+    PROB_COPY(ONE_FLAG                 , coeff_abs_level_greater1_flag  );
-+    PROB_COPY(LASTX                    , last_significant_coeff_x_prefix);
-+    PROB_COPY(LASTY                    , last_significant_coeff_y_prefix);
-+    PROB_COPY(SIG_CG_FLAG              , significant_coeff_group_flag   );
-+    PROB_COPY(ABS_FLAG                 , coeff_abs_level_greater2_flag  );
-+    PROB_COPY(TRANSFORMSKIP_FLAG       , transform_skip_flag            );
-+    PROB_CPSZ(SIG_FLAG                 , significant_coeff_flag     , 42);
-+}
++static const uint8_t prob_init[3][156] = {
++	{
++		 153, 200, 139, 141, 157, 154, 154, 154,
++		 154, 154, 184, 154, 154, 154, 184,  63,
++		 154, 154, 154, 154, 154, 154, 154, 154,
++		 154, 154, 154, 154, 154, 153, 138, 138,
++		 111, 141,  94, 138, 182, 154, 154, 154,
++		 140,  92, 137, 138, 140, 152, 138, 139,
++		 153,  74, 149,  92, 139, 107, 122, 152,
++		 140, 179, 166, 182, 140, 227, 122, 197,
++		 110, 110, 124, 125, 140, 153, 125, 127,
++		 140, 109, 111, 143, 127, 111,  79, 108,
++		 123,  63, 110, 110, 124, 125, 140, 153,
++		 125, 127, 140, 109, 111, 143, 127, 111,
++		  79, 108, 123,  63,  91, 171, 134, 141,
++		 138, 153, 136, 167, 152, 152, 139, 139,
++		 111, 111, 125, 110, 110,  94, 124, 108,
++		 124, 107, 125, 141, 179, 153, 125, 107,
++		 125, 141, 179, 153, 125, 107, 125, 141,
++		 179, 153, 125, 140, 139, 182, 182, 152,
++		 136, 152, 136, 153, 136, 139, 111, 136,
++		 139, 111,   0,   0,	},
++	{
++		 153, 185, 107, 139, 126, 197, 185, 201,
++		 154, 149, 154, 139, 154, 154, 154, 152,
++		 110, 122,  95,  79,  63,  31,  31, 153,
++		 153, 168, 140, 198,  79, 124, 138,  94,
++		 153, 111, 149, 107, 167, 154, 154, 154,
++		 154, 196, 196, 167, 154, 152, 167, 182,
++		 182, 134, 149, 136, 153, 121, 136, 137,
++		 169, 194, 166, 167, 154, 167, 137, 182,
++		 125, 110,  94, 110,  95,  79, 125, 111,
++		 110,  78, 110, 111, 111,  95,  94, 108,
++		 123, 108, 125, 110,  94, 110,  95,  79,
++		 125, 111, 110,  78, 110, 111, 111,  95,
++		  94, 108, 123, 108, 121, 140,  61, 154,
++		 107, 167,  91, 122, 107, 167, 139, 139,
++		 155, 154, 139, 153, 139, 123, 123,  63,
++		 153, 166, 183, 140, 136, 153, 154, 166,
++		 183, 140, 136, 153, 154, 166, 183, 140,
++		 136, 153, 154, 170, 153, 123, 123, 107,
++		 121, 107, 121, 167, 151, 183, 140, 151,
++		 183, 140,   0,   0,	},
++	{
++		 153, 160, 107, 139, 126, 197, 185, 201,
++		 154, 134, 154, 139, 154, 154, 183, 152,
++		 154, 137,  95,  79,  63,  31,  31, 153,
++		 153, 168, 169, 198,  79, 224, 167, 122,
++		 153, 111, 149,  92, 167, 154, 154, 154,
++		 154, 196, 167, 167, 154, 152, 167, 182,
++		 182, 134, 149, 136, 153, 121, 136, 122,
++		 169, 208, 166, 167, 154, 152, 167, 182,
++		 125, 110, 124, 110,  95,  94, 125, 111,
++		 111,  79, 125, 126, 111, 111,  79, 108,
++		 123,  93, 125, 110, 124, 110,  95,  94,
++		 125, 111, 111,  79, 125, 126, 111, 111,
++		  79, 108, 123,  93, 121, 140,  61, 154,
++		 107, 167,  91, 107, 107, 167, 139, 139,
++		 170, 154, 139, 153, 139, 123, 123,  63,
++		 124, 166, 183, 140, 136, 153, 154, 166,
++		 183, 140, 136, 153, 154, 166, 183, 140,
++		 136, 153, 154, 170, 153, 138, 138, 122,
++		 121, 122, 121, 167, 151, 183, 140, 151,
++		 183, 140,   0,   0,	},
++};
++
 +
 +//////////////////////////////////////////////////////////////////////////////
 +// Phase 1 command and bit FIFOs
@@ -43746,12 +43825,44 @@
 +//////////////////////////////////////////////////////////////////////////////
 +// Write probability and scaling factor memories
 +
++#if 0
 +static void WriteProb(dec_env_t * const de) {
 +    int i;
 +    const uint8_t *p = (uint8_t *) &de->probabilities;
 +    for (i=0; i<sizeof(struct RPI_PROB); i+=4, p+=4)
 +        p1_apb_write(de, 0x1000+i, p[0] + (p[1]<<8) + (p[2]<<16) + (p[3]<<24));
 +}
++#endif
++
++static void WriteProb(dec_env_t * const de, const HEVCContext * const s) {
++    uint8_t dst[RPI_PROB_ARRAY_SIZE];
++
++    const unsigned int init_type = (s->sh.cabac_init_flag && s->sh.slice_type != HEVC_SLICE_I) ?
++        s->sh.slice_type + 1 : 2 - s->sh.slice_type;
++    const uint8_t * p = prob_init[init_type];
++    const int q = av_clip(s->sh.slice_qp, 0, 51);
++    unsigned int i;
++
++    for (i = 0; i < RPI_PROB_VALS; i++) {
++        int init_value = p[i];
++        int m = (init_value >> 4) * 5 - 45;
++        int n = ((init_value & 15) << 3) - 16;
++        int pre = 2 * (((m * q) >> 4) + n) - 127;
++
++        pre ^= pre >> 31;
++        if (pre > 124)
++            pre = 124 + (pre & 1);
++        dst[i] = pre;
++    }
++    for (i = RPI_PROB_VALS; i != RPI_PROB_ARRAY_SIZE; ++i) {
++        dst[i] = 0;
++    }
++
++    for (i=0; i < RPI_PROB_ARRAY_SIZE; i+=4)
++        p1_apb_write(de, 0x1000+i, dst[i] + (dst[i+1]<<8) + (dst[i+2]<<16) + (dst[i+3]<<24));
++
++}
++
 +
 +static void WriteScalingFactors(dec_env_t * const de) {
 +    int i;
@@ -44265,8 +44376,10 @@
 +
 +    int weightedPredFlag, i, rIdx;
 +    uint16_t cmd_slice;
++    unsigned int collocated_from_l0_flag;
 +
 +    de->num_slice_msgs=0;
++    de->dpbno_col = 0;
 +    cmd_slice = 0;
 +    if (sh->slice_type==HEVC_SLICE_I) cmd_slice = 1;
 +    if (sh->slice_type==HEVC_SLICE_P) cmd_slice = 2;
@@ -44276,16 +44389,17 @@
 +        cmd_slice += sh->nb_refs[L0]<<2;
 +        cmd_slice += sh->nb_refs[L1]<<6;
 +    }
-+    if (sh->slice_type==HEVC_SLICE_P
-+    ||  sh->slice_type==HEVC_SLICE_B) de->max_num_merge_cand = sh->max_num_merge_cand;
 +
-+    cmd_slice += de->max_num_merge_cand<<11;
++    if (sh->slice_type==HEVC_SLICE_P ||  sh->slice_type==HEVC_SLICE_B)
++        cmd_slice |= sh->max_num_merge_cand<<11;
 +
-+    if (sh->slice_temporal_mvp_enabled_flag) {
-+        if      (sh->slice_type==HEVC_SLICE_B) de->collocated_from_l0_flag = sh->collocated_list==L0;
-+        else if (sh->slice_type==HEVC_SLICE_P) de->collocated_from_l0_flag = 1;
-+    }
-+    cmd_slice += de->collocated_from_l0_flag<<14;
++    collocated_from_l0_flag =
++        !sh->slice_temporal_mvp_enabled_flag ?
++            0 :
++        sh->slice_type == HEVC_SLICE_B ?
++            (sh->collocated_list == L0) :
++            (sh->slice_type==HEVC_SLICE_P);
++    cmd_slice |= collocated_from_l0_flag<<14;
 +
 +    if (sh->slice_type==HEVC_SLICE_P || sh->slice_type==HEVC_SLICE_B) {
 +
@@ -44298,12 +44412,13 @@
 +            }
 +        }
 +
-+        de->collocated_ref_idx = sh->collocated_ref_idx;
-+        if (s->ref->refPicList && s->ref->collocated_ref)
-+            for (i=0; i<HEVC_MAX_REFS; i++) {
-+                if (i<sh->nb_refs[L1]) de->RefPicList[1][i] = s->ref->refPicList[1].ref[i] - s->DPB;
-+                if (i<sh->nb_refs[L0]) de->RefPicList[0][i] = s->ref->refPicList[0].ref[i] - s->DPB;
-+            }
++        if (sps->sps_temporal_mvp_enabled_flag)
++        {
++            const RefPicList *rpl = (sh->slice_type != HEVC_SLICE_B || collocated_from_l0_flag) ?
++                s->ref->refPicList + 0 :
++                s->ref->refPicList + 1;
++            de->dpbno_col = rpl->ref[sh->collocated_ref_idx] - s->DPB;
++        }
 +
 +        cmd_slice += NoBackwardPredFlag<<10;
 +        msg_slice(de, cmd_slice);
@@ -44341,12 +44456,6 @@
 +        + (pps->loop_filter_across_tiles_enabled_flag       << 10)); // CMD_DEBLOCK
 +
 +    msg_slice(de, ((sh->slice_cr_qp_offset&31)<<5) + (sh->slice_cb_qp_offset&31)); // CMD_QPOFF
-+
-+    // collocated reads/writes
-+    if (sps->sps_temporal_mvp_enabled_flag) {
-+        de->dpbno_col = sh->slice_type == HEVC_SLICE_I ? 0 :
-+            de->RefPicList[sh->slice_type==HEVC_SLICE_B && de->collocated_from_l0_flag==0][de->collocated_ref_idx];
-+    }
 +}
 +
 +
@@ -44396,10 +44505,8 @@
 +    const HEVCContext * const s = avctx->priv_data;
 +    const HEVCPPS * const pps = s->ps.pps;
 +    const HEVCSPS * const sps = s->ps.sps;
-+    const SliceHeader * const sh = &s->sh;
 +    dec_env_t * const de = dec_env_get(avctx,  rpi);
 +    AVFrame * const f = s->ref->frame;
-+    AVFrame * fallback_frame = f;
 +    const unsigned int dpbno_cur = s->ref - s->DPB;
 +    vid_vc_addr_t cmds_vc;
 +    vid_vc_addr_t pu_base_vc;
@@ -44598,27 +44705,18 @@
 +    apb_write_vc_len(rpi, RPI_OUTYSTRIDE, f->linesize[3] * 128);
 +    apb_write_vc_len(rpi, RPI_OUTCSTRIDE, f->linesize[3] * 128);
 +
-+    for(i=0; i<16; i++) {
-+        apb_write(rpi, 0x9000+16*i, 0);
-+        apb_write(rpi, 0x9004+16*i, 0);
-+        apb_write(rpi, 0x9008+16*i, 0);
-+        apb_write(rpi, 0x900C+16*i, 0);
-+    }
-+
 +    // Keep the last thing we resolved as fallback for any ref we fail to
 +    // resolve.  As a final fallback use our current frame.  The pels might
 +    // not be there yet but at least the memory is valid.
-+    fallback_frame = f;
-+    for(i=L0; i<=L1; i++)
++    //
++    // Attempt to resolve the entire DPB - we could note what we have used
++    // in ref lists but probably simpler and more reliable to set the whole thing
 +    {
-+        for (unsigned int rIdx=0; rIdx <sh->nb_refs[i]; rIdx++)
-+        {
-+            const HEVCFrame * const f1 = s->ref->refPicList[i].ref[rIdx];
-+            const int pic = f1 - s->DPB;
-+            // Make sure pictures are in range 0 to 15
-+            const int adjusted_pic = f1 < s->ref ? pic : pic-1;
-+            const struct HEVCFrame * const hevc = &s->DPB[pic];
-+            AVFrame * fr = (hevc != NULL) ? hevc->frame : NULL;
++        AVFrame * fallback_frame = f;
++        for (i = 0; i != 16; ++i) {
++            // Avoid current frame
++            const HEVCFrame * hevc_fr = (s->DPB + i >= s->ref) ? s->DPB + i + 1 : s->DPB + i;
++            AVFrame * fr = hevc_fr->frame;
 +
 +            if (fr != NULL &&
 +                av_rpi_zc_resolve_frame(fr, ZC_RESOLVE_FAIL) == 0)
@@ -44627,14 +44725,13 @@
 +            }
 +            else
 +            {
-+                av_log(avctx, AV_LOG_WARNING, "Failed to resolve reference frame\n");
 +                fr = fallback_frame;
 +            }
 +
-+            av_assert1(adjusted_pic >= 0 && adjusted_pic < 16);
-+            apb_write_vc_addr(rpi, 0x9000+16*adjusted_pic, get_vc_address_y(fr));
-+            apb_write_vc_addr(rpi, 0x9008+16*adjusted_pic, get_vc_address_u(fr));
-+            // Strides ignored
++            apb_write_vc_addr(rpi, 0x9000+16*i, get_vc_address_y(fr));
++            apb_write(rpi, 0x9004+16*i, 0);
++            apb_write_vc_addr(rpi, 0x9008+16*i, get_vc_address_u(fr));
++            apb_write(rpi, 0x900C+16*i, 0);
 +        }
 +    }
 +
@@ -44745,12 +44842,16 @@
 +    int indep = !s->sh.dependent_slice_segment_flag;
 +    int ctb_col = s->sh.slice_ctb_addr_rs % de->PicWidthInCtbsY;
 +
-+    if (ctb_addr_ts) wpp_end_previous_slice(de, s, ctb_addr_ts);
++    if (ctb_addr_ts)
++        wpp_end_previous_slice(de, s, ctb_addr_ts);
 +    pre_slice_decode(de, s);
 +    WriteBitstream(de, s);
-+    if (ctb_addr_ts==0 || indep || de->PicWidthInCtbsY==1) WriteProb(de);
-+    else if (ctb_col==0) p1_apb_write(de, RPI_TRANSFER, PROB_RELOAD);
-+    else resetQPY=0;
++    if (ctb_addr_ts==0 || indep || de->PicWidthInCtbsY==1)
++        WriteProb(de, s);
++    else if (ctb_col==0)
++        p1_apb_write(de, RPI_TRANSFER, PROB_RELOAD);
++    else
++        resetQPY=0;
 +    program_slicecmds(de, s->slice_idx);
 +    new_slice_segment(de, s);
 +    wpp_entry_point(de, s, indep, resetQPY, ctb_addr_ts);
@@ -44758,11 +44859,15 @@
 +        int ctb_addr_rs = pps->ctb_addr_ts_to_rs[ctb_addr_ts];
 +        int ctb_row = ctb_addr_rs / de->PicWidthInCtbsY;
 +        int last_x = de->PicWidthInCtbsY-1;
-+        if (de->PicWidthInCtbsY>2) wpp_pause(de, ctb_row);
++        if (de->PicWidthInCtbsY>2)
++            wpp_pause(de, ctb_row);
 +        p1_apb_write(de, RPI_STATUS, (ctb_row<<18) + (last_x<<5) + 2);
-+        if (de->PicWidthInCtbsY==2) p1_apb_write(de, RPI_TRANSFER, PROB_BACKUP);
-+        if (de->PicWidthInCtbsY==1) WriteProb(de);
-+        else p1_apb_write(de, RPI_TRANSFER, PROB_RELOAD);
++        if (de->PicWidthInCtbsY==2)
++            p1_apb_write(de, RPI_TRANSFER, PROB_BACKUP);
++        if (de->PicWidthInCtbsY==1)
++            WriteProb(de, s);
++        else
++            p1_apb_write(de, RPI_TRANSFER, PROB_RELOAD);
 +        ctb_addr_ts += pps->column_width[0];
 +        wpp_entry_point(de, s, 0, 1, ctb_addr_ts);
 +    }
@@ -44781,7 +44886,7 @@
 +    resetQPY = ctb_addr_ts==0
 +            || pps->tile_id[ctb_addr_ts]!=pps->tile_id[ctb_addr_ts-1]
 +            || !s->sh.dependent_slice_segment_flag;
-+    if (resetQPY) WriteProb(de);
++    if (resetQPY) WriteProb(de, s);
 +    program_slicecmds(de, s->slice_idx);
 +    new_slice_segment(de, s);
 +    new_entry_point(de, s, !s->sh.dependent_slice_segment_flag, resetQPY, ctb_addr_ts);
@@ -44794,13 +44899,24 @@
 +        int last_x = pps->col_bd[tile_x+1]-1;
 +        int last_y = pps->row_bd[tile_y+1]-1;
 +        p1_apb_write(de, RPI_STATUS, 2 + (last_x<<5) + (last_y<<18));
-+        WriteProb(de);
++        WriteProb(de, s);
 +        ctb_addr_ts += pps->column_width[tile_x] * pps->row_height[tile_y];
 +        new_entry_point(de, s, 0, 1, ctb_addr_ts);
 +    }
 +}
 +
 +//////////////////////////////////////////////////////////////////////////////
++
++static int cabac_start_align(HEVCContext *s)
++{
++    GetBitContext *gb = &s->HEVClc->gb;
++    skip_bits(gb, 1);
++    align_get_bits(gb);
++    // Should look at getting rid of this
++    return ff_init_cabac_decoder(&s->HEVClc->cc,
++                          gb->buffer + get_bits_count(gb) / 8,
++                          (get_bits_left(gb) + 7) / 8);
++}
 +
 +static int rpi_hevc_decode_slice(
 +    AVCodecContext *avctx,
@@ -44827,10 +44943,10 @@
 +    }
 +    de->state = RPIVID_DECODE_SLICE;
 +
-+    ff_hevc_cabac_init(s, ctb_addr_ts);
++//    ff_hevc_cabac_init(s, ctb_addr_ts);
++    cabac_start_align(s);
 +    if (s->ps.sps->scaling_list_enable_flag)
 +        populate_scaling_factors(de, s);
-+    populate_prob_tables(de, s);
 +    pps->entropy_coding_sync_enabled_flag? wpp_decode_slice(de, s, ctb_addr_ts)
 +                                             : decode_slice(de, s, ctb_addr_ts);
 +#if TRACE_ENTRY
@@ -45118,7 +45234,7 @@
 +
 --- a/libavdevice/Makefile
 +++ b/libavdevice/Makefile
-@@ -47,6 +47,7 @@
+@@ -47,6 +47,7 @@ OBJS-$(CONFIG_SNDIO_INDEV)
  OBJS-$(CONFIG_SNDIO_OUTDEV)              += sndio_enc.o sndio.o
  OBJS-$(CONFIG_V4L2_INDEV)                += v4l2.o v4l2-common.o timefilter.o
  OBJS-$(CONFIG_V4L2_OUTDEV)               += v4l2enc.o v4l2-common.o
@@ -45128,7 +45244,7 @@
  OBJS-$(CONFIG_XV_OUTDEV)                 += xv.o
 --- a/libavdevice/alldevices.c
 +++ b/libavdevice/alldevices.c
-@@ -54,6 +54,7 @@
+@@ -54,6 +54,7 @@ extern AVOutputFormat ff_sndio_muxer;
  extern AVInputFormat  ff_v4l2_demuxer;
  extern AVOutputFormat ff_v4l2_muxer;
  extern AVInputFormat  ff_vfwcap_demuxer;
@@ -45138,7 +45254,7 @@
  
 --- /dev/null
 +++ b/libavdevice/rpi_vout.c
-@@ -0,0 +1,405 @@
+@@ -0,0 +1,534 @@
 +/*
 + * Copyright (c) 2013 Jeff Moguillansky
 + *
@@ -45194,8 +45310,8 @@
 +
 +#define TRACE_ALL 0
 +
-+#define NUM_BUFFERS 4
 +#define RPI_DISPLAY_ALL 0
++#define DISPLAY_PORT_DEPTH 4
 +
 +typedef struct rpi_display_env_s
 +{
@@ -45208,26 +45324,19 @@
 +
 +    MMAL_POOL_T *rpi_pool;
 +    volatile int rpi_display_count;
-+    enum AVPixelFormat avfmt;
++
++    MMAL_FOURCC_T req_fmt;
++    MMAL_VIDEO_FORMAT_T req_vfmt;
 +
 +    AVZcEnvPtr zc;
++
++    int window_width, window_height;
++    int window_x, window_y;
++    int layer, fullscreen;
 +} rpi_display_env_t;
 +
 +
-+static MMAL_POOL_T* display_alloc_pool(MMAL_PORT_T* port)
-+{
-+    MMAL_POOL_T* pool;
-+    mmal_port_parameter_set_boolean(port, MMAL_PARAMETER_ZERO_COPY, MMAL_TRUE); // Does this mark that the buffer contains a vc_handle?  Would have expected a vc_image?
-+    pool = mmal_port_pool_create(port, NUM_BUFFERS, 0);
-+    assert(pool);
-+
-+    return pool;
-+}
-+
 +static void display_cb_input(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer) {
-+    rpi_display_env_t *const de = (rpi_display_env_t *)port->userdata;
-+    av_rpi_zc_unref(buffer->user_data);
-+    atomic_fetch_add(&de->rpi_display_count, -1);
 +    mmal_buffer_header_release(buffer);
 +}
 +
@@ -45235,11 +45344,108 @@
 +    mmal_buffer_header_release(buffer);
 +}
 +
-+#define DISPLAY_PORT_DEPTH 4
++
++static MMAL_FOURCC_T mmfmt_from_avfmt(const enum AVPixelFormat fmt)
++{
++    switch (fmt) {
++    case AV_PIX_FMT_SAND128:
++    case AV_PIX_FMT_RPI4_8:
++        return MMAL_ENCODING_YUVUV128;
++    case AV_PIX_FMT_RPI4_10:
++        return MMAL_ENCODING_YUV10_COL;
++    case AV_PIX_FMT_SAND64_10:
++        return MMAL_ENCODING_YUVUV64_10;
++    case AV_PIX_FMT_SAND64_16:
++        return MMAL_ENCODING_YUVUV64_16;
++    case AV_PIX_FMT_YUV420P:
++        return MMAL_ENCODING_I420;
++
++    default:
++        break;
++    }
++    return 0;
++}
++
++
++static void video_format_from_zc_frame(MMAL_ES_FORMAT_T* const es_fmt,
++                                       const AVFrame * const frame, const AVRpiZcRefPtr fr_ref)
++{
++    MMAL_VIDEO_FORMAT_T *const vfmt = &es_fmt->es->video;
++    const AVRpiZcFrameGeometry * geo = av_rpi_zc_geometry(fr_ref);
++    if (av_rpi_is_sand_format(geo->format)) {
++        // Sand formats are a bit "special"
++        // stride1 implicit in format
++        // width = stride2
++        vfmt->width = geo->stripe_is_yc ?
++            geo->height_y + geo->height_c : geo->height_y;
++//        es->height = geo->video_height;  //*** When we get the FLAG this will change
++        vfmt->height = geo->height_y;
++        es_fmt->flags = MMAL_ES_FORMAT_FLAG_COL_FMTS_WIDTH_IS_COL_STRIDE;
++    }
++    else {
++        vfmt->width = geo->stride_y / geo->bytes_per_pel;
++        vfmt->height = geo->height_y;
++        es_fmt->flags = 0;
++    }
++
++    es_fmt->type = MMAL_ES_TYPE_VIDEO;
++    es_fmt->encoding = mmfmt_from_avfmt(geo->format);
++    es_fmt->encoding_variant = 0;
++    es_fmt->bitrate = 0;
++
++    vfmt->crop.x = frame->crop_left;
++    vfmt->crop.y = frame->crop_top;
++    vfmt->crop.width = av_frame_cropped_width(frame);
++    vfmt->crop.height = av_frame_cropped_height(frame);
++
++    vfmt->frame_rate.den = 0;  // Don't think I know it here
++    vfmt->frame_rate.num = 0;
++
++    vfmt->par.den = frame->sample_aspect_ratio.den;
++    vfmt->par.num = frame->sample_aspect_ratio.num;
++
++    vfmt->color_space = 0;  // Unknown currently
++}
++
++static MMAL_BOOL_T buf_release_cb(MMAL_BUFFER_HEADER_T * buf, void *userdata)
++{
++    rpi_display_env_t * const de = userdata;
++    if (buf->user_data != NULL) {
++        av_rpi_zc_unref((AVRpiZcRefPtr)buf->user_data);
++        buf->user_data = NULL;
++    }
++    atomic_fetch_add(&de->rpi_display_count, -1);
++    return MMAL_FALSE;
++}
++
++static inline int avfmt_needs_isp(const enum AVPixelFormat avfmt)
++{
++    return avfmt == AV_PIX_FMT_SAND64_10;
++}
++
++static void isp_remove(AVFormatContext * const s, rpi_display_env_t * const de)
++{
++    if (de->isp != NULL)
++    {
++        if (de->isp->input[0]->is_enabled)
++            mmal_port_disable(de->isp->input[0]);
++        if (de->isp->control->is_enabled)
++            mmal_port_disable(de->isp->control);
++    }
++    if (de->conn != NULL) {
++        mmal_connection_destroy(de->conn);
++        de->conn = NULL;
++    }
++    if (de->isp != NULL) {
++        mmal_component_destroy(de->isp);
++        de->isp = NULL;
++    }
++}
 +
 +static void display_frame(AVFormatContext * const s, rpi_display_env_t * const de, const AVFrame* const fr)
 +{
-+    MMAL_BUFFER_HEADER_T* buf;
++    MMAL_BUFFER_HEADER_T* buf = NULL;
++    AVRpiZcRefPtr fr_buf = NULL;
 +
 +    if (de == NULL)
 +        return;
@@ -45249,41 +45455,145 @@
 +        return;
 +    }
 +
-+    buf = mmal_queue_get(de->rpi_pool->queue);
-+    if (!buf) {
-+        // Running too fast so drop the frame
-+        printf("Q alloc failure\n");
++    if ((fr_buf = av_rpi_zc_ref(s, de->zc, fr, fr->format, 1)) == NULL) {
 +        return;
 +    }
-+    assert(buf);
-+    buf->cmd = 0;
-+    buf->offset = 0; // Offset to valid data
-+    buf->flags = 0;
-+    {
-+        const AVRpiZcRefPtr fr_buf = av_rpi_zc_ref(s, de->zc, fr, de->avfmt, 1);
-+        if (fr_buf == NULL) {
-+            mmal_buffer_header_release(buf);
-+            return;
-+        }
 +
-+        buf->user_data = fr_buf;
-+        buf->data = (uint8_t *)av_rpi_zc_vc_handle(fr_buf);  // Cast our handle to a pointer for mmal
-+        buf->offset = av_rpi_zc_offset(fr_buf);
-+        buf->length = av_rpi_zc_length(fr_buf);
-+        buf->alloc_size = av_rpi_zc_numbytes(fr_buf);
-+        atomic_fetch_add(&de->rpi_display_count, 1);
++    buf = mmal_queue_get(de->rpi_pool->queue);
++    if (!buf) {
++        // Running too fast so drop the frame (unexpected)
++        goto fail;
 +    }
++
++    buf->cmd = 0;
++    buf->offset = 0;
++    buf->flags = 0;
++    mmal_buffer_header_reset(buf);
++
++    atomic_fetch_add(&de->rpi_display_count, 1);  // Deced on release
++    mmal_buffer_header_pre_release_cb_set(buf, buf_release_cb, de);
++
++    buf->user_data = fr_buf;
++    buf->data = (uint8_t *)av_rpi_zc_vc_handle(fr_buf);  // Cast our handle to a pointer for mmal
++    buf->offset = av_rpi_zc_offset(fr_buf);
++    buf->length = av_rpi_zc_length(fr_buf);
++    buf->alloc_size = av_rpi_zc_numbytes(fr_buf);
++
 +#if RPI_DISPLAY_ALL
 +    while (atomic_load(&de->rpi_display_count) >= DISPLAY_PORT_DEPTH - 1) {
 +        usleep(5000);
 +    }
 +#endif
 +
++    {
++        MMAL_ES_SPECIFIC_FORMAT_T new_ess = {.video = {0}};
++        MMAL_ES_FORMAT_T new_es = {.es = &new_ess};
++		MMAL_VIDEO_FORMAT_T * const new_vfmt = &new_ess.video;
++
++        video_format_from_zc_frame(&new_es, fr, fr_buf);
++        if (de->req_fmt != new_es.encoding ||
++            de->req_vfmt.width       != new_vfmt->width ||
++            de->req_vfmt.height      != new_vfmt->height ||
++            de->req_vfmt.crop.x      != new_vfmt->crop.x ||
++            de->req_vfmt.crop.y      != new_vfmt->crop.y ||
++            de->req_vfmt.crop.width  != new_vfmt->crop.width ||
++            de->req_vfmt.crop.height != new_vfmt->crop.height) {
++            // Something has changed
++
++            // If we have an ISP tear it down
++            isp_remove(s, de);
++            de->port_in = de->display->input[0];
++
++            // If we still need an ISP create it now
++            if (avfmt_needs_isp(fr->format))
++            {
++                if (mmal_component_create("vc.ril.isp", &de->isp) != MMAL_SUCCESS)
++                {
++                    av_log(s, AV_LOG_ERROR, "ISP creation failed\n");
++                    goto fail;
++                }
++                de->port_in = de->isp->input[0];
++            }
++
++            mmal_format_copy(de->port_in->format, &new_es);
++
++            if (mmal_port_format_commit(de->port_in)) {
++                av_log(s, AV_LOG_ERROR, "Failed to commit input format\n");
++                goto fail;
++            }
++
++            // If we have an ISP then we must want to use it
++            if (de->isp != NULL) {
++                MMAL_PORT_T * const port_out = de->isp->output[0];
++                MMAL_VIDEO_FORMAT_T* vfmt_in = &de->port_in->format->es->video;
++                MMAL_VIDEO_FORMAT_T* vfmt_out = &port_out->format->es->video;
++
++                port_out->format->type = MMAL_ES_TYPE_VIDEO;
++                port_out->format->encoding  = MMAL_ENCODING_YUVUV128;
++                port_out->format->encoding_variant = 0;
++                port_out->format->bitrate = 0;
++                port_out->format->flags = 0;
++                port_out->format->extradata = NULL;
++                port_out->format->extradata_size = 0;
++
++                vfmt_out->width       = (vfmt_in->crop.width + 31) & ~31;
++                vfmt_out->height      = (vfmt_in->crop.height + 15) & ~15;
++                vfmt_out->crop.x      = 0;
++                vfmt_out->crop.y      = 0;
++                vfmt_out->crop.width  = vfmt_in->crop.width;
++                vfmt_out->crop.height = vfmt_in->crop.height;
++                vfmt_out->frame_rate  = vfmt_in->frame_rate;
++                vfmt_out->par         = vfmt_in->par;
++                vfmt_out->color_space = vfmt_in->color_space;
++
++                if (mmal_port_format_commit(port_out)) {
++                    av_log(s, AV_LOG_ERROR, "Failed to commit output format\n");
++                    goto fail;
++                }
++
++                if (mmal_connection_create(&de->conn, port_out, de->display->input[0], MMAL_CONNECTION_FLAG_TUNNELLING) != MMAL_SUCCESS) {
++                    av_log(s, AV_LOG_ERROR, "Failed to create connection\n");
++                    goto fail;
++                }
++                if (mmal_connection_enable(de->conn) != MMAL_SUCCESS) {
++                    av_log(s, AV_LOG_ERROR, "Failed to enable connection\n");
++                    goto fail;
++                }
++                mmal_port_enable(de->isp->control,display_cb_control);
++                mmal_component_enable(de->isp);
++            }
++
++            // Number of slots in my port Q
++            de->port_in->buffer_num = DISPLAY_PORT_DEPTH;
++            // Size to keep it happy - isn't used for anything other than error checking
++            de->port_in->buffer_size = buf->alloc_size;
++            if (!de->port_in->is_enabled)
++            {
++                mmal_port_parameter_set_boolean(de->port_in, MMAL_PARAMETER_ZERO_COPY, MMAL_TRUE); // Does this mark that the buffer contains a vc_handle?  Would have expected a vc_image?
++                if (mmal_port_enable(de->port_in, display_cb_input) != MMAL_SUCCESS) {
++                    av_log(s, AV_LOG_ERROR, "Failed to enable input port\n");
++                    goto fail;
++                }
++            }
++
++            de->req_fmt  = new_es.encoding;
++            de->req_vfmt = *new_vfmt;
++        }
++    }
++
 +    if (mmal_port_send_buffer(de->port_in, buf) != MMAL_SUCCESS)
 +    {
 +        av_log(s, AV_LOG_ERROR, "mmal_port_send_buffer failed: depth=%d\n", de->rpi_display_count);
-+        display_cb_input(de->port_in, buf);
++        goto fail;
 +    }
++    return;
++
++fail:
++    // If we have a buf then fr_buf is held by that
++    if (buf != NULL)
++        mmal_buffer_header_release(buf);
++    else if (fr_buf != NULL)
++        av_rpi_zc_unref(fr_buf);
 +}
 +
 +
@@ -45302,17 +45612,10 @@
 +        av_log(s, AV_LOG_WARNING, "Exiting with display count non-zero:%d\n", atomic_load(&de->rpi_display_count));
 +    }
 +
-+    if (de->conn != NULL) {
-+        mmal_connection_destroy(de->conn);
-+        de->conn = NULL;
-+    }
++    isp_remove(s, de);
 +    if (de->rpi_pool != NULL) {
-+        mmal_port_pool_destroy(de->display->input[0], de->rpi_pool);
++        mmal_pool_destroy(de->rpi_pool);
 +        de->rpi_pool = NULL;
-+    }
-+    if (de->isp != NULL) {
-+        mmal_component_destroy(de->isp);
-+        de->isp = NULL;
 +    }
 +    if (de->display != NULL) {
 +        mmal_component_destroy(de->display);
@@ -45326,14 +45629,15 @@
 +{
 +    rpi_display_env_t * const de = s->priv_data;
 +    const AVCodecParameters * const par = s->streams[0]->codecpar;
-+    const unsigned int w = par->width;
-+    const unsigned int h = par->height;
-+    const unsigned int x = 0;
-+    const unsigned int y = 0;
-+    const enum AVPixelFormat req_fmt = par->format;
++    const unsigned int w = de->window_width ? de->window_width : par->width;
++    const unsigned int h = de->window_height ? de->window_height : par->height;
++    const unsigned int x = de->window_x;
++    const unsigned int y = de->window_y;
++    const int layer = de->layer ? de->layer : 2;
++    const MMAL_BOOL_T fullscreen = de->fullscreen;
 +
 +#if TRACE_ALL
-+    av_log(s, AV_LOG_INFO, "%s\n", __func__);
++    av_log(s, AV_LOG_INFO, "%s: %dx%d\n", __func__, w, h);
 +#endif
 +    if (   s->nb_streams > 1
 +        || par->codec_type != AVMEDIA_TYPE_VIDEO
@@ -45343,100 +45647,44 @@
 +    }
 +
 +    {
-+        MMAL_STATUS_T err;
 +        MMAL_DISPLAYREGION_T region =
 +        {
 +            .hdr = {MMAL_PARAMETER_DISPLAYREGION, sizeof(region)},
-+            .set = MMAL_DISPLAY_SET_LAYER | MMAL_DISPLAY_SET_FULLSCREEN | MMAL_DISPLAY_SET_DEST_RECT,
-+            .layer = 2,
-+            .fullscreen = 0,
-+            .dest_rect = {x, y, w, h}
++            .set = MMAL_DISPLAY_SET_LAYER | MMAL_DISPLAY_SET_FULLSCREEN |
++                MMAL_DISPLAY_SET_DEST_RECT | MMAL_DISPLAY_SET_ALPHA,
++            .layer = layer,
++            .fullscreen = fullscreen,
++            .dest_rect = {x, y, w, h},
++            .alpha = !fullscreen ? 0xff : 0xff | MMAL_DISPLAY_ALPHA_FLAGS_DISCARD_LOWER_LAYERS,
 +        };
-+#if RPI_ZC_SAND_8_IN_10_BUF
-+        const enum AVPixelFormat fmt = (req_fmt == AV_PIX_FMT_YUV420P10 || av_rpi_is_sand_format(req_fmt)) ? AV_PIX_FMT_SAND128 : req_fmt;
-+#else
-+        const enum AVPixelFormat fmt = (req_fmt == AV_PIX_FMT_YUV420P10) ? AV_PIX_FMT_SAND128 : req_fmt;
-+#endif
-+        const AVRpiZcFrameGeometry geo = av_rpi_zc_frame_geometry(fmt, w, h);
-+        int isp_req = (fmt == AV_PIX_FMT_SAND64_10);
 +
 +        bcm_host_init();  // Needs to be done by someone...
 +
-+        mmal_component_create(MMAL_COMPONENT_DEFAULT_VIDEO_RENDERER, &de->display);
-+        av_assert0(de->display);
-+        de->port_in = de->display->input[0];
-+
-+        if (isp_req)
++        if (mmal_component_create(MMAL_COMPONENT_DEFAULT_VIDEO_RENDERER, &de->display) != MMAL_SUCCESS)
 +        {
-+            mmal_component_create("vc.ril.isp", &de->isp);
-+            de->port_in = de->isp->input[0];
++            av_log(s, AV_LOG_ERROR, "Failed to create display component\n");
++            goto fail;
 +        }
++        de->port_in = de->display->input[0];
 +
 +        mmal_port_parameter_set(de->display->input[0], &region.hdr);
 +
++        if (mmal_component_enable(de->display) != MMAL_SUCCESS)
 +        {
-+            MMAL_PORT_T * const port = de->port_in;
-+            MMAL_ES_FORMAT_T* const format = port->format;
-+            port->userdata = (struct MMAL_PORT_USERDATA_T *)de;
-+            port->buffer_num = DISPLAY_PORT_DEPTH;
-+            format->encoding =
-+                fmt == AV_PIX_FMT_SAND128 ? MMAL_ENCODING_YUVUV128 :
-+                fmt == AV_PIX_FMT_RPI4_8  ? MMAL_ENCODING_YUVUV128 :
-+                fmt == AV_PIX_FMT_RPI4_10 ? MMAL_ENCODING_YUV10_COL :
-+                fmt == AV_PIX_FMT_SAND64_10 ? MMAL_ENCODING_YUVUV64_16 :
-+                    MMAL_ENCODING_I420;
-+            format->es->video.width = geo.stride_y;
-+            format->es->video.height = (fmt == AV_PIX_FMT_SAND128 ||
-+                                        fmt == AV_PIX_FMT_RPI4_8 ||
-+                                        fmt == AV_PIX_FMT_RPI4_10 ||
-+                                        fmt == AV_PIX_FMT_SAND64_10) ?
-+                                          (h + 15) & ~15 : geo.height_y;  // Magic
-+            format->es->video.crop.x = 0;
-+            format->es->video.crop.y = 0;
-+            format->es->video.crop.width = w;
-+            format->es->video.crop.height = h;
-+            mmal_port_format_commit(port);
++            av_log(s, AV_LOG_ERROR, "Failed to enable display component\n");
++            goto fail;
++        }
++        if (mmal_port_enable(de->display->control,display_cb_control) != MMAL_SUCCESS)
++        {
++            av_log(s, AV_LOG_ERROR, "Failed to enable display control port\n");
++            goto fail;
 +        }
 +
-+        de->rpi_pool = display_alloc_pool(de->port_in);
-+        mmal_port_enable(de->port_in,display_cb_input);
-+
-+        if (isp_req) {
-+            MMAL_PORT_T * const port_out = de->isp->output[0];
-+            mmal_log_dump_port(de->port_in);
-+            mmal_format_copy(port_out->format, de->port_in->format);
-+            if (fmt == AV_PIX_FMT_SAND64_10) {
-+                if ((err = mmal_port_parameter_set_int32(de->port_in, MMAL_PARAMETER_CCM_SHIFT, 5)) != MMAL_SUCCESS ||
-+                    (err = mmal_port_parameter_set_int32(port_out, MMAL_PARAMETER_OUTPUT_SHIFT, 1)) != MMAL_SUCCESS)
-+                {
-+                    av_log(NULL, AV_LOG_WARNING, "Failed to set ISP output port shift\n");
-+                }
-+                else
-+                    av_log(NULL, AV_LOG_WARNING, "Set ISP output port shift OK\n");
-+
-+            }
-+            port_out->format->encoding = MMAL_ENCODING_I420;
-+            mmal_log_dump_port(port_out);
-+            if ((err = mmal_port_format_commit(port_out)) != MMAL_SUCCESS)
-+            {
-+                av_log(NULL, AV_LOG_ERROR, "Failed to set ISP output port format\n");
-+                goto fail;
-+            }
-+            if ((err = mmal_connection_create(&de->conn, port_out, de->display->input[0], MMAL_CONNECTION_FLAG_TUNNELLING)) != MMAL_SUCCESS) {
-+                av_log(NULL, AV_LOG_ERROR, "Failed to create connection\n");
-+                goto fail;
-+            }
-+            if ((err = mmal_connection_enable(de->conn)) != MMAL_SUCCESS) {
-+                av_log(NULL, AV_LOG_ERROR, "Failed to enable connection\n");
-+                goto fail;
-+            }
-+            mmal_port_enable(de->isp->control,display_cb_control);
-+            mmal_component_enable(de->isp);
++        if ((de->rpi_pool = mmal_pool_create(DISPLAY_PORT_DEPTH, 0)) == NULL)
++        {
++            av_log(s, AV_LOG_ERROR, "Failed to create pool\n");
++            goto fail;
 +        }
-+
-+        mmal_component_enable(de->display);
-+        mmal_port_enable(de->display->control,display_cb_control);
-+        de->avfmt = fmt;
 +    }
 +
 +    return 0;
@@ -45508,14 +45756,11 @@
 +
 +#define OFFSET(x) offsetof(rpi_display_env_t, x)
 +static const AVOption options[] = {
-+#if 0
-+    { "display_name", "set display name",       OFFSET(display_name), AV_OPT_TYPE_STRING, {.str = NULL }, 0, 0, AV_OPT_FLAG_ENCODING_PARAM },
-+    { "window_id",    "set existing window id", OFFSET(window_id),    AV_OPT_TYPE_INT64,  {.i64 = 0 }, 0, INT64_MAX, AV_OPT_FLAG_ENCODING_PARAM },
 +    { "window_size",  "set window forced size", OFFSET(window_width), AV_OPT_TYPE_IMAGE_SIZE, {.str = NULL}, 0, 0, AV_OPT_FLAG_ENCODING_PARAM },
-+    { "window_title", "set window title",       OFFSET(window_title), AV_OPT_TYPE_STRING, {.str = NULL }, 0, 0, AV_OPT_FLAG_ENCODING_PARAM },
 +    { "window_x",     "set window x offset",    OFFSET(window_x),     AV_OPT_TYPE_INT,    {.i64 = 0 }, -INT_MAX, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM },
 +    { "window_y",     "set window y offset",    OFFSET(window_y),     AV_OPT_TYPE_INT,    {.i64 = 0 }, -INT_MAX, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM },
-+#endif
++    { "display_layer","set display layer",      OFFSET(layer),        AV_OPT_TYPE_INT,    {.i64 = 0 }, -INT_MAX, INT_MAX, AV_OPT_FLAG_ENCODING_PARAM },
++    { "fullscreen",   "set fullscreen display", OFFSET(fullscreen),   AV_OPT_TYPE_BOOL,   {.i64 = 0 }, 0, 1, AV_OPT_FLAG_ENCODING_PARAM },
 +    { NULL }
 +
 +};
@@ -45546,7 +45791,7 @@
 +};
 --- a/libavfilter/Makefile
 +++ b/libavfilter/Makefile
-@@ -387,6 +387,7 @@
+@@ -387,6 +387,7 @@ OBJS-$(CONFIG_TRANSPOSE_FILTER)
  OBJS-$(CONFIG_TRANSPOSE_NPP_FILTER)          += vf_transpose_npp.o
  OBJS-$(CONFIG_TRIM_FILTER)                   += trim.o
  OBJS-$(CONFIG_UNPREMULTIPLY_FILTER)          += vf_premultiply.o framesync.o
@@ -45556,7 +45801,7 @@
                                                  opencl/unsharp.o
 --- a/libavfilter/allfilters.c
 +++ b/libavfilter/allfilters.c
-@@ -369,6 +369,7 @@
+@@ -369,6 +369,7 @@ extern AVFilter ff_vf_transpose;
  extern AVFilter ff_vf_transpose_npp;
  extern AVFilter ff_vf_trim;
  extern AVFilter ff_vf_unpremultiply;
@@ -45576,7 +45821,7 @@
  
  #define FF_INTERNAL_FIELDS 1
  #include "framequeue.h"
-@@ -427,6 +430,19 @@
+@@ -427,6 +430,19 @@ static int can_merge_formats(AVFilterFor
      }
  }
  
@@ -45596,7 +45841,7 @@
  /**
   * Perform one round of query_formats() and merging formats lists on the
   * filter graph.
-@@ -467,6 +483,7 @@
+@@ -467,6 +483,7 @@ static int query_formats(AVFilterGraph *
          for (j = 0; j < filter->nb_inputs; j++) {
              AVFilterLink *link = filter->inputs[j];
              int convert_needed = 0;
@@ -45604,7 +45849,7 @@
  
              if (!link)
                  continue;
-@@ -514,11 +531,14 @@
+@@ -514,11 +531,14 @@ static int query_formats(AVFilterGraph *
              )
  #undef MERGE_DISPATCH
  
@@ -45620,7 +45865,7 @@
  
                  if (graph->disable_auto_convert) {
                      av_log(log_ctx, AV_LOG_ERROR,
-@@ -531,19 +551,45 @@
+@@ -531,19 +551,45 @@ static int query_formats(AVFilterGraph *
                  /* couldn't merge format lists. auto-insert conversion filter */
                  switch (link->type) {
                  case AVMEDIA_TYPE_VIDEO:
@@ -45678,7 +45923,7 @@
                      break;
                  case AVMEDIA_TYPE_AUDIO:
                      if (!(filter = avfilter_get_by_name("aresample"))) {
-@@ -585,9 +631,19 @@
+@@ -585,9 +631,19 @@ static int query_formats(AVFilterGraph *
                      av_assert0(outlink-> in_channel_layouts->refcount > 0);
                      av_assert0(outlink->out_channel_layouts->refcount > 0);
                  }
@@ -45702,7 +45947,7 @@
                                             inlink->out_samplerates) ||
 --- a/libavfilter/buffersrc.c
 +++ b/libavfilter/buffersrc.c
-@@ -207,7 +207,7 @@
+@@ -207,7 +207,7 @@ static int av_buffersrc_add_frame_intern
  
      switch (ctx->outputs[0]->type) {
      case AVMEDIA_TYPE_VIDEO:
@@ -45950,7 +46195,7 @@
 +
 --- a/libavformat/utils.c
 +++ b/libavformat/utils.c
-@@ -3013,6 +3013,40 @@
+@@ -3020,6 +3020,40 @@ static int has_codec_parameters(AVStream
      return 1;
  }
  
@@ -45991,7 +46236,7 @@
  /* returns 1 or 0 if or if not decoded data was returned, or a negative error */
  static int try_decode_frame(AVFormatContext *s, AVStream *st, AVPacket *avpkt,
                              AVDictionary **options)
-@@ -3047,7 +3081,11 @@
+@@ -3054,7 +3088,11 @@ static int try_decode_frame(AVFormatCont
          av_dict_set(options ? options : &thread_opt, "threads", "1", 0);
          if (s->codec_whitelist)
              av_dict_set(options ? options : &thread_opt, "codec_whitelist", s->codec_whitelist, 0);
@@ -46004,7 +46249,7 @@
          if (!options)
              av_dict_free(&thread_opt);
          if (ret < 0) {
-@@ -3078,6 +3116,14 @@
+@@ -3085,6 +3123,14 @@ static int try_decode_frame(AVFormatCont
          if (avctx->codec_type == AVMEDIA_TYPE_VIDEO ||
              avctx->codec_type == AVMEDIA_TYPE_AUDIO) {
              ret = avcodec_send_packet(avctx, &pkt);
@@ -46019,7 +46264,7 @@
              if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF)
                  break;
              if (ret >= 0)
-@@ -3669,9 +3715,20 @@
+@@ -3678,9 +3724,20 @@ FF_ENABLE_DEPRECATION_WARNINGS
          // Try to just open decoders, in case this is enough to get parameters.
          if (!has_codec_parameters(st, NULL) && st->request_probe <= 0) {
              if (codec && !avctx->codec)
@@ -46045,7 +46290,7 @@
              av_dict_free(&thread_opt);
 --- a/libavutil/Makefile
 +++ b/libavutil/Makefile
-@@ -64,6 +64,7 @@
+@@ -64,6 +64,7 @@ HEADERS = adler32.h
            rational.h                                                    \
            replaygain.h                                                  \
            ripemd.h                                                      \
@@ -46053,7 +46298,7 @@
            samplefmt.h                                                   \
            sha.h                                                         \
            sha512.h                                                      \
-@@ -80,6 +81,7 @@
+@@ -80,6 +81,7 @@ HEADERS = adler32.h
            tea.h                                                         \
  
  HEADERS-$(CONFIG_LZO)                   += lzo.h
@@ -46061,7 +46306,7 @@
  
  ARCH_HEADERS = bswap.h                                                  \
                 intmath.h                                                \
-@@ -165,9 +167,11 @@
+@@ -165,9 +167,11 @@ OBJS-$(CONFIG_LZO)
  OBJS-$(CONFIG_MEDIACODEC)               += hwcontext_mediacodec.o
  OBJS-$(CONFIG_OPENCL)                   += hwcontext_opencl.o
  OBJS-$(CONFIG_QSV)                      += hwcontext_qsv.o
@@ -46075,7 +46320,7 @@
  
 --- a/libavutil/arm/Makefile
 +++ b/libavutil/arm/Makefile
-@@ -6,3 +6,4 @@
+@@ -6,3 +6,4 @@ VFP-OBJS += arm/float_dsp_init_vfp.o
  
  NEON-OBJS += arm/float_dsp_init_neon.o                                  \
               arm/float_dsp_neon.o                                       \
@@ -46154,7 +46399,7 @@
 +
 --- a/libavutil/buffer.c
 +++ b/libavutil/buffer.c
-@@ -355,3 +355,9 @@
+@@ -355,3 +355,9 @@ AVBufferRef *av_buffer_pool_get(AVBuffer
  
      return ret;
  }
@@ -46166,7 +46411,7 @@
 +}
 --- a/libavutil/buffer.h
 +++ b/libavutil/buffer.h
-@@ -284,6 +284,9 @@
+@@ -284,6 +284,9 @@ void av_buffer_pool_uninit(AVBufferPool
   */
  AVBufferRef *av_buffer_pool_get(AVBufferPool *pool);
  
@@ -46197,7 +46442,7 @@
  
  #if FF_API_FRAME_GET_SET
  MAKE_ACCESSORS(AVFrame, frame, int64_t, best_effort_timestamp)
-@@ -891,6 +896,12 @@
+@@ -891,6 +896,12 @@ int av_frame_apply_cropping(AVFrame *fra
          (frame->crop_top + frame->crop_bottom) >= frame->height)
          return AVERROR(ERANGE);
  
@@ -46212,7 +46457,7 @@
          return AVERROR_BUG;
 --- a/libavutil/frame.h
 +++ b/libavutil/frame.h
-@@ -894,6 +894,16 @@
+@@ -894,6 +894,16 @@ int av_frame_apply_cropping(AVFrame *fra
   */
  const char *av_frame_side_data_name(enum AVFrameSideDataType type);
  
@@ -46231,7 +46476,7 @@
   */
 --- a/libavutil/pixdesc.c
 +++ b/libavutil/pixdesc.c
-@@ -2050,6 +2050,18 @@
+@@ -2050,6 +2050,18 @@ static const AVPixFmtDescriptor av_pix_f
          .name = "cuda",
          .flags = AV_PIX_FMT_FLAG_HWACCEL,
      },
@@ -46250,7 +46495,7 @@
      [AV_PIX_FMT_AYUV64LE] = {
          .name = "ayuv64le",
          .nb_components = 4,
-@@ -2268,6 +2280,30 @@
+@@ -2268,6 +2280,30 @@ static const AVPixFmtDescriptor av_pix_f
          .flags = AV_PIX_FMT_FLAG_FLOAT,
          .alias = "yf32le",
      },
@@ -46283,7 +46528,7 @@
  FF_ENABLE_DEPRECATION_WARNINGS
 --- a/libavutil/pixfmt.h
 +++ b/libavutil/pixfmt.h
-@@ -234,6 +234,11 @@
+@@ -234,6 +234,11 @@ enum AVPixelFormat {
       */
      AV_PIX_FMT_CUDA,
  
@@ -46295,7 +46540,7 @@
      AV_PIX_FMT_0RGB,        ///< packed RGB 8:8:8, 32bpp, XRGBXRGB...   X=unused/undefined
      AV_PIX_FMT_RGB0,        ///< packed RGB 8:8:8, 32bpp, RGBXRGBX...   X=unused/undefined
      AV_PIX_FMT_0BGR,        ///< packed BGR 8:8:8, 32bpp, XBGRXBGR...   X=unused/undefined
-@@ -340,6 +345,13 @@
+@@ -340,6 +345,13 @@ enum AVPixelFormat {
      AV_PIX_FMT_GRAYF32BE,  ///< IEEE-754 single precision Y, 32bpp, big-endian
      AV_PIX_FMT_GRAYF32LE,  ///< IEEE-754 single precision Y, 32bpp, little-endian
  
@@ -47648,7 +47893,7 @@
 +1,WPP_F_ericsson_MAIN_2,WPP_F_ericsson_MAIN_2.bit,WPP_F_ericsson_MAIN_2_yuv.md5
 --- /dev/null
 +++ b/pi-util/conf_pi1.sh
-@@ -0,0 +1,31 @@
+@@ -0,0 +1,39 @@
 +echo "Configure for Pi1"
 +
 +RPI_TOOLROOT=`pwd`/../tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf
@@ -47659,6 +47904,14 @@
 +#RPI_KEEPS="-save-temps=obj"
 +RPI_KEEPS=""
 +
++SHARED_LIBS="--enable-shared"
++if [ "$1" == "--noshared" ]; then
++  SHARED_LIBS="--disable-shared"
++  echo Static libs
++else
++  echo Shared libs
++fi
++
 +./configure --enable-cross-compile\
 + --cpu=arm1176jzf-s\
 + --arch=arm\
@@ -47666,7 +47919,7 @@
 + --target-os=linux\
 + --disable-stripping\
 + --enable-mmal\
-+ --enable-shared\
++ $SHARED_LIBS\
 + --extra-cflags="-g $RPI_KEEPS $RPI_INCLUDES"\
 + --extra-cxxflags="$RPI_INCLUDES"\
 + --extra-ldflags="$RPI_LIBDIRS -Wl,-rpath=/opt/vc/lib,-rpath-link=$RPI_OPT_VC/lib,-rpath=/lib,-rpath=/usr/lib,-rpath-link=$RPI_TOOLROOT/lib,-rpath-link=$RPI_TOOLROOT/lib"\
@@ -47682,7 +47935,7 @@
 +# -Wa,-ahls
 --- /dev/null
 +++ b/pi-util/conf_pi2.sh
-@@ -0,0 +1,42 @@
+@@ -0,0 +1,50 @@
 +echo "Configure for Pi2/3"
 +
 +RPI_TOOLROOT=`pwd`/../tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf
@@ -47698,6 +47951,14 @@
 +LIB_PREFIX=$USR_PREFIX/lib/arm-linux-gnueabihf
 +INC_PREFIX=$USR_PREFIX/include/arm-linux-gnueabihf
 +
++SHARED_LIBS="--enable-shared"
++if [ "$1" == "--noshared" ]; then
++  SHARED_LIBS="--disable-shared"
++  echo Static libs
++else
++  echo Shared libs
++fi
++
 +./configure --enable-cross-compile\
 + --prefix=$USR_PREFIX\
 + --libdir=$LIB_PREFIX\
@@ -47709,7 +47970,7 @@
 + --disable-thumb\
 + --enable-mmal\
 + --enable-rpi\
-+ --enable-shared\
++ $SHARED_LIBS\
 + --extra-cflags="-ggdb $RPI_KEEPS $RPI_DEFINES $RPI_INCLUDES"\
 + --extra-cxxflags="$RPI_DEFINES $RPI_INCLUDES"\
 + --extra-ldflags="$RPI_LIBDIRS -Wl,-rpath=/opt/vc/lib,-rpath-link=$RPI_OPT_VC/lib,-rpath=/lib,-rpath=/usr/lib,-rpath-link=$RPI_TOOLROOT/lib,-rpath-link=$RPI_TOOLROOT/lib"\
