@@ -19,35 +19,7 @@ SHLIB_PKGS := $(shell sed -nr '/extra/! s/^Package:[[:space:]]*(lib.*[0-9]+)[[:s
 EXTRA_PKGS := $(shell sed -nr 's/^Package:[[:space:]]*(.*extra[0-9]+)[[:space:]]*$$/\1/p' debian/control)
 FLAVORS = standard extra static
 
-# Enable as many features as possible, as long as the result is still GPLv2+ (a GPLv3+ variant is built as libavcodec-extra/libavfilter-extra flavor).
-# The following flags (and build-dependencies) are not added, because they would require a libavformat-extra flavor:
-#   --enable-libglslang             (glslang-dev)
-#   --enable-libsmbclient           (libsmbclient-dev [!hurd-i386 !m68k !sparc64])
-#   --enable-vulkan                 (libvulkan-dev)
-# The following flags are not added, because the necessary libraries are not in Debian:
-#   --enable-avisynth               (should link with AviSynth+, embedded avisynth code dropped upstream)
-#   --enable-decklink               (see #839941 for discussion of freeness)
-#   --enable-libcelt                (see #676592: removed from Debian as abandoned upstream, replaced by opus)
-#   --enable-libdavs2               (only in experimental)
-#   --enable-libilbc                (see #675959 for the RFP bug)
-#   --enable-libklvanc
-#   --enable-libkvazaar
-#   --enable-libopenh264
-#   --enable-librav1e               (see #920842 for the RFP bug)
-#   --enable-libtensorflow          (see #959765 for the RFP bug)
-#   --enable-libvmaf
-#   --enable-libxavs
-#   --enable-libxavs2               (only in experimental)
-#   --enable-libzimg                (see #864888 for the RFP bug)
-#   --enable-vapoursynth            (see #833942 for the RFP bug)
-# The following flags are not added for various reasons:
-#   --enable-crystalhd              Not usable in Debian (firmware missing from the archive - see #917292)
-#   --enable-librtmp                ffmpeg has better built-in RTMP support with listen mode.
-#   --enable-mbedtls                Already using gnutls as TLS implementation
-#   --enable-libmodplug             see #849840: replaced with libopenmpt
-#   --enable-libv4l2                This is only needed for very old devices and may cause problems for others.
-#                                   Should anyone need it, using LD_PRELOAD pointing on libv4l2 has the same effect.
-#   --enable-opencv                 Does not build with OpenCV >= 3.4 - see <https://trac.ffmpeg.org/ticket/7059>
+# Most possible features, compatible with effective licensing of GPLv2+
 CONFIG := --prefix=/usr \
 	--extra-version="$(DEB_REVISION)" \
 	--toolchain=hardened \
@@ -120,7 +92,7 @@ endif
 # The standard configuration only uses the shared CONFIG.
 CONFIG_standard = --enable-shared
 
-# With these enabled, resulting binaries are effectively licensed as GPLv3+.
+# Additional features, compatible with effective licensing of GPLv3+
 CONFIG_extra = --enable-shared \
 	--enable-version3 \
 	--disable-doc \
