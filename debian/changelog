@@ -1,3 +1,23 @@
+ffmpeg (7:4.3.1-1) unstable; urgency=high
+
+  [ upstream ]
+  * new maintenance release
+    + fix libavformat heap-based buffer overflow in avio_get_str
+      (CVE-2020-14212)
+    + fix libavformat use-after-free in hls
+      (CVE-2020-13904)
+
+  [ Jonas Smedegaard ]
+  * add patch cherry-picked upstream
+    to avoid libswscale segfault on SSSE3 capable systems
+    closes: bug#964312, thanks to Jörg Schütter
+  * Document omitted features in README.Debian and TODO.Debian
+    (not rules file comments)
+  * use debhelper compatibility level 12 (not 13)
+  * set urgency=high due to security-related bugfixes
+
+ -- Jonas Smedegaard <dr@jones.dk>  Tue, 04 Aug 2020 16:10:03 +0200
+
 ffmpeg (7:4.3-3) unstable; urgency=medium
 
   * link with dav1d;

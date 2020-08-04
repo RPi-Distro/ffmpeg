@@ -13,6 +13,9 @@ Files: CONTRIBUTING.md
  RELEASE_NOTES
  VERSION
  compat/windows/mslink
+ debian/README.Debian
+ debian/README.source
+ debian/TODO
  debian/clean
  debian/ffmpeg-doc.doc-base.api
  debian/ffmpeg-doc.doc-base.manual
@@ -76,6 +79,7 @@ Files: CONTRIBUTING.md
  debian/libswscale5.symbols
  debian/not-installed
  debian/patches/0001-avcodec-arm-sbcenc-avoid-callee-preserved-vfp-regist.patch
+ debian/patches/020200712~799fc4d.patch
  debian/patches/series
  debian/qt-faststart.1
  debian/rules
