@@ -109,11 +109,11 @@ CONFIG := --prefix=/usr \
 	--enable-sdl2
 
 # TODO: enable generally when available on mips* (see #812335)
-ifeq (,$(filter mips% s390x, $(DEB_HOST_ARCH)))
+ifeq (,$(filter mips% s390x,$(DEB_HOST_ARCH)))
 	CONFIG += --enable-pocketsphinx
 endif
 
-ifeq ($(DEB_HOST_ARCH),amd64)
+ifeq (amd64,$(DEB_HOST_ARCH))
 CONFIG += --enable-libmfx
 endif
 
@@ -138,21 +138,21 @@ CONFIG_static = --disable-pic \
 	--disable-programs
 
 # Disable optimizations if requested.
-ifneq (,$(filter $(DEB_BUILD_OPTIONS),noopt))
+ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 	CONFIG += --disable-optimizations
 endif
 
 # Respect CC/CXX from the environment, if they differ from the default.
 # Don't set them if they equal the default, because that disables autodetection needed for cross-building.
-ifneq ($(CC),cc)
+ifneq (cc,$(CC))
 	CONFIG += --cc=$(CC)
 endif
-ifneq ($(CXX),g++)
+ifneq (g++,$(CXX))
 	CONFIG += --cxx=$(CXX)
 endif
 
 # Some libraries are built only on linux.
-ifeq ($(DEB_HOST_ARCH_OS),linux)
+ifeq (linux,$(DEB_HOST_ARCH_OS))
 	CONFIG += --enable-libdc1394 \
 		--enable-libdrm \
 		--enable-libiec61883
@@ -160,7 +160,7 @@ endif
 
 # ffmpeg is involved in build-dependency cycles with x264 and chromaprint, so disable them in stage one.
 # Also disable frei0r, which build-depends on opencv.
-ifneq ($(filter pkg.ffmpeg.stage1,$(DEB_BUILD_PROFILES)),)
+ifneq (,$(filter pkg.ffmpeg.stage1,$(DEB_BUILD_PROFILES)))
 	CONFIG += --disable-frei0r \
 		--disable-chromaprint \
 		--disable-libx264
@@ -171,7 +171,7 @@ else
 endif
 
 # Disable altivec optimizations on powerpc, because they are not always available on this architecture.
-ifeq ($(DEB_HOST_ARCH),powerpc)
+ifeq (powerpc,$(DEB_HOST_ARCH))
 	CONFIG += --disable-altivec
 	# Build an altivec flavor of the libraries on powerpc.
 	# This works around the problem that runtime cpu detection on powerpc currently does not work,
@@ -185,7 +185,7 @@ ifeq ($(DEB_HOST_ARCH),powerpc)
 endif
 
 # Disable assembly optimizations on x32, because they don't work (yet).
-ifneq (,$(filter $(DEB_HOST_ARCH),x32))
+ifneq (,$(filter x32,$(DEB_HOST_ARCH)))
 	CONFIG += --disable-asm
 endif
 
@@ -198,7 +198,7 @@ else
 		--disable-mips64r6
 endif
 
-ifneq (,$(filter mips%, $(DEB_HOST_ARCH)))
+ifneq (,$(filter mips%,$(DEB_HOST_ARCH)))
 	CONFIG += --disable-mipsdsp \
 		--disable-mipsdspr2 \
 		--disable-loongson2 \
@@ -211,12 +211,12 @@ ifneq (,$(filter mips%, $(DEB_HOST_ARCH)))
 endif
 
 # Disable mipsfpu on mips and mipsel, because it is not compatible with the FPXX ABI
-ifneq (,$(filter $(DEB_HOST_ARCH),mips mipsel))
+ifneq (,$(filter mips mipsel,$(DEB_HOST_ARCH)))
 	CONFIG += --disable-mipsfpu
 endif
 
 # Disable some tests which fail when FLT_EVAL_METHOD != 0 (found on i386, m68k and s390x)
-ifneq (,$(filter $(DEB_HOST_ARCH_CPU),i386 m68k s390x))
+ifneq (,$(filter i386 m68k s390x,$(DEB_HOST_ARCH_CPU)))
 	CONFIG += --ignore-tests=hapenc-hap-none,hapenc-hapa-none,hapenc-hapq-none
 endif
 
@@ -286,12 +286,12 @@ override_dh_auto_test-indep:
 
 override_dh_auto_install-arch:
 	dh_auto_install -a --sourcedirectory=debian/standard
-ifeq ($(DEB_HOST_ARCH),powerpc)
+ifeq (powerpc,$(DEB_HOST_ARCH))
 	install -d debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/altivec
 	install -m 644 debian/altivec/*/*.so.* debian/tmp/usr/lib/$(DEB_HOST_MULTIARCH)/altivec
 endif
 	dh_auto_install -a --sourcedirectory=debian/extra --destdir=debian/tmp/extra
-ifeq ($(DEB_HOST_ARCH),powerpc)
+ifeq (powerpc,$(DEB_HOST_ARCH))
 	install -d debian/tmp/extra/usr/lib/$(DEB_HOST_MULTIARCH)/altivec
 	install -m 644 debian/altivec-extra/*/*.so.* debian/tmp/extra/usr/lib/$(DEB_HOST_MULTIARCH)/altivec
 endif
