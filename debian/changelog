@@ -1,3 +1,10 @@
+ffmpeg (7:4.3.1-2) unstable; urgency=medium
+
+  * avoid linking with pocketsphinx on bigendian archs;
+    closes: bug#968456, thanks to John David Anglin
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sat, 15 Aug 2020 23:08:50 +0200
+
 ffmpeg (7:4.3.1-1) unstable; urgency=high
 
   [ upstream ]
