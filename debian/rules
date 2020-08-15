@@ -80,8 +80,8 @@ CONFIG := --prefix=/usr \
 	--enable-opengl \
 	--enable-sdl2
 
-# TODO: enable generally when available on mips* (see #812335)
-ifeq (,$(filter mips% s390x,$(DEB_HOST_ARCH)))
+# avoid pocketsphinx on mips (bug#812335) and big-endian (bug#968456)
+ifeq (,$(filter mips% s390x,$(DEB_HOST_ARCH))$(filter big,$(DEB_HOST_ARCH_ENDIAN)))
 	CONFIG += --enable-pocketsphinx
 endif
 
