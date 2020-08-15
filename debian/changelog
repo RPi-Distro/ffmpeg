@@ -1,3 +1,13 @@
+ffmpeg (7:4.3.1-3) UNRELEASED; urgency=medium
+
+  * update git-buildpackage config:
+    + use signed tags
+    + filter any .git* file
+  * fix typo in README.Debian
+  * drop lintian override for typo fixed upstream
+
+ -- Jonas Smedegaard <dr@jones.dk>  Sun, 16 Aug 2020 00:05:56 +0200
+
 ffmpeg (7:4.3.1-2) unstable; urgency=medium
 
   * avoid linking with pocketsphinx on bigendian archs;
