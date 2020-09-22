@@ -57,7 +57,7 @@ Build-Depends:
 # --enable-libdav1d
  libdav1d-dev,
 # --enable-libdc1394
- libdc1394-22-dev [linux-any],
+ libdc1394-dev [linux-any],
 # --enable-libdrm
  libdrm-dev [linux-any],
 # --enable-libfontconfig
