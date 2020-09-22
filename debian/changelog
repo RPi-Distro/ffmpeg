@@ -1,3 +1,10 @@
+ffmpeg (7:4.3.1-4) unstable; urgency=medium
+
+  * Team upload
+  * debian/control: Switch to libdc1394-dev
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 22 Sep 2020 22:22:44 +0200
+
 ffmpeg (7:4.3.1-3) unstable; urgency=medium
 
   * Team upload
