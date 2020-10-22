@@ -1,2 +1,3 @@
 020200712~799fc4d.patch
 0001-avcodec-arm-sbcenc-avoid-callee-preserved-vfp-regist.patch
+0002-build-with-libsrt-1.4.2.patch
