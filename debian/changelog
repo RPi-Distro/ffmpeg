@@ -1,3 +1,10 @@
+ffmpeg (7:4.3.1-5) UNRELEASED; urgency=medium
+
+  * Team upload.
+  * debian: Fix FTBFS with srt 1.4.2
+
+ -- Vasyl Gello <vasek.gello@gmail.com>  Thu, 22 Oct 2020 21:23:18 +0000
+
 ffmpeg (7:4.3.1-4) unstable; urgency=medium
 
   * Team upload
