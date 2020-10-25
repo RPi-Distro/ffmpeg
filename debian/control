@@ -128,8 +128,6 @@ Build-Depends:
  libsoxr-dev,
 # --enable-libspeex
  libspeex-dev,
-# --enable-libsrt
- libsrt-gnutls-dev,
 # --enable-libssh
  libssh-gcrypt-dev,
 # --enable-libtesseract (used only in -extra flavor)
