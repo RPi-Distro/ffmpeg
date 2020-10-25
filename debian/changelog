@@ -1,9 +1,10 @@
-ffmpeg (7:4.3.1-5) UNRELEASED; urgency=medium
+ffmpeg (7:4.3.1-5) unstable; urgency=medium
 
-  * Team upload.
-  * debian: Fix FTBFS with srt 1.4.2
+  * Team upload
+  * debian/: Temporarily disable libsrt support (see #972556 and #971754)
+    Once libsrt provides a stable ABI, support can be reenabled.
 
- -- Vasyl Gello <vasek.gello@gmail.com>  Thu, 22 Oct 2020 21:23:18 +0000
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 25 Oct 2020 09:38:59 +0100
 
 ffmpeg (7:4.3.1-4) unstable; urgency=medium
 
