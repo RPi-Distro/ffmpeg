@@ -101,6 +101,7 @@ CONFIG_extra = --enable-shared \
 	--enable-liblensfun \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
+	--enable-libsmbclient \
 	--enable-libtesseract \
 	--enable-libvo_amrwbenc
 
