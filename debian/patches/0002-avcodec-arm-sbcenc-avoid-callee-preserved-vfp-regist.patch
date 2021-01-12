@@ -1,7 +1,6 @@
-From 440489b651db67d04a6014c2cb2a20a6b1ed9db1 Mon Sep 17 00:00:00 2001
 From: James Cowgill <jcowgill@debian.org>
 Date: Sun, 11 Aug 2019 16:50:56 +0100
-Subject: [PATCH v2] avcodec/arm/sbcenc: avoid callee preserved vfp registers
+Subject: avcodec/arm/sbcenc: avoid callee preserved vfp registers
 
 When compiling FFmpeg with GCC-9, some very random segfaults were
 observed in code which had previously called down into the SBC encoder
@@ -22,30 +21,11 @@ registers, it should have no performance impact.
 
 Signed-off-by: James Cowgill <jcowgill@debian.org>
 ---
-
-On 29/07/2019 19:59, Reimar Döffinger wrote:
-> Seems sensible to me, though extra points if you or someone has numbers on performance impact.
-> To know whether it would be worthwhile to check if it can be optimized...
-
-Sorry for the long delay - been on various holidays.
-
-I did a few tests on my original patch and overall it was about 2%
-slower than before. In any case I think this new patch is a better
-solution (although the diff is a lot larger). We don't actually need
-that many registers in either of these functions, so instead of
-pushing the clobbered callee saved registers, we can reallocate all
-the registers to avoid them in the first place. This way there is no
-performance impact.
-
-I couldn't find any tests for this encoder, but I have tested a few
-audio samples with it and verified the output is identical to what t
-was before (and with what I get on x86).
-
- libavcodec/arm/sbcdsp_neon.S | 220 +++++++++++++++++------------------
+ libavcodec/arm/sbcdsp_neon.S | 220 +++++++++++++++++++++----------------------
  1 file changed, 110 insertions(+), 110 deletions(-)
 
 diff --git a/libavcodec/arm/sbcdsp_neon.S b/libavcodec/arm/sbcdsp_neon.S
-index d83d21d202..914abfb6cc 100644
+index d83d21d..914abfb 100644
 --- a/libavcodec/arm/sbcdsp_neon.S
 +++ b/libavcodec/arm/sbcdsp_neon.S
 @@ -38,49 +38,49 @@ function ff_sbc_analyze_4_neon, export=1
@@ -305,6 +285,3 @@ index d83d21d202..914abfb6cc 100644
  
          vst1.32         {d0, d1, d2, d3}, [r1, :128]
  
--- 
-2.23.0
-

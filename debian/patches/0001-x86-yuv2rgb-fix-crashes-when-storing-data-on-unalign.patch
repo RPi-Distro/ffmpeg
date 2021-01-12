@@ -1,16 +1,23 @@
-Description: x86/yuv2rgb: fix crashes when storing data on unaligned buffers
- Regression since fc6a5883d6af8cae0e96af84dda0ad74b360a084
- on SSSE3 enabled CPUs.
-Author: James Almer <jamrial@gmail.com>
+From: James Almer <jamrial@gmail.com>
+Date: Tue, 12 Jan 2021 19:17:37 +0100
+Subject: x86/yuv2rgb: fix crashes when storing data on unaligned buffers
+
+Regression since fc6a5883d6af8cae0e96af84dda0ad74b360a084
+on SSSE3 enabled CPUs.
+
 Origin: upstream, https://git.ffmpeg.org/gitweb/ffmpeg.git/commitdiff/799fc4d
 Bug: https://trac.ffmpeg.org/ticket/8747
 Bug-Debian: https://bugs.debian.org/964312
 Last-Update: 2020-08-04
 ---
-This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+ libswscale/x86/yuv_2_rgb.asm | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/libswscale/x86/yuv_2_rgb.asm b/libswscale/x86/yuv_2_rgb.asm
+index 575a84d..003dff1 100644
 --- a/libswscale/x86/yuv_2_rgb.asm
 +++ b/libswscale/x86/yuv_2_rgb.asm
-@@ -268,9 +268,9 @@
+@@ -268,9 +268,9 @@ cglobal %1_420_%2%3, GPR_num, GPR_num, reg_num, parameters
      por    m2, m7
      por    m1, m6          ; g5  b5  r6  g6  b6  r7  g7  b7  r8  g8  b8  r9  g9  b9  r10 g10
      por    m2, m3          ; b10 r11 g11 b11 r12 g12 b12 r13 g13 b13 r14 g14 b14 r15 g15 b15
@@ -23,7 +30,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  %endif ; mmsize = 16
  %else ; PACK RGB15/16/32
      packuswb m0, m1
-@@ -300,10 +300,10 @@
+@@ -300,10 +300,10 @@ cglobal %1_420_%2%3, GPR_num, GPR_num, reg_num, parameters
      punpckhwd m_green, m_red
      punpcklwd m5, m6
      punpckhwd m_alpha, m6
@@ -38,7 +45,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  %else ; PACK RGB15/16
  %define depth 2
  %if cpuflag(ssse3)
-@@ -342,8 +342,8 @@
+@@ -342,8 +342,8 @@ cglobal %1_420_%2%3, GPR_num, GPR_num, reg_num, parameters
      mova m2, m0
      punpcklbw m0, m1
      punpckhbw m2, m1
