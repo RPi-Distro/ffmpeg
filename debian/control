@@ -59,7 +59,7 @@ Build-Depends:
 # --enable-libfontconfig
  libfontconfig-dev,
 # --enable-libfreetype
- libfreetype6-dev,
+ libfreetype-dev,
 # --enable-fribidi
  libfribidi-dev,
 # --enable-opengl
