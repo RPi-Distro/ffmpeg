@@ -1,3 +1,18 @@
+ffmpeg (7:4.3.1-6) unstable; urgency=medium
+
+  * Team upload
+  * debian/control:
+    - Bump Standards-Version
+    - Drop obsolete Build-Depends
+    - Switch to libfontconfig-dev and libfreetype-dev
+  * debian/patches:
+    - Fix out-of-bounds write in libavcodec/exr.c (Closes: #980000)
+      (CVE-2020-35964)
+    - Fix out-of-bounds write in libavcodec/vividas.c (Closes: #979999)
+      (CVE-2020-35965)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 12 Jan 2021 20:48:08 +0100
+
 ffmpeg (7:4.3.1-5) unstable; urgency=medium
 
   * Team upload
