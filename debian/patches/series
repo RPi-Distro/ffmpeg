@@ -1,3 +1,5 @@
 0001-x86-yuv2rgb-fix-crashes-when-storing-data-on-unalign.patch
 0002-avcodec-arm-sbcenc-avoid-callee-preserved-vfp-regist.patch
 0003-avformat-vividas-improve-extradata-packing-checks-in.patch
+0004-avcodec-exr-Check-ymin-vs.-h.patch
+0005-avcodec-exr-skip-bottom-clearing-loop-when-its-outsi.patch
