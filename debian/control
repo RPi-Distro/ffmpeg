@@ -61,7 +61,7 @@ Build-Depends:
 # --enable-libdrm
  libdrm-dev [linux-any],
 # --enable-libfontconfig
- libfontconfig1-dev,
+ libfontconfig-dev,
 # --enable-libfreetype
  libfreetype6-dev,
 # --enable-fribidi
