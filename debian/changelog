@@ -1,3 +1,19 @@
+ffmpeg (7:4.3.1-7) unstable; urgency=medium
+
+  * Team upload
+
+  [ Vasyl Gello ]
+  * Keep libfreetype6-dev as alternative dep for buster-bpo
+
+  [ Sebastian Ramacher ]
+  * debian/patches:
+    - Apply upstream patches for srt 1.4.1
+    - Fix build on powerpc and ppc64 (Closes: #968574)
+  * debian/: Revert "Temporarily disable srt support" (Closes: #975988,
+    #972556)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 19 Jan 2021 20:36:50 +0100
+
 ffmpeg (7:4.3.1-6) unstable; urgency=medium
 
   * Team upload
