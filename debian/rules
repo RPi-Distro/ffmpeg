@@ -59,7 +59,7 @@ CONFIG := --prefix=/usr \
 	--enable-libsnappy \
 	--enable-libsoxr \
 	--enable-libspeex \
-	--disable-libsrt \
+	--enable-libsrt \
 	--enable-libssh \
 	--enable-libtheora \
 	--enable-libtwolame \
