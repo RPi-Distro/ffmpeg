@@ -7,3 +7,4 @@
 0007-lavf-srt-fix-build-fail-when-used-the-libsrt-1.4.1.patch
 0008-avformat-libsrt-fix-cleanups-on-failed-libsrt_open-a.patch
 0009-Fix-build-on-powerpc-and-ppc64.patch
+0010-opusdec-do-not-fail-when-LBRR-frames-are-present.patch
