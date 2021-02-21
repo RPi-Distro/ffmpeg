@@ -1009,11 +1009,6 @@ Copyright:
   2020, Jonas Smedegaard <dr@jones.dk>
 License: LGPL-2.1+
 
-Files: debian/copyright-check
-Copyright:
-  2016-2020, Jonas Smedegaard <dr@jones.dk>
-License: GPL-3+
-
 Files: debian/missing-sources/ffmpeg-web/src/less/style.less
 Copyright: 2014, Barbara Lepage <db0company@gmail.com>
 License: Expat
