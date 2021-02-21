@@ -48,6 +48,9 @@ Files: CONTRIBUTING.md
  debian/libavfilter7.lintian-overrides
  debian/libavfilter7.symbols
  debian/libavformat-dev.install
+ debian/libavformat-extra58.install
+ debian/libavformat-extra58.install.powerpc
+ debian/libavformat-extra58.lintian-overrides
  debian/libavformat58.install
  debian/libavformat58.install.powerpc
  debian/libavformat58.lintian-overrides

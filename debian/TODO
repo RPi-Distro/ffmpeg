@@ -1,8 +1,6 @@
   * introduce libavcodec-extra/libavfilter-extra flavor
     + build with configure flag --enable-libglslang
       build-depend on glslang-dev
-    + build with configure flag --enable-libsmbclient
-      build-depend on libsmbclient-dev [!hurd-i386 !m68k !sparc64]
     + build with configure flag --enable-vulkan
       build-depend on libvulkan-dev
     + build-depend on libamf-dev

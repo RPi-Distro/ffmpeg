@@ -118,6 +118,8 @@ Build-Depends:
  libsdl2-dev,
 # --enable-libshine
  libshine-dev (>= 3.0.0),
+# --enable-libsmbclient (used only in -extra flavor)
+ libsmbclient-dev [!hurd-i386 !m68k !sparc64],
 # --enable-libsnappy
  libsnappy-dev,
 # --enable-libsoxr
@@ -309,7 +311,6 @@ Description: FFmpeg library with extra codecs (metapackage)
  that offers additional codec support. Application packages can depend
  on it if they require or suggest this variant in a robust manner.
 
-
 Package: libavcodec-dev
 Architecture: any
 Section: libdevel
@@ -494,6 +495,54 @@ Description: FFmpeg library with (de)muxers for multimedia containers - runtime 
  supports several input and output protocols to access a media resource.
  .
  This package contains the runtime files.
+
+Package: libavformat-extra58
+Architecture: any
+Section: libs
+Multi-Arch: same
+Conflicts: libavformat58
+Provides: libavformat58 (= ${binary:Version})
+Pre-Depends:
+ ${misc:Pre-Depends}
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: FFmpeg library with additional (de)muxers for multimedia containers
+ FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
+ mux, demux, stream, filter and play pretty much anything that humans and
+ machines have created. It supports the most obscure ancient formats up to the
+ cutting edge.
+ .
+ This library provides a generic framework for multiplexing and demultiplexing
+ (muxing and demuxing) audio, video and subtitle streams. It encompasses
+ multiple muxers and demuxers for multimedia container formats. It also
+ supports several input and output protocols to access a media resource.
+ .
+ This package replaces the libavformat58 package and contains the
+ following additional (de)muxers:
+ .
+  * SMB protocol (using libsmbclient)
+ .
+ Because this package links against libraries that are licensed under
+ Apache License 2.0 or GPL version 3, the resulting binaries are distributed
+ under the GPL version 3 or later.
+
+Package: libavformat-extra
+Architecture: any
+Section: metapackages
+Multi-Arch: same
+Depends:
+ libavformat-extra58 (= ${binary:Version}),
+ ${misc:Depends}
+Description: FFmpeg library with extra (de)muxers (metapackage)
+ FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
+ mux, demux, stream, filter and play pretty much anything that humans and
+ machines have created. It supports the most obscure ancient formats up to the
+ cutting edge.
+ .
+ This metapackage depends on the latest version of the libavformat variant
+ that offers additional (de)muxers support. Application packages can depend
+ on it if they require or suggest this variant in a robust manner.
 
 Package: libavformat-dev
 Architecture: any
