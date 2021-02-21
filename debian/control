@@ -6,6 +6,7 @@ Uploaders:
  Reinhard Tartler <siretart@tauware.de>,
  Balint Reczey <balint@balintreczey.hu>,
  James Cowgill <jcowgill@debian.org>,
+ Sebastian Ramacher <sramacher@debian.org>,
 Rules-Requires-Root: no
 Homepage: https://ffmpeg.org/
 Standards-Version: 4.5.1
