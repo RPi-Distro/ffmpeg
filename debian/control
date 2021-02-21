@@ -2,8 +2,7 @@ Source: ffmpeg
 Section: video
 Priority: optional
 Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
-Uploaders: Andreas Cadhalpun <Andreas.Cadhalpun@googlemail.com>,
- Alexander Strasser <eclipse7@gmx.net>,
+Uploaders:
  Reinhard Tartler <siretart@tauware.de>,
  Balint Reczey <balint@balintreczey.hu>,
  James Cowgill <jcowgill@debian.org>,
