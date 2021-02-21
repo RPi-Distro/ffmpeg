@@ -1,3 +1,11 @@
+ffmpeg (7:4.3.2-1) experimental; urgency=medium
+
+  * New upstream release
+  * debian/control: Add libgl-dev as alternative Build-Depends
+  * debian/patches: Remove patches integrated upstream
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 21 Feb 2021 22:15:58 +0100
+
 ffmpeg (7:4.3.1-9) experimental; urgency=medium
 
   [ Fabian Greffrath ]
