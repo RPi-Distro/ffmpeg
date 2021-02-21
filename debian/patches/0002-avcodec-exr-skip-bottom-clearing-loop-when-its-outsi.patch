@@ -12,10 +12,10 @@ Signed-off-by: Michael Niedermayer <michael@niedermayer.cc>
  1 file changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/libavcodec/exr.c b/libavcodec/exr.c
-index 6a0700c..9dc59f7 100644
+index 2e008c8..4a81f79 100644
 --- a/libavcodec/exr.c
 +++ b/libavcodec/exr.c
-@@ -1654,7 +1654,7 @@ static int decode_frame(AVCodecContext *avctx, void *data,
+@@ -1672,7 +1672,7 @@ static int decode_frame(AVCodecContext *avctx, void *data,
      AVFrame *picture = data;
      uint8_t *ptr;
  
@@ -24,7 +24,7 @@ index 6a0700c..9dc59f7 100644
      int planes;
      int out_line_size;
      int nb_blocks;   /* nb scanline or nb tile */
-@@ -1804,14 +1804,16 @@ static int decode_frame(AVCodecContext *avctx, void *data,
+@@ -1824,14 +1824,16 @@ static int decode_frame(AVCodecContext *avctx, void *data,
  
      avctx->execute2(avctx, decode_block, s->thread_data, NULL, nb_blocks);
  
