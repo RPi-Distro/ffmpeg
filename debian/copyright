@@ -455,13 +455,6 @@ Copyright:
   2020, Zane van Iperen (zane@zanevaniperen.com)
 License: LGPL-2.1+
 Comment:
- You should have received a copy of the GNU Lesser General Public
- License along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- .
- On Debian systems, the full text of the GNU Lesser General Public License
- version 2.1 can be found in the file `/usr/share/common-licenses/LGPL-2.1'.
- .
  The copyright details for Joseph Artsimovich and UAB "DKD" were extracted
  from the referenced source:
  <http://samples.mplayerhq.hu/A-codecs/Nelly_Moser/ASAO/ASAO.zip>.
@@ -475,13 +468,6 @@ Copyright:
   2011, Mina Nagy Zaki
   2015, Paul B Mahol
 License: LGPL-2.1+ and Sundry
-Comment:
- On Debian systems, the full text of the GNU Lesser General Public License
- version 2.1 can be found in the file `/usr/share/common-licenses/LGPL-2.1'.
- .
- You should have received a copy of the GNU Lesser General Public
- License along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 Files:
   doc/texi2pod.pl
@@ -823,13 +809,6 @@ Copyright:
   2013, The WebRTC project authors
   2013, OpenCV Foundation
 License: LGPL-2.1+ and BSD-3-clause
-Comment:
- On Debian systems, the full text of the GNU Lesser General Public License
- version 2.1 can be found in the file `/usr/share/common-licenses/LGPL-2.1'.
- .
- You should have received a copy of the GNU Lesser General Public
- License along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 Files:
   tools/cws2fws.c
@@ -1029,13 +1008,6 @@ Copyright:
   2017-2018, James Cowgill <jcowgill@debian.org>
   2020, Jonas Smedegaard <dr@jones.dk>
 License: LGPL-2.1+
-Comment:
- On Debian systems, the full text of the GNU Lesser General Public License
- version 2.1 can be found in the file `/usr/share/common-licenses/LGPL-2.1'.
- .
- You should have received a copy of the GNU Lesser General Public
- License along with this packaging; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 Files: debian/copyright-check
 Copyright:
@@ -1155,6 +1127,13 @@ License: LGPL-2.1+
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  Lesser General Public License for more details.
+Comment:
+ On Debian systems, the full text of the GNU Lesser General Public License
+ version 2.1 can be found in the file `/usr/share/common-licenses/LGPL-2.1'.
+ .
+ You should have received a copy of the GNU Lesser General Public
+ License along with this packaging; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 License: Sundry
  This source code is freely redistributable and may be used for
