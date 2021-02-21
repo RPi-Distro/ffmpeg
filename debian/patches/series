@@ -1,10 +1,3 @@
-0001-x86-yuv2rgb-fix-crashes-when-storing-data-on-unalign.patch
-0002-avcodec-arm-sbcenc-avoid-callee-preserved-vfp-regist.patch
-0003-avformat-vividas-improve-extradata-packing-checks-in.patch
-0004-avcodec-exr-Check-ymin-vs.-h.patch
-0005-avcodec-exr-skip-bottom-clearing-loop-when-its-outsi.patch
-0006-avformat-libsrt-close-listen-fd-in-listener-mode.patch
-0007-lavf-srt-fix-build-fail-when-used-the-libsrt-1.4.1.patch
-0008-avformat-libsrt-fix-cleanups-on-failed-libsrt_open-a.patch
-0009-Fix-build-on-powerpc-and-ppc64.patch
-0010-opusdec-do-not-fail-when-LBRR-frames-are-present.patch
+0001-avcodec-arm-sbcenc-avoid-callee-preserved-vfp-regist.patch
+0002-avcodec-exr-skip-bottom-clearing-loop-when-its-outsi.patch
+0003-Fix-build-on-powerpc-and-ppc64.patch
