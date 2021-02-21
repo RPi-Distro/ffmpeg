@@ -236,8 +236,6 @@ Package: libavcodec58
 Architecture: any
 Section: libs
 Multi-Arch: same
-Pre-Depends:
- ${misc:Pre-Depends}
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
@@ -263,8 +261,6 @@ Section: libs
 Multi-Arch: same
 Conflicts: libavcodec58
 Provides: libavcodec58 (= ${binary:Version})
-Pre-Depends:
- ${misc:Pre-Depends}
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
@@ -340,8 +336,6 @@ Package: libavdevice58
 Architecture: any
 Section: libs
 Multi-Arch: same
-Pre-Depends:
- ${misc:Pre-Depends}
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
@@ -387,8 +381,6 @@ Package: libavfilter7
 Architecture: any
 Section: libs
 Multi-Arch: same
-Pre-Depends:
- ${misc:Pre-Depends}
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
@@ -409,8 +401,6 @@ Section: libs
 Multi-Arch: same
 Conflicts: libavfilter7
 Provides: libavfilter7 (= ${binary:Version})
-Pre-Depends:
- ${misc:Pre-Depends}
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
@@ -478,8 +468,6 @@ Package: libavformat58
 Architecture: any
 Section: libs
 Multi-Arch: same
-Pre-Depends:
- ${misc:Pre-Depends}
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
@@ -502,8 +490,6 @@ Section: libs
 Multi-Arch: same
 Conflicts: libavformat58
 Provides: libavformat58 (= ${binary:Version})
-Pre-Depends:
- ${misc:Pre-Depends}
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
@@ -571,8 +557,6 @@ Package: libavresample4
 Architecture: any
 Section: libs
 Multi-Arch: same
-Pre-Depends:
- ${misc:Pre-Depends}
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
@@ -610,8 +594,6 @@ Package: libavutil56
 Architecture: any
 Section: libs
 Multi-Arch: same
-Pre-Depends:
- ${misc:Pre-Depends}
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
@@ -656,8 +638,6 @@ Package: libpostproc55
 Architecture: any
 Section: libs
 Multi-Arch: same
-Pre-Depends:
- ${misc:Pre-Depends}
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
@@ -693,8 +673,6 @@ Package: libswresample3
 Architecture: any
 Section: libs
 Multi-Arch: same
-Pre-Depends:
- ${misc:Pre-Depends}
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
@@ -764,8 +742,6 @@ Package: libswscale5
 Architecture: any
 Section: libs
 Multi-Arch: same
-Pre-Depends:
- ${misc:Pre-Depends}
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
