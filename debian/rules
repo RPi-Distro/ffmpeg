@@ -28,7 +28,6 @@ CONFIG := --prefix=/usr \
 	--arch=$(DEB_HOST_ARCH_CPU) \
 	--enable-gpl \
 	--disable-stripping \
-	--enable-avresample --disable-filter=resample \
 	--enable-gnutls \
 	--enable-ladspa \
 	--enable-libaom \
@@ -234,7 +233,7 @@ prebuild_%:
 $(patsubst %,prebuild_%,$(filter %extra,$(FLAVORS))): prebuild_%: build_standard
 	$(info $()   debian/rules $@)
 	$(eval subdir = debian/$(subst extra,standard,$(subst -extra,,$*)))
-	cd $(subdir) && find libavcodec libavdevice libavfilter libavformat libavresample libavutil libpostproc libswscale libswresample \
+	cd $(subdir) && find libavcodec libavdevice libavfilter libavformat libavutil libpostproc libswscale libswresample \
 		-type f -name '*.o' \
 		-exec install -m 644 -D -T '{}' '../$*/{}' ';'
 	rm debian/$*/libavcodec/allcodecs.o
@@ -251,7 +250,7 @@ build_%: prebuild_%
 
 # Set the library path for the dynamic linker, because the tests otherwise don't find the libraries.
 override_dh_auto_test-arch:
-	export LD_LIBRARY_PATH="libavcodec:libavdevice:libavfilter:libavformat:libavresample:libavutil:libpostproc:libswresample:libswscale"; \
+	export LD_LIBRARY_PATH="libavcodec:libavdevice:libavfilter:libavformat:libavutil:libpostproc:libswresample:libswscale"; \
 		dh_auto_test -a --sourcedirectory=debian/standard -- -k
 
 # No tests for indep build.
@@ -298,4 +297,4 @@ override_dh_shlibdeps:
 
 # avoid error: Unknown DWARF DW_OP_0
 override_dh_dwz:
-	dh_dwz -Xlibavcodec -Xlibavfilter -Xlibavresample -Xlibavutil -Xlibswresample -Xlibswscale
+	dh_dwz -Xlibavcodec -Xlibavfilter -Xlibavutil -Xlibswresample -Xlibswscale

@@ -553,43 +553,6 @@ Description: FFmpeg library with (de)muxers for multimedia containers - developm
  .
  This package contains the development files.
 
-Package: libavresample4
-Architecture: any
-Section: libs
-Multi-Arch: same
-Depends:
- ${shlibs:Depends},
- ${misc:Depends}
-Description: FFmpeg compatibility library for resampling - runtime files
- FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
- mux, demux, stream, filter and play pretty much anything that humans and
- machines have created. It supports the most obscure ancient formats up to the
- cutting edge.
- .
- This library is provided for compatibility reasons only.
- The FFmpeg project advises to use libswresample instead.
- .
- This package contains the runtime files.
-
-Package: libavresample-dev
-Architecture: any
-Section: libdevel
-Multi-Arch: same
-Depends:
- libavutil-dev (= ${binary:Version}),
- libavresample4 (= ${binary:Version}),
- ${misc:Depends}
-Description: FFmpeg compatibility library for resampling - development files
- FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
- mux, demux, stream, filter and play pretty much anything that humans and
- machines have created. It supports the most obscure ancient formats up to the
- cutting edge.
- .
- This library is provided for compatibility reasons only.
- The FFmpeg project advises to use libswresample instead.
- .
- This package contains the development files.
-
 Package: libavutil56
 Architecture: any
 Section: libs
