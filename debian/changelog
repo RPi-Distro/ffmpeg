@@ -1,3 +1,11 @@
+ffmpeg (7:4.3.2-0+deb11u1) unstable; urgency=medium
+
+  * New upstream release
+  * debian/gbp.conf: Branch off for bullseye
+  * debian/patches: Remove patches integrated upstream
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 21 Feb 2021 22:19:57 +0100
+
 ffmpeg (7:4.3.1-8) unstable; urgency=medium
 
   * Team upload
