@@ -63,7 +63,7 @@ Build-Depends:
 # --enable-fribidi
  libfribidi-dev,
 # --enable-opengl
- libgl1-mesa-dev,
+ libgl1-mesa-dev | libgl-dev,
 # --enable-libgme
  libgme-dev,
 # --enable-gnutls
