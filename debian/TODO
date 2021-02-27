@@ -38,10 +38,6 @@
   * build with configure flag --enable-libxavs
     when XAVS is in Debian
     <http://xavs.sourceforge.net/>
-  * build with configure flag --enable-libzimg
-    when zimg is in Debian
-    closes: bug#864888
-    <https://github.com/buaazp/zimg>
   * build with configure flag --enable-vapoursynth
     when vapoursynth is in Debian
     closes: bug#833942

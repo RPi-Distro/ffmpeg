@@ -70,6 +70,7 @@ CONFIG := --prefix=/usr \
 	--enable-libx265 \
 	--enable-libxml2 \
 	--enable-libxvid \
+	--enable-libzimg \
 	--enable-libzmq \
 	--enable-libzvbi \
 	--enable-lv2 \
