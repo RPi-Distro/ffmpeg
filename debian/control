@@ -111,7 +111,7 @@ Build-Depends:
 # --enable-librubberband
  librubberband-dev,
 # --enable-librsvg
- librsvg2-dev,
+ librsvg2-dev [!hppa !sh4],
 # autodetected: protocol 'sctp'
  libsctp-dev [linux-any],
 # --enable-sdl2
