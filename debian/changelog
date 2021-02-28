@@ -1,8 +1,10 @@
-ffmpeg (7:4.3.2-2) UNRELEASED; urgency=medium
+ffmpeg (7:4.3.2-2) experimental; urgency=medium
 
-  * debian/: Build with zimg (Closes: #966059)
+  * debian/:
+    - Build with zimg (Closes: #966059)
+    - Disable librvsg on hppa and sh4 (Closes: #983344)
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sat, 27 Feb 2021 16:22:52 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 28 Feb 2021 14:49:11 +0100
 
 ffmpeg (7:4.3.2-1) experimental; urgency=medium
 
