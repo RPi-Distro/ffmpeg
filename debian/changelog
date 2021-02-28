@@ -2,7 +2,7 @@ ffmpeg (7:4.3.2-2) experimental; urgency=medium
 
   * debian/:
     - Build with zimg (Closes: #966059)
-    - Disable librvsg on hppa and sh4 (Closes: #983344)
+    - Disable librsvg on hppa and sh4 (Closes: #983344)
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sun, 28 Feb 2021 14:49:11 +0100
 
