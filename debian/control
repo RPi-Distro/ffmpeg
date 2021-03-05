@@ -119,7 +119,7 @@ Build-Depends:
 # --enable-libshine
  libshine-dev (>= 3.0.0),
 # --enable-libsmbclient (used only in -extra flavor)
- libsmbclient-dev [!hurd-i386 !m68k !sparc64],
+ libsmbclient-dev (>= 4.13) [!hurd-i386 !m68k !sparc64],
 # --enable-libsnappy
  libsnappy-dev,
 # --enable-libsoxr
