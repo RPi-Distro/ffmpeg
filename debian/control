@@ -59,7 +59,7 @@ Build-Depends:
 # --enable-libfontconfig
  libfontconfig-dev,
 # --enable-libfreetype
- libfreetype-dev | libfreetype6-dev,
+ libfreetype-dev,
 # --enable-fribidi
  libfribidi-dev,
 # --enable-opengl
@@ -67,7 +67,7 @@ Build-Depends:
 # --enable-libgme
  libgme-dev,
 # --enable-gnutls
- libgnutls28-dev | libgnutls-dev,
+ libgnutls28-dev,
 # --enable-libgsm
  libgsm1-dev,
 # Fails to be detected by configure script, if not also libavc1394-dev is installed.
