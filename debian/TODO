@@ -46,3 +46,5 @@
     when davs2 is no longer deemed experimental
   * build with configure flag --enable-libxavs2
     when xavs2 is no longer deemed experimental
+  * build with configure flag --enable-liblensfun
+    when a released version of liblensfun is supported again
