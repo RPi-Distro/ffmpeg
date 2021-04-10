@@ -151,8 +151,6 @@ Build-Depends:
  libvorbis-dev,
 # --enable-libvpx
  libvpx-dev,
-# --enable-libwavpack
- libwavpack-dev,
 # --enable-libwebp
  libwebp-dev,
 # --enable-libx264

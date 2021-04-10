@@ -64,7 +64,6 @@ CONFIG := --prefix=/usr \
 	--enable-libvidstab \
 	--enable-libvorbis \
 	--enable-libvpx \
-	--enable-libwavpack \
 	--enable-libwebp \
 	--enable-libx265 \
 	--enable-libxml2 \
