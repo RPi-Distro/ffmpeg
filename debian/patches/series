@@ -1,3 +1,1 @@
 0001-avcodec-arm-sbcenc-avoid-callee-preserved-vfp-regist.patch
-0002-avcodec-exr-skip-bottom-clearing-loop-when-its-outsi.patch
-0003-Fix-build-on-powerpc-and-ppc64.patch
