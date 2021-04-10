@@ -76,8 +76,6 @@ Build-Depends:
  libavc1394-dev [linux-any],
 # --enable-libjack
  libjack-jackd2-dev,
-# --enable-liblensfun (used only in -extra flavor)
- liblensfun-dev,
 # --enable-lv2
  liblilv-dev,
 # autodetected for the tiff decoder
@@ -411,7 +409,6 @@ Description: FFmpeg library with extra media filters - runtime files
  This package replaces the libavfilter6 package and contains the
  following additional filters:
  .
-  * Lens correction using Lensfun
   * Optical Character Recognition (uses Tesseract)
  .
  Because this package links against libraries that are licensed under

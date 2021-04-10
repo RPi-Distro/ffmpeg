@@ -101,7 +101,6 @@ CONFIG_extra = --enable-shared \
 	--disable-doc \
 	--disable-programs \
 	--enable-libaribb24 \
-	--enable-liblensfun \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
 	--enable-libsmbclient \
