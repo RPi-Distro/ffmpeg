@@ -355,7 +355,7 @@ Copyright:
   2014, StarBrilliant <m13253@hotmail.com>
   2014, Tim Walker <tdskywalker@gmail.com>
   2014-2015, Arwa Arif <arwaarif1994@gmail.com>
-  2014-2015, Hendrik Leppkes
+  2014-2020, Hendrik Leppkes
   2014-2015, Peter Meerwald <pmeerw@pmeerw.net>
   2014-2015, Supraja Meedinti
   2014-2015, Vignesh Venkatasubramanian
@@ -694,6 +694,7 @@ Files:
   libavcodec/x86/vc1dsp_init.c
   libavcodec/x86/vc1dsp_mmx.c
   libavfilter/af_deesser.c
+  libavfilter/cuda/vector_helpers.cuh
   libavfilter/vf_avgblur.c
   libavfilter/vf_bilateral.c
   libavfilter/vf_bm3d.c
@@ -710,7 +711,6 @@ Files:
   libavformat/oggparsevorbis.c
   libavutil/avsscanf.c
   tests/api/api-band-test.c
-  tests/api/api-codec-param-test.c
   tests/api/api-flac-test.c
   tests/api/api-h264-test.c
   tests/api/api-seek-test.c
