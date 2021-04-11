@@ -8,7 +8,7 @@ and for -extra libraries as the result is GPLv3+.
 Please see TODO.Debian for features potentially enabled later.
 
 The following features are unlikely to be enabled:
-  --enable-libcelt      abandoned upstream, superceded by opus (bug#676592)
+  --enable-libcelt      abandoned upstream, superseded by opus (bug#676592)
   --enable-crystalhd    unusable in Debian, firmware missing (bug#917292)
   --enable-librtmp      built-in RTMP support is better, and has listen mode
   --enable-mbedtls      superfluous: already using GnuTLS as TLS implementation
