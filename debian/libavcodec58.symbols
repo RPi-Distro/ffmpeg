@@ -1,4 +1,4 @@
-# SymbolsHelper-Confirmed: 7:4.2 amd64
+# SymbolsHelper-Confirmed: 7:4.4 amd64
 libavcodec.so.58 libavcodec58 #MINVER#
 * Build-Depends-Package: libavcodec-dev
  LIBAVCODEC_58@LIBAVCODEC_58 7:4.0
@@ -153,6 +153,7 @@ libavcodec.so.58 libavcodec58 #MINVER#
  avcodec_default_execute2@LIBAVCODEC_58 7:4.0
  avcodec_default_execute@LIBAVCODEC_58 7:4.0
  avcodec_default_get_buffer2@LIBAVCODEC_58 7:4.0
+ avcodec_default_get_encode_buffer@LIBAVCODEC_58 7:4.4
  avcodec_default_get_format@LIBAVCODEC_58 7:4.0
  avcodec_descriptor_get@LIBAVCODEC_58 7:4.0
  avcodec_descriptor_get_by_name@LIBAVCODEC_58 7:4.0

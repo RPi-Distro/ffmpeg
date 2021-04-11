@@ -1,4 +1,4 @@
-# SymbolsHelper-Confirmed: 7:4.3 amd64
+# SymbolsHelper-Confirmed: 7:4.4 amd64
 libavutil.so.56 libavutil56 #MINVER#
 * Build-Depends-Package: libavutil-dev
  LIBAVUTIL_56@LIBAVUTIL_56 7:4.0
@@ -68,6 +68,7 @@ libavutil.so.56 libavutil56 #MINVER#
  av_buffer_pool_uninit@LIBAVUTIL_56 7:4.0
  av_buffer_realloc@LIBAVUTIL_56 7:4.0
  av_buffer_ref@LIBAVUTIL_56 7:4.0
+ av_buffer_replace@LIBAVUTIL_56 7:4.4
  av_buffer_unref@LIBAVUTIL_56 7:4.0
  av_calloc@LIBAVUTIL_56 7:4.0
  av_camellia_alloc@LIBAVUTIL_56 7:4.0
@@ -164,6 +165,8 @@ libavutil.so.56 libavutil56 #MINVER#
  av_fifo_space@LIBAVUTIL_56 7:4.0
  av_file_map@LIBAVUTIL_56 7:4.0
  av_file_unmap@LIBAVUTIL_56 7:4.0
+ av_film_grain_params_alloc@LIBAVUTIL_56 7:4.4
+ av_film_grain_params_create_side_data@LIBAVUTIL_56 7:4.4
  av_find_best_pix_fmt_of_2@LIBAVUTIL_56 7:4.0
  av_find_info_tag@LIBAVUTIL_56 7:4.0
  av_find_nearest_q_idx@LIBAVUTIL_56 7:4.0
@@ -297,6 +300,7 @@ libavutil.so.56 libavutil56 #MINVER#
  av_image_fill_black@LIBAVUTIL_56 7:4.0
  av_image_fill_linesizes@LIBAVUTIL_56 7:4.0
  av_image_fill_max_pixsteps@LIBAVUTIL_56 7:4.0
+ av_image_fill_plane_sizes@LIBAVUTIL_56 7:4.4
  av_image_fill_pointers@LIBAVUTIL_56 7:4.0
  av_image_get_buffer_size@LIBAVUTIL_56 7:4.0
  av_image_get_linesize@LIBAVUTIL_56 7:4.0
@@ -344,6 +348,7 @@ libavutil.so.56 libavutil56 #MINVER#
  av_murmur3_init_seeded@LIBAVUTIL_56 7:4.0
  av_murmur3_update@LIBAVUTIL_56 7:4.0
  av_nearer_q@LIBAVUTIL_56 7:4.0
+ av_opt_child_class_iterate@LIBAVUTIL_56 7:4.4
  av_opt_child_class_next@LIBAVUTIL_56 7:4.0
  av_opt_child_next@LIBAVUTIL_56 7:4.0
  av_opt_copy@LIBAVUTIL_56 7:4.0
@@ -492,10 +497,13 @@ libavutil.so.56 libavutil56 #MINVER#
  av_thread_message_queue_set_free_func@LIBAVUTIL_56 7:4.0
  av_timecode_adjust_ntsc_framenum2@LIBAVUTIL_56 7:4.0
  av_timecode_check_frame_rate@LIBAVUTIL_56 7:4.0
+ av_timecode_get_smpte@LIBAVUTIL_56 7:4.4
  av_timecode_get_smpte_from_framenum@LIBAVUTIL_56 7:4.0
  av_timecode_init@LIBAVUTIL_56 7:4.0
+ av_timecode_init_from_components@LIBAVUTIL_56 7:4.4
  av_timecode_init_from_string@LIBAVUTIL_56 7:4.0
  av_timecode_make_mpeg_tc_string@LIBAVUTIL_56 7:4.0
+ av_timecode_make_smpte_tc_string2@LIBAVUTIL_56 7:4.4
  av_timecode_make_smpte_tc_string@LIBAVUTIL_56 7:4.0
  av_timecode_make_string@LIBAVUTIL_56 7:4.0
  av_timegm@LIBAVUTIL_56 7:4.0
