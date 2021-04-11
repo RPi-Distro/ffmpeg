@@ -22,7 +22,8 @@ Build-Depends-Indep:
 # generates top level manual page listing
  tree,
 Build-Depends:
-# needed for dh
+# autodetected: hwaccels 'cuda_llvm'
+ clang,
  debhelper-compat (= 13),
 # --enable-libflite
  flite1-dev,
