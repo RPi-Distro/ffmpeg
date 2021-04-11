@@ -1,3 +1,20 @@
+ffmpeg (7:4.4-1) experimental; urgency=medium
+
+  * New upstream release
+  * debian/control:
+    - Remove obsolete alternative BDs
+    - Bump libsmbclient-dev to 4.13 to avoid #984486
+    - Add clang to BD to enable cuda_llvm
+  * debian/:
+    - Remove --enable-libwavpack
+    - Remove --enable-liblensfun. liblensfun support is currently incompatible
+      with any of the released liblensfun versions.
+  * debian/patches: Drop patches from upstream
+  * debian/copyright: Update copyright years
+  * debian/*.symbols: Add new symbols
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 11 Apr 2021 15:09:21 +0200
+
 ffmpeg (7:4.3.2-2) experimental; urgency=medium
 
   * debian/:
