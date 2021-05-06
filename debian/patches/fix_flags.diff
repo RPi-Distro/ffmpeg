@@ -1,6 +1,6 @@
 --- a/configure
 +++ b/configure
-@@ -6216,11 +6216,9 @@
+@@ -6228,11 +6228,9 @@ enabled mbedtls           && { check_pkg
                                 die "ERROR: mbedTLS not found"; }
  enabled mediacodec        && { enabled jni || die "ERROR: mediacodec requires --enable-jni"; }
  ( enabled rpi ||

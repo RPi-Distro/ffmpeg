@@ -172,6 +172,7 @@ Build-Depends:
 # ocl-icd-opencl-dev [!hurd-any] | opencl-dev [!hurd-any],
 # used to detect libraries
  pkg-config,
+ linux-libc-dev,
 # HTML documentation
  texinfo,
 # assembler optimizations

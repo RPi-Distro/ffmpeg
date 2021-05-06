@@ -1,3 +1,9 @@
+ffmpeg (7:4.1.6-1~deb10u1+rpt2) buster; urgency=medium
+
+  * MMAL patch 7
+
+ -- Serge Schneider <serge@raspberrypi.com>  Thu, 06 May 2021 14:34:43 +0100
+
 ffmpeg (7:4.1.6-1~deb10u1+rpt1) buster; urgency=medium
 
   * New upstream release

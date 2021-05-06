@@ -106,7 +106,11 @@ ifeq ($(DEB_HOST_ARCH),armhf)
 	CONFIG += --enable-omx-rpi \
 		--enable-mmal \
 		--enable-neon \
-		--enable-rpi
+		--enable-rpi \
+		--enable-vout-drm\
+		--enable-v4l2-request\
+		--enable-libudev
+
 	CONFIG_v6 = --libdir=/usr/lib/$(DEB_HOST_MULTIARCH) \
 		--cpu=arm1176jzf-s \
 		--arch=arm
@@ -131,6 +135,16 @@ ifeq ($(DEB_HOST_ARCH),armhf)
 		--disable-pic \
 		--disable-doc \
 		--disable-programs
+else ifeq ($(DEB_HOST_ARCH),arm64)
+	CONFIG += --enable-omx-rpi \
+		--disable-mmal \
+		--enable-neon \
+		--enable-vout-drm\
+		--enable-v4l2-request\
+		--enable-libudev
+
+	CONFIG += --libdir=/usr/lib/$(DEB_HOST_MULTIARCH) \
+		--arch=$(DEB_HOST_ARCH_CPU)
 else
 	CONFIG += --libdir=/usr/lib/$(DEB_HOST_MULTIARCH) \
 		--arch=$(DEB_HOST_ARCH_CPU)
