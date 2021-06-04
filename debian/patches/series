@@ -1,3 +1,7 @@
 0001-avcodec-arm-sbcenc-avoid-callee-preserved-vfp-regist.patch
 0002-avcodec-exr-skip-bottom-clearing-loop-when-its-outsi.patch
 0003-Fix-build-on-powerpc-and-ppc64.patch
+0004-avfilter-vf_vmafmotion-Check-dimensions.patch
+0005-avfilter-vf_yadif-Fix-handing-of-tiny-images.patch
+0006-avformat-movenc-Check-pal_size-before-use.patch
+0007-avcodec-pngenc-remove-monowhite-from-apng-formats.patch
