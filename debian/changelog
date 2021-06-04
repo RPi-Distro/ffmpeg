@@ -1,3 +1,13 @@
+ffmpeg (7:4.3.2-0+deb11u2) unstable; urgency=medium
+
+  * debian/patches: Apply upstream patches for CVEs (Closes: #989439)
+    - avfilter/vf_vmafmotion: Fix out-of-bounds access (CVE-2020-22019, CVE-2020-22033)
+    - avfilter/vf_yadif: Fix out-of-bounds access (CVE-2020-22021)
+    - avformat/movenc: Fix out-of-bounds access (CVE-2020-22015)
+    - avcodec/pngen: Fix buffer overflow (CVE-2020-21041)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 04 Jun 2021 22:34:50 +0200
+
 ffmpeg (7:4.3.2-0+deb11u1) unstable; urgency=medium
 
   * New upstream release
