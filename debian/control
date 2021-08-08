@@ -638,7 +638,7 @@ Description: FFmpeg library for audio resampling, rematrixing etc. - runtime fil
  machines have created. It supports the most obscure ancient formats up to the
  cutting edge.
  .
- This library provides performs highly optimized audio resampling, rematrixing
+ This library performs highly optimized audio resampling, rematrixing
  and sample format conversion operations.
  Specifically, this library performs the following conversions:
   * Resampling is the process of changing the audio rate, for example from a
@@ -673,7 +673,7 @@ Description: FFmpeg library for audio resampling, rematrixing etc. - development
  machines have created. It supports the most obscure ancient formats up to the
  cutting edge.
  .
- This library provides performs highly optimized audio resampling, rematrixing
+ This library performs highly optimized audio resampling, rematrixing
  and sample format conversion operations.
  Specifically, this library performs the following conversions:
   * Resampling is the process of changing the audio rate, for example from a
