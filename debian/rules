@@ -108,9 +108,13 @@ CONFIG_extra = --enable-shared \
 	--enable-libaribb24 \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
-	--enable-libsmbclient \
 	--enable-libtesseract \
 	--enable-libvo_amrwbenc
+
+# Do not enable libsmbclient support on hurd-i386
+ifneq (,$(filter hurd-i386,$(DEB_HOST_ARCH)))
+	CONFIG_extra += --enable-libsmbclient
+endif
 
 # The static libraries should not be built with PIC.
 CONFIG_static = --disable-pic \
