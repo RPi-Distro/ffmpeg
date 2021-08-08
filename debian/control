@@ -110,7 +110,7 @@ Build-Depends:
 # --enable-librubberband
  librubberband-dev,
 # --enable-librsvg
- librsvg2-dev [!hppa !sh4],
+ librsvg2-dev [!alpha !hppa !hurd-i386 !ia64 !kfreebsd-amd64 !kfreebsd-i386 !m86k !sh4 !x32],
 # autodetected: protocol 'sctp'
  libsctp-dev [linux-any],
 # --enable-sdl2

@@ -88,8 +88,8 @@ ifeq (,$(filter mips% alpha ia64,$(DEB_HOST_ARCH))$(filter big,$(DEB_HOST_ARCH_E
 CONFIG += --enable-pocketsphinx
 endif
 
-# avoid librsvg on hppa and sh4 (bug#983344)
-ifeq (,$(filter sh4 hppa,$(DEB_HOST_ARCH)))
+# avoid librsvg on almost all ports (bug#983344, bug#991556)
+ifeq (,$(filter alpha hppa hurd-i386 ia64 kfreebsd-amd64 kfreebsd-i386 m86k sh4 x32,$(DEB_HOST_ARCH)))
 CONFIG += --enable-librsvg
 endif
 
