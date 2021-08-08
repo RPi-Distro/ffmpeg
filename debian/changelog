@@ -1,3 +1,14 @@
+ffmpeg (7:4.4-2) experimental; urgency=medium
+
+  * debian/control: Fix Description of libswscale3 (Closes: #984795)
+  * debian/rules: Link with -latomic on armel and mipsel
+  * debian/:
+    - Properly disable libsmbclient support only on hurd-i386 (Closes:
+      #991558)
+    - Disable librvsg2 on even more ports architectures (Closes: #991556)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 08 Aug 2021 21:38:36 +0200
+
 ffmpeg (7:4.4-1) experimental; urgency=medium
 
   * New upstream release
