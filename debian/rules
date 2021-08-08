@@ -79,7 +79,7 @@ CONFIG := --prefix=/usr \
 	--enable-sdl2
 
 # link with -latomic on armel and mipsel
-ifeq (,$(filter armel mipsel,$(DEB_HOST_ARCH)))
+ifneq (,$(filter armel mipsel,$(DEB_HOST_ARCH)))
 export DEB_LDFLAGS_MAINT_APPEND=-latomic
 endif
 
