@@ -78,9 +78,9 @@ CONFIG := --prefix=/usr \
 	--enable-opengl \
 	--enable-sdl2
 
-# link with -latomic on armel and mipsel
+# link with -latomic on armel and mipsel (https://trac.ffmpeg.org/ticket/9275)
 ifneq (,$(filter armel mipsel,$(DEB_HOST_ARCH)))
-export DEB_LDFLAGS_MAINT_APPEND=-latomic
+CONFIG += --extra-libs=-latomic
 endif
 
 # avoid pocketsphinx on mips (bug#812335), alpha, ia64 and big-endian (bug#968456)
