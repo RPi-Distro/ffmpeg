@@ -1,3 +1,11 @@
+ffmpeg (7:4.4-4) experimental; urgency=medium
+
+  * debian/rules:
+    - Add -latomic via --extra-libs
+    - Fix architecture check for libsmbclient
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 09 Aug 2021 12:29:18 +0200
+
 ffmpeg (7:4.4-3) experimental; urgency=medium
 
   * debian/rules: Fix architecture check for -latomic
