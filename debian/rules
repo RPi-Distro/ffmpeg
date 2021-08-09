@@ -112,7 +112,7 @@ CONFIG_extra = --enable-shared \
 	--enable-libvo_amrwbenc
 
 # Do not enable libsmbclient support on hurd-i386
-ifneq (,$(filter hurd-i386,$(DEB_HOST_ARCH)))
+ifeq (,$(filter hurd-i386,$(DEB_HOST_ARCH)))
 	CONFIG_extra += --enable-libsmbclient
 endif
 
