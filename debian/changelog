@@ -1,3 +1,10 @@
+ffmpeg (7:4.4-5) unstable; urgency=medium
+
+  * Upload to unstable
+  * debian/control: Bump Standards-Version
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 22 Aug 2021 14:34:35 +0200
+
 ffmpeg (7:4.4-4) experimental; urgency=medium
 
   * debian/rules:
