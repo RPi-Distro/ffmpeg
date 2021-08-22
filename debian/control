@@ -9,7 +9,7 @@ Uploaders:
  Sebastian Ramacher <sramacher@debian.org>,
 Rules-Requires-Root: no
 Homepage: https://ffmpeg.org/
-Standards-Version: 4.5.1
+Standards-Version: 4.6.0
 Vcs-Git: https://salsa.debian.org/multimedia-team/ffmpeg.git
 Vcs-Browser: https://salsa.debian.org/multimedia-team/ffmpeg
 Build-Depends-Indep:
