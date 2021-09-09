@@ -1,7 +1,7 @@
 # SymbolsHelper-Confirmed: 7:4.4 amd64
 libavutil.so.56 libavutil56 #MINVER#
 * Build-Depends-Package: libavutil-dev
- LIBAVUTIL_56@LIBAVUTIL_56 7:4.0
+ LIBAVUTIL_56@LIBAVUTIL_56 7:4.4
  (optional|regex)^avpriv_ 0
  av_add_i@LIBAVUTIL_56 7:4.0
  av_add_q@LIBAVUTIL_56 7:4.0

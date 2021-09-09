@@ -1,7 +1,7 @@
 # SymbolsHelper-Confirmed: 7:4.3 amd64
 libavformat.so.58 libavformat58 #MINVER#
 * Build-Depends-Package: libavformat-dev
- LIBAVFORMAT_58@LIBAVFORMAT_58 7:4.0
+ LIBAVFORMAT_58@LIBAVFORMAT_58 7:4.4
  (optional|regex)^avpriv_ 0
  av_add_index_entry@LIBAVFORMAT_58 7:4.0
  av_append_packet@LIBAVFORMAT_58 7:4.0
