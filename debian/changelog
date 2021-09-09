@@ -1,3 +1,10 @@
+ffmpeg (7:4.4-6) unstable; urgency=medium
+
+  * debian/*.symbols: Bump version of symbols to match upstream release
+  * debian/ffmpeg.maintscript: Drop removal of old conffile
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 09 Sep 2021 22:45:41 +0200
+
 ffmpeg (7:4.4-5) unstable; urgency=medium
 
   * Upload to unstable
