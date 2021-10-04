@@ -10,6 +10,13 @@ TEST_NAME="$1"
 ENCDECLIST="$SCRIPT_DIR/${TEST_NAME}"_list.txt
 TEST_DIR="$AUTOPKGTEST_TMP/test"
 
+THREADS=8
+CPUS=$(nproc)
+if [ "$CPUS" -lt "$THREADS" ]
+then
+  THREADS="$CPUS"
+fi
+
 encode_file() {
     test=$1
     dir=$2
@@ -62,7 +69,7 @@ encode_file() {
     fi
     echo -e "trying muxer '$mux' with '$type' encoder '$encoder' for codec '$codec'\n"
     ret=0
-    CMD="ffmpeg -f lavfi -i $src -strict -2 $opts -c:$type $encoder -f $mux $file_name -y -hide_banner -nostdin"
+    CMD="ffmpeg -threads $THREADS -f lavfi -i $src -strict -2 $opts -c:$type $encoder -f $mux $file_name -y -hide_banner -nostdin"
     echo $CMD
     $CMD 2>&1 || ret=$?
     return $ret
@@ -119,7 +126,7 @@ decode_file() {
     file_name=$1
     ret=0
     # The option '-t 1' is necessary, because the comfortnoise decoder never stops producing noise.
-    CMD="ffmpeg -strict -2 -i $file_name -t 1 -c:v rawvideo -c:a pcm_s32le -f nut /dev/null -y -hide_banner -nostdin"
+    CMD="ffmpeg -threads $THREADS -strict -2 -i $file_name -t 1 -c:v rawvideo -c:a pcm_s32le -f nut /dev/null -y -hide_banner -nostdin"
     echo $CMD
     $CMD 2>&1 || ret=$?
     return $ret
@@ -132,7 +139,7 @@ streamcopy_file() {
     file_name_copy="$file_name.copy.$mux"
     ret=0
     # The option '-t 1' is necessary, because the comfortnoise decoder never stops producing noise.
-    CMD="ffmpeg -strict -2 -i $file_name -t 1 -c copy -f $mux $file_name_copy -y -hide_banner -nostdin"
+    CMD="ffmpeg -threads $THREADS -strict -2 -i $file_name -t 1 -c copy -f $mux $file_name_copy -y -hide_banner -nostdin"
     echo $CMD
     $CMD 2>&1 || ret=$?
     return $ret
