@@ -1,3 +1,17 @@
+ffmpeg (7:4.1.7-0+deb10u1) buster-security; urgency=high
+
+  [ Sebastian Ramacher ]
+  * New upstream release
+    - Fixes various integer overflows and checks for EOF
+  * debian/gbp.conf Switch upstream branch to upstream/buster
+  * debian/tests: Update encoders based on changes in 4.1.6
+
+  [ Antoni Villalonga ]
+  * debian/patches: Backport upstream patch to fix MXF generation (Closes:
+    #977541)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 05 Oct 2021 10:49:21 +0200
+
 ffmpeg (7:4.1.6-1~deb10u1) buster-security; urgency=medium
 
   * New upstream release
