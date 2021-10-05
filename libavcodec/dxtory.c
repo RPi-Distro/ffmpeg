@@ -442,7 +442,7 @@ static int dx2_decode_slice_410(GetBitContext *gb, AVFrame *frame,
             V[x >> 2] = decode_sym(gb, lru[2]) ^ 0x80;
         }
 
-        Y += ystride << 2;
+        Y += ystride * 4;
         U += ustride;
         V += vstride;
     }
@@ -487,7 +487,7 @@ static int dx2_decode_slice_420(GetBitContext *gb, AVFrame *frame,
             V[x >> 1] = decode_sym(gb, lru[2]) ^ 0x80;
         }
 
-        Y += ystride << 1;
+        Y += ystride * 2;
         U += ustride;
         V += vstride;
     }

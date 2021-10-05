@@ -93,7 +93,7 @@ static int read_header(AVFormatContext *s)
     vst->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
     vst->codecpar->codec_id   = AV_CODEC_ID_MOTIONPIXELS;
 
-    mvi->get_int = (vst->codecpar->width * vst->codecpar->height < (1 << 16)) ? avio_rl16 : avio_rl24;
+    mvi->get_int = (vst->codecpar->width * (int64_t)vst->codecpar->height < (1 << 16)) ? avio_rl16 : avio_rl24;
 
     mvi->audio_frame_size   = ((uint64_t)mvi->audio_data_size << MVI_FRAC_BITS) / frames_count;
     if (mvi->audio_frame_size <= 1 << MVI_FRAC_BITS - 1) {
@@ -119,9 +119,15 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
         mvi->video_frame_size = (mvi->get_int)(pb);
         if (mvi->audio_size_left == 0)
             return AVERROR(EIO);
+        if (mvi->audio_size_counter + 512 > UINT64_MAX - mvi->audio_frame_size ||
+            mvi->audio_size_counter + 512 + mvi->audio_frame_size >= ((uint64_t)INT32_MAX) << MVI_FRAC_BITS)
+            return AVERROR_INVALIDDATA;
+
         count = (mvi->audio_size_counter + mvi->audio_frame_size + 512) >> MVI_FRAC_BITS;
         if (count > mvi->audio_size_left)
             count = mvi->audio_size_left;
+        if ((int64_t)count << MVI_FRAC_BITS > INT_MAX)
+            return AVERROR_INVALIDDATA;
         if ((ret = av_get_packet(pb, pkt, count)) < 0)
             return ret;
         pkt->stream_index = MVI_AUDIO_STREAM_INDEX;
