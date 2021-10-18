@@ -1,8 +1,30 @@
-ffmpeg (7:4.1.7-0+deb10u1) buster-security; urgency=high
+ffmpeg (7:4.1.8-0+deb10u1) buster-security; urgency=high
 
   [ Sebastian Ramacher ]
   * New upstream release
-    - Fixes various integer overflows and checks for EOF
+    - Fixes various security issues:
+      CVE-2020-21041
+      CVE-2020-22017
+      CVE-2020-22019
+      CVE-2020-22020
+      CVE-2020-22021
+      CVE-2020-22022
+      CVE-2020-22023
+      CVE-2020-22025
+      CVE-2020-22026
+      CVE-2020-22027
+      CVE-2020-22028
+      CVE-2020-22029
+      CVE-2020-22030
+      CVE-2020-22031
+      CVE-2020-22032
+      CVE-2020-22033
+      CVE-2020-22034
+      CVE-2020-22035
+      CVE-2020-22036
+      CVE-2020-35965
+      CVE-2021-38114
+      CVE-2021-38171
   * debian/gbp.conf Switch upstream branch to upstream/buster
   * debian/tests: Update encoders based on changes in 4.1.6
 
