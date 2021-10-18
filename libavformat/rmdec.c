@@ -127,6 +127,10 @@ static int rm_read_audio_stream_info(AVFormatContext *s, AVIOContext *pb,
     uint32_t version;
     int ret;
 
+    // Duplicate tags
+    if (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
+        return AVERROR_INVALIDDATA;
+
     /* ra type header */
     version = avio_rb16(pb); /* version */
     if (version == 3) {
@@ -268,9 +272,9 @@ static int rm_read_audio_stream_info(AVFormatContext *s, AVIOContext *pb,
         case DEINT_ID_INT4:
             if (ast->coded_framesize > ast->audio_framesize ||
                 sub_packet_h <= 1 ||
-                ast->coded_framesize * sub_packet_h > (2 + (sub_packet_h & 1)) * ast->audio_framesize)
+                ast->coded_framesize * (uint64_t)sub_packet_h > (2 + (sub_packet_h & 1)) * ast->audio_framesize)
                 return AVERROR_INVALIDDATA;
-            if (ast->coded_framesize * sub_packet_h != 2*ast->audio_framesize) {
+            if (ast->coded_framesize * (uint64_t)sub_packet_h != 2*ast->audio_framesize) {
                 avpriv_request_sample(s, "mismatching interleaver parameters");
                 return AVERROR_INVALIDDATA;
             }
