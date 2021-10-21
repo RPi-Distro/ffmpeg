@@ -1,69 +1,51 @@
-ffmpeg (7:4.1.6-1~deb10u1+rpt2) buster; urgency=medium
+ffmpeg (7:4.1.8-0+deb10u1+rpt1) buster; urgency=medium
 
   * MMAL patch 7
+  * avcodec/omx: Fix handling of fragmented buffers
 
- -- Serge Schneider <serge@raspberrypi.com>  Thu, 06 May 2021 14:34:43 +0100
+ -- Serge Schneider <serge@raspberrypi.com>  Thu, 21 Oct 2021 12:06:40 +0100
 
-ffmpeg (7:4.1.6-1~deb10u1+rpt1) buster; urgency=medium
+ffmpeg (7:4.1.8-0+deb10u1) buster-security; urgency=high
+
+  [ Sebastian Ramacher ]
+  * New upstream release
+    - Fixes various security issues:
+      CVE-2020-21041
+      CVE-2020-22017
+      CVE-2020-22019
+      CVE-2020-22020
+      CVE-2020-22021
+      CVE-2020-22022
+      CVE-2020-22023
+      CVE-2020-22025
+      CVE-2020-22026
+      CVE-2020-22027
+      CVE-2020-22028
+      CVE-2020-22029
+      CVE-2020-22030
+      CVE-2020-22031
+      CVE-2020-22032
+      CVE-2020-22033
+      CVE-2020-22034
+      CVE-2020-22035
+      CVE-2020-22036
+      CVE-2020-35965
+      CVE-2021-38114
+      CVE-2021-38171
+  * debian/gbp.conf Switch upstream branch to upstream/buster
+  * debian/tests: Update encoders based on changes in 4.1.6
+
+  [ Antoni Villalonga ]
+  * debian/patches: Backport upstream patch to fix MXF generation (Closes:
+    #977541)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 05 Oct 2021 10:49:21 +0200
+
+ffmpeg (7:4.1.6-1~deb10u1) buster-security; urgency=medium
 
   * New upstream release
-  * MMAL patch 6
 
- -- Serge Schneider <serge@raspberrypi.com>  Wed, 08 Jul 2020 23:46:13 +0100
-
-ffmpeg (7:4.1.4-1+rpt7~deb10u1) buster; urgency=medium
-
-  * Revert rpt6
-    - https://www.raspberrypi.org/forums/viewtopic.php?p=1594954
-
- -- Serge Schneider <serge@raspberrypi.org>  Fri, 17 Jan 2020 12:55:10 +0000
-
-ffmpeg (7:4.1.4-1+rpt6~deb10u1) buster; urgency=medium
-
-  * Disable vaapi and vdpau
-
- -- Serge Schneider <serge@raspberrypi.org>  Tue, 26 Nov 2019 21:56:37 +0000
-
-ffmpeg (7:4.1.4-1+rpt5~deb10u1) buster; urgency=medium
-
-  * MMAL patch 5
-
- -- Serge Schneider <serge@raspberrypi.org>  Wed, 20 Nov 2019 17:41:08 +0000
-
-ffmpeg (7:4.1.4-1+rpt4~deb10u1) buster; urgency=medium
-
-  * MMAL patch 4
-
- -- Serge Schneider <serge@raspberrypi.org>  Fri, 15 Nov 2019 14:54:30 +0000
-
-ffmpeg (7:4.1.4-1+rpt3~deb10u1) buster; urgency=medium
-
-  * MMAL patch 3
-
- -- Serge Schneider <serge@raspberrypi.org>  Thu, 14 Nov 2019 14:49:24 +0000
-
-ffmpeg (7:4.1.4-1+rpt2~deb10u1) buster; urgency=medium
-
-  * Added -f vout_rpi
-    - Rpi (mmal) video output device
-  * Added -vcodec hevc_rpi
-    - VPU, QPU and NEON accelerated HEVC decoder for BCM283(5/6)
-  * Added -hwaccel rpi
-    - Hardware HEVC acceleration for BCM2711
-
- -- Serge Schneider <serge@raspberrypi.org>  Tue, 01 Oct 2019 14:25:02 +0100
-
-ffmpeg (7:4.1.4-1+rpt1~deb10u1) buster; urgency=medium
-
-  [ Dave Stevenson ]
-  * avcodec/omx: Fix handling of fragmented buffers
-  [ Serge Schneider ]
-  * Add libraspberrypi0 dependency
-  * Set --arch=armhf
-  [ Arindam Chaudhuri ]
-  * Enable Raspberry Pi HW acceleration
-
- -- Serge Schneider <serge@raspberrypi.org>  Mon, 19 Aug 2019 14:15:54 +0100
+ -- Moritz Mühlenhoff <jmm@debian.org>  Tue, 07 Jul 2020 18:50:33 +0200
 
 ffmpeg (7:4.1.4-1~deb10u1) buster-security; urgency=medium
 

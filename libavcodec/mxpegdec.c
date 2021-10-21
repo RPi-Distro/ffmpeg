@@ -195,6 +195,9 @@ static int mxpeg_decode_frame(AVCodecContext *avctx,
     int start_code;
     int ret;
 
+    if (avctx->skip_frame == AVDISCARD_ALL)
+        return AVERROR_PATCHWELCOME;
+
     buf_ptr = buf;
     buf_end = buf + buf_size;
     jpg->got_picture = 0;
@@ -247,16 +250,17 @@ static int mxpeg_decode_frame(AVCodecContext *avctx,
                            "Multiple SOF in a frame\n");
                     return AVERROR_INVALIDDATA;
                 }
-                s->got_sof_data = 0;
                 ret = ff_mjpeg_decode_sof(jpg);
                 if (ret < 0) {
                     av_log(avctx, AV_LOG_ERROR,
                            "SOF data decode error\n");
+                    s->got_sof_data = 0;
                     return ret;
                 }
                 if (jpg->interlaced) {
                     av_log(avctx, AV_LOG_ERROR,
                            "Interlaced mode not supported in MxPEG\n");
+                    s->got_sof_data = 0;
                     return AVERROR(EINVAL);
                 }
                 s->got_sof_data ++;

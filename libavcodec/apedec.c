@@ -859,8 +859,8 @@ static av_always_inline int filter_3800(APEPredictor *p,
         return predictionA;
     }
     d2 =  p->buf[delayA];
-    d1 = (p->buf[delayA] - p->buf[delayA - 1]) * 2U;
-    d0 =  p->buf[delayA] + ((p->buf[delayA - 2] - p->buf[delayA - 1]) * 8U);
+    d1 = (p->buf[delayA] - (unsigned)p->buf[delayA - 1]) * 2;
+    d0 =  p->buf[delayA] + ((p->buf[delayA - 2] - (unsigned)p->buf[delayA - 1]) * 8);
     d3 =  p->buf[delayB] * 2U - p->buf[delayB - 1];
     d4 =  p->buf[delayB];
 
@@ -929,7 +929,7 @@ static void long_filter_ehigh_3830(int32_t *buffer, int length)
         for (j = 7; j > 0; j--)
             delay[j] = delay[j - 1];
         delay[0] = buffer[i];
-        buffer[i] -= dotprod >> 9;
+        buffer[i] -= (unsigned)(dotprod >> 9);
     }
 }
 
@@ -1286,7 +1286,7 @@ static void do_apply_filter(APEContext *ctx, int version, APEFilter *f,
             absres = res < 0 ? -(unsigned)res : res;
             if (absres)
                 *f->adaptcoeffs = APESIGN(res) *
-                                  (8 << ((absres > f->avg * 3) + (absres > f->avg * 4 / 3)));
+                                  (8 << ((absres > f->avg * 3LL) + (absres > (f->avg + f->avg / 3))));
                 /* equivalent to the following code
                     if (absres <= f->avg * 4 / 3)
                         *f->adaptcoeffs = APESIGN(res) * 8;
@@ -1543,7 +1543,7 @@ static int ape_decode_frame(AVCodecContext *avctx, void *data,
         for (ch = 0; ch < s->channels; ch++) {
             sample24 = (int32_t *)frame->data[ch];
             for (i = 0; i < blockstodecode; i++)
-                *sample24++ = s->decoded[ch][i] * 256;
+                *sample24++ = s->decoded[ch][i] * 256U;
         }
         break;
     }

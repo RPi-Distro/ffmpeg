@@ -188,7 +188,7 @@ static uint64_t frac64(uint64_t a, uint64_t b)
 
 static uint64_t phi_at(struct ws_interval *in, int64_t ts)
 {
-    uint64_t dt = ts - in->ts_start;
+    uint64_t dt = ts - (uint64_t)in->ts_start;
     uint64_t dt2 = dt & 1 ? /* dt * (dt - 1) / 2 without overflow */
                    dt * ((dt - 1) >> 1) : (dt >> 1) * (dt - 1);
     return in->phi0 + dt * in->dphi0 + dt2 * in->ddphi;
@@ -373,7 +373,7 @@ static void wavesynth_synth_sample(struct wavesynth_context *ws, int64_t ts,
         in->amp  += in->damp;
         switch (in->type) {
             case WS_SINE:
-                val = amp * ws->sin[in->phi >> (64 - SIN_BITS)];
+                val = amp * (unsigned)ws->sin[in->phi >> (64 - SIN_BITS)];
                 in->phi  += in->dphi;
                 in->dphi += in->ddphi;
                 break;

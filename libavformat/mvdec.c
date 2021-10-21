@@ -156,10 +156,16 @@ static int parse_audio_var(AVFormatContext *avctx, AVStream *st,
     } else if (!strcmp(name, "NUM_CHANNELS")) {
         return set_channels(avctx, st, var_read_int(pb, size));
     } else if (!strcmp(name, "SAMPLE_RATE")) {
-        st->codecpar->sample_rate = var_read_int(pb, size);
+        int sample_rate = var_read_int(pb, size);
+        if (sample_rate <= 0)
+            return AVERROR_INVALIDDATA;
+        st->codecpar->sample_rate = sample_rate;
         avpriv_set_pts_info(st, 33, 1, st->codecpar->sample_rate);
     } else if (!strcmp(name, "SAMPLE_WIDTH")) {
-        st->codecpar->bits_per_coded_sample = var_read_int(pb, size) * 8;
+        uint64_t bpc = var_read_int(pb, size) * (uint64_t)8;
+        if (bpc > 16)
+            return AVERROR_INVALIDDATA;
+        st->codecpar->bits_per_coded_sample = bpc;
     } else
         return AVERROR_INVALIDDATA;
 
@@ -264,6 +270,8 @@ static void read_index(AVIOContext *pb, AVStream *st)
         uint32_t pos  = avio_rb32(pb);
         uint32_t size = avio_rb32(pb);
         avio_skip(pb, 8);
+        if (avio_feof(pb))
+            return ;
         av_add_index_entry(st, pos, timestamp, size, 0, AVINDEX_KEYFRAME);
         if (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
             timestamp += size / (st->codecpar->channels * 2LL);

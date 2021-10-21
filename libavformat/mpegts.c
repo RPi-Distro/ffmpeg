@@ -131,7 +131,7 @@ struct MpegTSContext {
     int fix_teletext_pts;
 
     int64_t cur_pcr;    /**< used to estimate the exact PCR */
-    int pcr_incr;       /**< used to estimate the exact PCR */
+    int64_t pcr_incr;   /**< used to estimate the exact PCR */
 
     /* data needed to handle file based ts */
     /** stop parsing loop */
@@ -2634,8 +2634,8 @@ static int mpegts_resync(AVFormatContext *s, int seekback, const uint8_t *curren
     int64_t back = FFMIN(seekback, pos);
 
     //Special case for files like 01c56b0dc1.ts
-    if (current_packet[0] == 0x80 && current_packet[12] == 0x47) {
-        avio_seek(pb, 12 - back, SEEK_CUR);
+    if (current_packet[0] == 0x80 && current_packet[12] == 0x47 && pos >= TS_PACKET_SIZE) {
+        avio_seek(pb, 12 - TS_PACKET_SIZE, SEEK_CUR);
         return 0;
     }
 
@@ -2921,7 +2921,7 @@ static int mpegts_read_header(AVFormatContext *s)
         s->bit_rate  = TS_PACKET_SIZE * 8 * 27000000LL / ts->pcr_incr;
         st->codecpar->bit_rate = s->bit_rate;
         st->start_time      = ts->cur_pcr;
-        av_log(ts->stream, AV_LOG_TRACE, "start=%0.3f pcr=%0.3f incr=%d\n",
+        av_log(ts->stream, AV_LOG_TRACE, "start=%0.3f pcr=%0.3f incr=%"PRId64"\n",
                 st->start_time / 1000000.0, pcrs[0] / 27e6, ts->pcr_incr);
     }
 
@@ -2949,7 +2949,7 @@ static int mpegts_raw_read_packet(AVFormatContext *s, AVPacket *pkt)
         return ret;
     }
     if (data != pkt->data)
-        memcpy(pkt->data, data, ts->raw_packet_size);
+        memcpy(pkt->data, data, TS_PACKET_SIZE);
     finished_reading_packet(s, ts->raw_packet_size);
     if (ts->mpeg2ts_compute_pcr) {
         /* compute exact PCR for each packet */
