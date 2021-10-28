@@ -39,10 +39,10 @@ Signed-off-by: Martin Storsjö <martin@martin.st>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/configure b/configure
-index d7a3f50..8772cdc 100755
+index 4ba72bf..ef0a882 100755
 --- a/configure
 +++ b/configure
-@@ -4983,9 +4983,11 @@ elif enabled arm; then
+@@ -4984,9 +4984,11 @@ elif enabled arm; then
          fi
      }
  
