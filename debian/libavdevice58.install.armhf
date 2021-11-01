@@ -1,0 +1,2 @@
+usr/lib/*/libavdevice.so.*
+usr/lib/*/neon/vfp/libavdevice.so.*

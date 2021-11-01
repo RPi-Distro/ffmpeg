@@ -1,0 +1,6 @@
+usr/include/*/libavdevice
+usr/lib/*/libavdevice*.a
+usr/lib/*/neon/vfp/libavdevice*.a
+usr/lib/*/libavdevice*.so
+usr/lib/*/neon/vfp/libavdevice*.so
+usr/lib/*/pkgconfig/libavdevice*.pc

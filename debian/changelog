@@ -1,3 +1,23 @@
+ffmpeg (7:4.3.2-0+rpt3+deb11u2) bullseye; urgency=medium
+
+  * HW accel patch 10
+
+ -- Serge Schneider <serge@raspberrypi.com>  Thu, 23 Sep 2021 20:37:18 +0100
+
+ffmpeg (7:4.3.2-0+rpt2+deb11u2) bullseye; urgency=medium
+
+  * Rebuild against new raspberrypi-userland
+
+ -- Serge Schneider <serge@raspberrypi.com>  Tue, 14 Sep 2021 18:32:11 +0100
+
+ffmpeg (7:4.3.2-0+rpt1+deb11u2) bullseye; urgency=medium
+
+  * MMAL patch 9
+  [ Dave Stevenson ]
+  * avcodec/omx: Fix handling of fragmented buffers
+
+ -- Serge Schneider <serge@raspberrypi.com>  Mon, 09 Aug 2021 08:35:31 +0100
+
 ffmpeg (7:4.3.2-0+deb11u2) unstable; urgency=medium
 
   * debian/patches: Apply upstream patches for CVEs (Closes: #989439)

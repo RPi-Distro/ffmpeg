@@ -5,3 +5,5 @@
 0005-avfilter-vf_yadif-Fix-handing-of-tiny-images.patch
 0006-avformat-movenc-Check-pal_size-before-use.patch
 0007-avcodec-pngenc-remove-monowhite-from-apng-formats.patch
+ffmpeg-4.3.2-rpi_10.patch
+fix_flags.diff

@@ -1,0 +1,2 @@
+usr/lib/*/libswscale.so.*
+usr/lib/*/neon/vfp/libswscale.so.*

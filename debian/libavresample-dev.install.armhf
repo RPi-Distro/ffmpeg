@@ -1,0 +1,6 @@
+usr/include/*/libavresample
+usr/lib/*/libavresample*.a
+usr/lib/*/neon/vfp/libavresample*.a
+usr/lib/*/libavresample*.so
+usr/lib/*/neon/vfp/libavresample*.so
+usr/lib/*/pkgconfig/libavresample*.pc
