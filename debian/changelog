@@ -1,22 +1,24 @@
-ffmpeg (7:4.3.2-0+rpt3+deb11u2) bullseye; urgency=medium
+ffmpeg (7:4.3.3-0+rpt1+deb11u1) bullseye; urgency=medium
 
   * HW accel patch 10
 
- -- Serge Schneider <serge@raspberrypi.com>  Thu, 23 Sep 2021 20:37:18 +0100
+ -- Serge Schneider <serge@raspberrypi.com>  Mon, 01 Nov 2021 17:02:26 +0000
 
-ffmpeg (7:4.3.2-0+rpt2+deb11u2) bullseye; urgency=medium
+ffmpeg (7:4.3.3-0+deb11u1) bullseye-security; urgency=medium
 
-  * Rebuild against new raspberrypi-userland
+  * New upstream version 4.3.3
+    - Fixes various security issues:
+      CVE-2020-20446
+      CVE-2020-20450
+      CVE-2020-20453
+      CVE-2020-22037
+      CVE-2020-22042
+      CVE-2021-38114
+      CVE-2021-38171
+      CVE-2021-38291
+  * debian/patches: Refresh patches
 
- -- Serge Schneider <serge@raspberrypi.com>  Tue, 14 Sep 2021 18:32:11 +0100
-
-ffmpeg (7:4.3.2-0+rpt1+deb11u2) bullseye; urgency=medium
-
-  * MMAL patch 9
-  [ Dave Stevenson ]
-  * avcodec/omx: Fix handling of fragmented buffers
-
- -- Serge Schneider <serge@raspberrypi.com>  Mon, 09 Aug 2021 08:35:31 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 28 Oct 2021 22:55:17 +0200
 
 ffmpeg (7:4.3.2-0+deb11u2) unstable; urgency=medium
 

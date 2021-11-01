@@ -196,7 +196,7 @@
  
 --- a/fftools/ffmpeg.c
 +++ b/fftools/ffmpeg.c
-@@ -2118,8 +2118,8 @@ static int ifilter_send_frame(InputFilte
+@@ -2119,8 +2119,8 @@ static int ifilter_send_frame(InputFilte
                         ifilter->channel_layout != frame->channel_layout;
          break;
      case AVMEDIA_TYPE_VIDEO:
@@ -207,7 +207,7 @@
          break;
      }
  
-@@ -2130,6 +2130,9 @@ static int ifilter_send_frame(InputFilte
+@@ -2131,6 +2131,9 @@ static int ifilter_send_frame(InputFilte
          (ifilter->hw_frames_ctx && ifilter->hw_frames_ctx->data != frame->hw_frames_ctx->data))
          need_reinit = 1;
  
@@ -217,7 +217,7 @@
      if (need_reinit) {
          ret = ifilter_parameters_from_frame(ifilter, frame);
          if (ret < 0)
-@@ -2400,8 +2403,7 @@ static int decode_video(InputStream *ist
+@@ -2401,8 +2404,7 @@ static int decode_video(InputStream *ist
          decoded_frame->top_field_first = ist->top_field_first;
  
      ist->frames_decoded++;
@@ -227,7 +227,7 @@
          err = ist->hwaccel_retrieve_data(ist->dec_ctx, decoded_frame);
          if (err < 0)
              goto fail;
-@@ -2819,6 +2821,16 @@ static enum AVPixelFormat get_format(AVC
+@@ -2820,6 +2822,16 @@ static enum AVPixelFormat get_format(AVC
          } else {
              const HWAccel *hwaccel = NULL;
              int i;
@@ -244,7 +244,7 @@
              for (i = 0; hwaccels[i].name; i++) {
                  if (hwaccels[i].pix_fmt == *p) {
                      hwaccel = &hwaccels[i];
-@@ -2913,6 +2925,15 @@ static int init_input_stream(int ist_ind
+@@ -2914,6 +2926,15 @@ static int init_input_stream(int ist_ind
              return ret;
          }
  
@@ -55684,7 +55684,7 @@
  
  #define FF_INTERNAL_FIELDS 1
  #include "framequeue.h"
-@@ -429,6 +432,19 @@ static int can_merge_formats(AVFilterFor
+@@ -427,6 +430,19 @@ static int can_merge_formats(AVFilterFor
      }
  }
  
@@ -55704,7 +55704,7 @@
  /**
   * Perform one round of query_formats() and merging formats lists on the
   * filter graph.
-@@ -469,6 +485,7 @@ static int query_formats(AVFilterGraph *
+@@ -467,6 +483,7 @@ static int query_formats(AVFilterGraph *
          for (j = 0; j < filter->nb_inputs; j++) {
              AVFilterLink *link = filter->inputs[j];
              int convert_needed = 0;
@@ -55712,7 +55712,7 @@
  
              if (!link)
                  continue;
-@@ -516,11 +533,14 @@ static int query_formats(AVFilterGraph *
+@@ -514,11 +531,14 @@ static int query_formats(AVFilterGraph *
              )
  #undef MERGE_DISPATCH
  
@@ -55728,7 +55728,7 @@
  
                  if (graph->disable_auto_convert) {
                      av_log(log_ctx, AV_LOG_ERROR,
-@@ -533,19 +553,45 @@ static int query_formats(AVFilterGraph *
+@@ -531,19 +551,45 @@ static int query_formats(AVFilterGraph *
                  /* couldn't merge format lists. auto-insert conversion filter */
                  switch (link->type) {
                  case AVMEDIA_TYPE_VIDEO:
@@ -55786,7 +55786,7 @@
                      break;
                  case AVMEDIA_TYPE_AUDIO:
                      if (!(filter = avfilter_get_by_name("aresample"))) {
-@@ -587,9 +633,19 @@ static int query_formats(AVFilterGraph *
+@@ -585,9 +631,19 @@ static int query_formats(AVFilterGraph *
                      av_assert0(outlink-> in_channel_layouts->refcount > 0);
                      av_assert0(outlink->out_channel_layouts->refcount > 0);
                  }
@@ -56058,7 +56058,7 @@
 +
 --- a/libavformat/utils.c
 +++ b/libavformat/utils.c
-@@ -3048,6 +3048,40 @@ static int has_codec_parameters(AVStream
+@@ -3051,6 +3051,40 @@ static int has_codec_parameters(AVStream
      return 1;
  }
  
@@ -56099,7 +56099,7 @@
  /* returns 1 or 0 if or if not decoded data was returned, or a negative error */
  static int try_decode_frame(AVFormatContext *s, AVStream *st,
                              const AVPacket *avpkt, AVDictionary **options)
-@@ -3082,7 +3116,11 @@ static int try_decode_frame(AVFormatCont
+@@ -3085,7 +3119,11 @@ static int try_decode_frame(AVFormatCont
          av_dict_set(options ? options : &thread_opt, "threads", "1", 0);
          if (s->codec_whitelist)
              av_dict_set(options ? options : &thread_opt, "codec_whitelist", s->codec_whitelist, 0);
@@ -56112,7 +56112,7 @@
          if (!options)
              av_dict_free(&thread_opt);
          if (ret < 0) {
-@@ -3113,6 +3151,14 @@ static int try_decode_frame(AVFormatCont
+@@ -3116,6 +3154,14 @@ static int try_decode_frame(AVFormatCont
          if (avctx->codec_type == AVMEDIA_TYPE_VIDEO ||
              avctx->codec_type == AVMEDIA_TYPE_AUDIO) {
              ret = avcodec_send_packet(avctx, &pkt);
@@ -56127,7 +56127,7 @@
              if (ret < 0 && ret != AVERROR(EAGAIN) && ret != AVERROR_EOF)
                  break;
              if (ret >= 0)
-@@ -3723,9 +3769,20 @@ FF_ENABLE_DEPRECATION_WARNINGS
+@@ -3726,9 +3772,20 @@ FF_ENABLE_DEPRECATION_WARNINGS
          // Try to just open decoders, in case this is enough to get parameters.
          if (!has_codec_parameters(st, NULL) && st->request_probe <= 0) {
              if (codec && !avctx->codec)
