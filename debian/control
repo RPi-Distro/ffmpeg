@@ -235,6 +235,10 @@ Multi-Arch: same
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
+Suggests:
+ libcuda1 [amd64 arm64 i386],
+ libnvcuvid1 [amd64 arm64 i386],
+ libnvidia-encode1 [amd64 arm64 i386],
 Description: FFmpeg library with de/encoders for audio/video codecs - runtime files
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and
@@ -260,6 +264,10 @@ Provides: libavcodec58 (= ${binary:Version})
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
+Suggests:
+ libcuda1 [amd64 arm64 i386],
+ libnvcuvid1 [amd64 arm64 i386],
+ libnvidia-encode1 [amd64 arm64 i386],
 Description: FFmpeg library with additional de/encoders for audio/video codecs
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and
