@@ -57,6 +57,8 @@ Build-Depends:
  libdc1394-dev [linux-any],
 # --enable-libdrm
  libdrm-dev [linux-any],
+# autodected: ffnvcodec
+ libffmpeg-nvenc-dev [amd64 arm64 i386],
 # --enable-libfontconfig
  libfontconfig-dev,
 # --enable-libfreetype
