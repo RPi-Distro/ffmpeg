@@ -1,3 +1,11 @@
+ffmpeg (7:4.3.3-0+rpt2+deb11u1) bullseye; urgency=medium
+
+  * HW accel patch 11
+  * Pass --enable-sand on arm64 builds
+  * Remove copy of --enable-drm (already enabled for all Linux targets)
+
+ -- Serge Schneider <serge@raspberrypi.com>  Fri, 03 Dec 2021 10:59:00 +0000
+
 ffmpeg (7:4.3.3-0+rpt1+deb11u1) bullseye; urgency=medium
 
   * HW accel patch 10

@@ -85,7 +85,6 @@ ifeq ($(DEB_HOST_ARCH),armhf)
 		--enable-rpi \
 		--enable-v4l2-request\
 		--enable-libudev \
-		--enable-libdrm \
 		--enable-epoxy
 
 	CONFIG_v6 = --libdir=/usr/lib/$(DEB_HOST_MULTIARCH) \
@@ -117,8 +116,8 @@ else ifeq ($(DEB_HOST_ARCH),arm64)
 		--enable-neon \
 		--enable-v4l2-request\
 		--enable-libudev \
-		--enable-libdrm \
-		--enable-epoxy
+		--enable-epoxy \
+		--enable-sand
 
 	CONFIG += --libdir=/usr/lib/$(DEB_HOST_MULTIARCH) \
 		--arch=$(DEB_HOST_ARCH_CPU)
