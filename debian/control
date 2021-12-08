@@ -23,7 +23,7 @@ Build-Depends-Indep:
  tree,
 Build-Depends:
 # autodetected: hwaccels 'cuda_llvm'
- clang [amd64 arm64 ppc64el],
+ clang [amd64 arm64 i386 ppc64el],
  debhelper-compat (= 13),
 # --enable-libflite
  flite1-dev,
