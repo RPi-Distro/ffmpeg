@@ -550,9 +550,7 @@ static void *circular_buffer_task_tx( void *_URLContext)
         while (len<4) {
             if (s->close_req)
                 goto end;
-            if (pthread_cond_wait(&s->cond, &s->mutex) < 0) {
-                goto end;
-            }
+            pthread_cond_wait(&s->cond, &s->mutex);
             len = av_fifo_size(s->fifo);
         }
 
@@ -625,7 +623,7 @@ end:
 /* return non zero if error */
 static int udp_open(URLContext *h, const char *uri, int flags)
 {
-    char hostname[1024], localaddr[1024] = "";
+    char hostname[1024];
     int port, udp_fd = -1, tmp, bind_ret = -1, dscp = -1;
     UDPContext *s = h->priv_data;
     int is_output;
@@ -710,7 +708,8 @@ static int udp_open(URLContext *h, const char *uri, int flags)
             s->burst_bits = strtoll(buf, NULL, 10);
         }
         if (av_find_info_tag(buf, sizeof(buf), "localaddr", p)) {
-            av_strlcpy(localaddr, buf, sizeof(localaddr));
+            av_freep(&s->localaddr);
+            s->localaddr = av_strdup(buf);
         }
         if (av_find_info_tag(buf, sizeof(buf), "sources", p)) {
             if ((ret = ff_ip_parse_sources(h, buf, &s->filters)) < 0)
@@ -740,8 +739,10 @@ static int udp_open(URLContext *h, const char *uri, int flags)
     /* XXX: fix av_url_split */
     if (hostname[0] == '\0' || hostname[0] == '?') {
         /* only accepts null hostname if input */
-        if (!(flags & AVIO_FLAG_READ))
+        if (!(flags & AVIO_FLAG_READ)) {
+            ret = AVERROR(EINVAL);
             goto fail;
+        }
     } else {
         if ((ret = ff_udp_set_remote_url(h, uri)) < 0)
             goto fail;
@@ -750,12 +751,11 @@ static int udp_open(URLContext *h, const char *uri, int flags)
     if ((s->is_multicast || s->local_port <= 0) && (h->flags & AVIO_FLAG_READ))
         s->local_port = port;
 
-    if (localaddr[0])
-        udp_fd = udp_socket_create(h, &my_addr, &len, localaddr);
-    else
-        udp_fd = udp_socket_create(h, &my_addr, &len, s->localaddr);
-    if (udp_fd < 0)
+    udp_fd = udp_socket_create(h, &my_addr, &len, s->localaddr);
+    if (udp_fd < 0) {
+        ret = AVERROR(EIO);
         goto fail;
+    }
 
     s->local_addr_storage=my_addr; //store for future multicast join
 
