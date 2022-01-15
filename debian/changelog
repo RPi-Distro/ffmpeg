@@ -1,3 +1,9 @@
+ffmpeg (7:5.0-1) UNRELEASED; urgency=medium
+
+  * New upstream version 5.0
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 15 Jan 2022 19:25:52 +0100
+
 ffmpeg (7:4.4.1-3) unstable; urgency=medium
 
   [ Pino Toscano ]
