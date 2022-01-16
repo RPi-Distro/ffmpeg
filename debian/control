@@ -133,6 +133,8 @@ Build-Depends:
  libsrt-gnutls-dev,
 # --enable-libssh
  libssh-gcrypt-dev,
+# --enable-libsvtav1
+ libsvtav1enc-dev,
 # --enable-libtesseract (used only in -extra flavor)
  libtesseract-dev,
 # --enable-libtheora

@@ -60,6 +60,7 @@ CONFIG := --prefix=/usr \
 	--enable-libspeex \
 	--enable-libsrt \
 	--enable-libssh \
+	--enable-libsvtav1 \
 	--enable-libtheora \
 	--enable-libtwolame \
 	--enable-libvidstab \
