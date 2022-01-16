@@ -1,14 +1,14 @@
-# SymbolsHelper-Confirmed: 7:4.4 amd64
-libpostproc.so.55 libpostproc55 #MINVER#
+# SymbolsHelper-Confirmed: 7:5.0 amd64
+libpostproc.so.56 libpostproc56 #MINVER#
 * Build-Depends-Package: libpostproc-dev
- LIBPOSTPROC_55@LIBPOSTPROC_55 7:4.4
- postproc_configuration@LIBPOSTPROC_55 7:4.4
- postproc_ffversion@LIBPOSTPROC_55 7:4.4
- postproc_license@LIBPOSTPROC_55 7:4.4
- postproc_version@LIBPOSTPROC_55 7:4.4
- pp_free_context@LIBPOSTPROC_55 7:4.4
- pp_free_mode@LIBPOSTPROC_55 7:4.4
- pp_get_context@LIBPOSTPROC_55 7:4.4
- pp_get_mode_by_name_and_quality@LIBPOSTPROC_55 7:4.4
- pp_help@LIBPOSTPROC_55 7:4.4
- pp_postprocess@LIBPOSTPROC_55 7:4.4
+ LIBPOSTPROC_56@LIBPOSTPROC_56 7:5.0
+ postproc_configuration@LIBPOSTPROC_56 7:5.0
+ postproc_ffversion@LIBPOSTPROC_56 7:5.0
+ postproc_license@LIBPOSTPROC_56 7:5.0
+ postproc_version@LIBPOSTPROC_56 7:5.0
+ pp_free_context@LIBPOSTPROC_56 7:5.0
+ pp_free_mode@LIBPOSTPROC_56 7:5.0
+ pp_get_context@LIBPOSTPROC_56 7:5.0
+ pp_get_mode_by_name_and_quality@LIBPOSTPROC_56 7:5.0
+ pp_help@LIBPOSTPROC_56 7:5.0
+ pp_postprocess@LIBPOSTPROC_56 7:5.0
