@@ -42,6 +42,7 @@ CONFIG := --prefix=/usr \
 	--enable-libfontconfig \
 	--enable-libfreetype \
 	--enable-libfribidi \
+	--enable-libglslang \
 	--enable-libgme \
 	--enable-libgsm \
 	--enable-libjack \
