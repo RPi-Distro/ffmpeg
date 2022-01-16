@@ -1,8 +1,27 @@
-ffmpeg (7:5.0-1) UNRELEASED; urgency=medium
+ffmpeg (7:5.0-1) experimental; urgency=medium
 
   * New upstream version 5.0
+  * SONAME bumps
+    - libavcodec58 -> libavcodec59
+    - libavdevice58 -> libavdevice59
+    - libavfilter7 -> libavfilter8
+    - libavformat58 -> libavformat59
+    - libavutil56 -> libavutil57
+    - libpostproc55 -> libpostproc56
+    - libswresample3 -> libswresample4
+    - libswscale5 -> libswscale6
+  * debian/patches:
+    - Remove patches included upstream
+    - Add upstream patch to fix tests
+  * debian/control:
+    - Add libvulkan-dev to BD
+    - Fix architecture name of m68k
+  * debian/rules:
+    - Build with --enable-libglslang
+    - Build with --enable-libsvtav1
+  * debian/copyright: Update for 5.0
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sat, 15 Jan 2022 19:25:52 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 16 Jan 2022 20:51:12 +0100
 
 ffmpeg (7:4.4.1-3) unstable; urgency=medium
 
