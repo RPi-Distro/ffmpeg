@@ -398,7 +398,7 @@ Copyright:
   2015-2017, Rostislav Pehlivanov <atomnuker@gmail.com>
   2015-2018, Henrik Gramner <henrik@gramner.com>
   2015-2019, Loongson Technology Corporation Limited
-  2015-2019, Rodger Combs <rodger.combs@gmail.com>
+  2015-2021, Rodger Combs <rodger.combs@gmail.com>
   2016, Davinder Singh (DSM_) <ds.mudhar<@gmail.com>
   2016, Floris Sluiter
   2016, Jan Sebechlebsky
@@ -452,7 +452,8 @@ Copyright:
   2020, Jun Zhao <barryjzhao@tencent.com>
   2020, Vacing Fang <vacingfang@tencent.com>
   2020, Yaroslav Pogrebnyak <yyyaroslav@gmail.com>
-  2020, Zane van Iperen (zane@zanevaniperen.com)
+  2020, Zane van Iperen <zane@zanevaniperen.com>
+  2021, Wu Jianhua <jianhua.wu@intel.com>
 License: LGPL-2.1+
 Comment:
  The copyright details for Joseph Artsimovich and UAB "DKD" were extracted
@@ -660,7 +661,6 @@ Comment:
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 Files:
-  compat/cuda/ptx2c.sh
   doc/bootstrap.min.css
   doc/examples/avio_list_dir.c
   doc/examples/avio_reading.c
@@ -699,8 +699,8 @@ Files:
   libavfilter/vf_bilateral.c
   libavfilter/vf_bm3d.c
   libavfilter/vf_deband.c
-  libavfilter/vf_scale_cuda.c
-  libavfilter/vf_scale_cuda.cu
+  libavfilter/vf_morpho.c
+  libavfilter/vf_scale_cuda.*
   libavfilter/vf_thumbnail_cuda.c
   libavfilter/vf_thumbnail_cuda.cu
   libavformat/oggdec.c
@@ -748,8 +748,9 @@ Copyright:
   2015, Niklas Haas
   2015, Stephan Holljes
   2015, Vittorio Giovara <vittorio.giovara@gmail.com>
-  2015-2019, Paul B Mahol
+  2015-2021, Paul B Mahol
   2015-2016, mawen1250
+  2016, ReneBrals
   2017, Ming Yang
   2018, Chris Johnson
 License: Expat
@@ -891,7 +892,10 @@ License: IJG
  of commercial products, provided that all warranty or liability claims are
  assumed by the product vendor.
 
-Files: libavcodec/j2kenc.c
+Files:
+  libavcodec/j2kenc.c
+  libavformat/imf*
+  libavformat/tests/imf*
 Copyright:
   2001-2003, David Janssens
   2002-2003, Yannick Verschueren
@@ -901,6 +905,7 @@ Copyright:
   2005, Herve Drolon, FreeImage Team
   2007, Callum Lerwick <seg@haxxed.com>
   2007, Kamil Nowosad
+  Sandflow Consulting LLC
 License: LGPL-2.1+ and BSD-2-clause
 
 Files: libavutil/adler32.c
@@ -924,8 +929,18 @@ License: Zlib
 
 Files:
   libavfilter/af_hdcd.c
+  libavcodec/speexdata.h
+  libavcodec/speexdec.c
 Copyright:
   2010, Chris Moeller
+  2002-2008, Xiph.org Foundation
+  2002-2008, Jean-Marc Valin
+  2005-2007, Analog Devices Inc.
+  2005-2008, Commonwealth Scientific and Industrial Research Organisation (CSIRO)
+  1993,2002,2006, David Rowe
+  2003, EpicGames
+  1992-1994, Jutta Degener
+  1992-1994, Carsten Bormann
 License: BSD-3-clause
 
 Files:
@@ -1004,7 +1019,7 @@ License: LGPL-2.1+ and BSL
 Files: debian/*
 Copyright:
   2014-2017, Andreas Cadhalpun <Andreas.Cadhalpun@googlemail.com>
-  2016, Sebastian Ramacher <sramacher@debian.org>
+  2016-2021, Sebastian Ramacher <sramacher@debian.org>
   2017-2018, James Cowgill <jcowgill@debian.org>
   2020, Jonas Smedegaard <dr@jones.dk>
 License: LGPL-2.1+
