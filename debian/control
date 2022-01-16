@@ -152,6 +152,8 @@ Build-Depends:
  libvorbis-dev,
 # --enable-libvpx
  libvpx-dev,
+# autodetected: vulkan
+ libvulkan-dev,
 # --enable-libwebp
  libwebp-dev,
 # --enable-libx264
