@@ -192,8 +192,7 @@ ifneq (,$(filter mips%,$(DEB_HOST_ARCH)))
 		--disable-mmi \
 		--disable-mips32r5 \
 		$(MIPS_R2_R6_CONFIG) \
-		--disable-msa \
-		--disable-msa2
+		--disable-msa
 endif
 
 # Disable mipsfpu on mips and mipsel, because it is not compatible with the FPXX ABI
