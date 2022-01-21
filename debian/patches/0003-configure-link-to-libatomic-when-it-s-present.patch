@@ -1,0 +1,64 @@
+From: Anton Khirnov <anton@khirnov.net>
+Date: Wed, 19 Jan 2022 12:50:41 +0100
+Subject: configure: link to libatomic when it's present
+
+C11 atomics in some configurations (e.g. 64bit operations on ppc64 with
+GCC) require linking to libatomic.
+
+Fixes #9275
+
+(cherry picked from commit 2f0a214a6202516b4dda2bb22b6b3ac20e465d6d)
+Signed-off-by: Anton Khirnov <anton@khirnov.net>
+---
+ configure | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
+
+diff --git a/configure b/configure
+index 6b5ef63..7a62f0c 100755
+--- a/configure
++++ b/configure
+@@ -3791,20 +3791,20 @@ cws2fws_extralibs="zlib_extralibs"
+ 
+ # libraries, in any order
+ avcodec_deps="avutil"
+-avcodec_suggest="libm"
++avcodec_suggest="libm stdatomic"
+ avdevice_deps="avformat avcodec avutil"
+-avdevice_suggest="libm"
++avdevice_suggest="libm stdatomic"
+ avfilter_deps="avutil"
+-avfilter_suggest="libm"
++avfilter_suggest="libm stdatomic"
+ avformat_deps="avcodec avutil"
+-avformat_suggest="libm network zlib"
+-avutil_suggest="clock_gettime ffnvcodec libm libdrm libmfx opencl user32 vaapi vulkan videotoolbox corefoundation corevideo coremedia bcrypt"
++avformat_suggest="libm network zlib stdatomic"
++avutil_suggest="clock_gettime ffnvcodec libm libdrm libmfx opencl user32 vaapi vulkan videotoolbox corefoundation corevideo coremedia bcrypt stdatomic"
+ postproc_deps="avutil gpl"
+-postproc_suggest="libm"
++postproc_suggest="libm stdatomic"
+ swresample_deps="avutil"
+-swresample_suggest="libm libsoxr"
++swresample_suggest="libm libsoxr stdatomic"
+ swscale_deps="avutil"
+-swscale_suggest="libm"
++swscale_suggest="libm stdatomic"
+ 
+ avcodec_extralibs="pthreads_extralibs iconv_extralibs dxva2_extralibs"
+ avfilter_extralibs="pthreads_extralibs"
+@@ -6321,7 +6321,14 @@ check_headers asm/types.h
+ # it seems there are versions of clang in some distros that try to use the
+ # gcc headers, which explodes for stdatomic
+ # so we also check that atomics actually work here
+-check_builtin stdatomic stdatomic.h "atomic_int foo, bar = ATOMIC_VAR_INIT(-1); atomic_store(&foo, 0); foo += bar"
++#
++# some configurations also require linking to libatomic, so try
++# both with -latomic and without
++for LATOMIC in "-latomic" ""; do
++    check_builtin stdatomic stdatomic.h                                                 \
++        "atomic_int foo, bar = ATOMIC_VAR_INIT(-1); atomic_store(&foo, 0); foo += bar"  \
++        $LATOMIC && eval stdatomic_extralibs="\$LATOMIC" && break
++done
+ 
+ check_lib advapi32 "windows.h"            RegCloseKey          -ladvapi32
+ check_lib bcrypt   "windows.h bcrypt.h"   BCryptGenRandom      -lbcrypt &&
