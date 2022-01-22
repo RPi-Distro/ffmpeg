@@ -1,3 +1,10 @@
+ffmpeg (7:5.0-2) experimental; urgency=medium
+
+  * debian/rules: Remove --disable-msa2
+  * debian/: Apply upstream patch to link with libatomic
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 22 Jan 2022 13:10:28 +0100
+
 ffmpeg (7:5.0-1) experimental; urgency=medium
 
   * New upstream version 5.0
