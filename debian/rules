@@ -142,12 +142,16 @@ endif
 # ffmpeg is involved in build-dependency cycles with x264 and chromaprint, so disable them in stage one.
 # Also disable frei0r, which build-depends on opencv.
 ifneq (,$(filter pkg.ffmpeg.stage1,$(DEB_BUILD_PROFILES)))
-	CONFIG += --disable-frei0r \
+	CONFIG += \
 		--disable-chromaprint \
+		--disable-frei0r \
+		--disable-libplacebo \
 		--disable-libx264
 else
-	CONFIG += --enable-chromaprint \
+	CONFIG += \
+		--enable-chromaprint \
 		--enable-frei0r \
+		--enable-libplacebo \
 		--enable-libx264
 endif
 

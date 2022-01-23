@@ -105,6 +105,8 @@ Build-Depends:
  libopenmpt-dev,
 # --enable-libopus
  libopus-dev,
+# --enable-libplacebo
+ libplacebo-dev (>= 4.192) <!pkg.ffmpeg.stage1>,
 # --enable-pocketsphinx
  libpocketsphinx-dev (>= 0.8+5prealpha+1-7~) [!alpha !hppa !ia64 !m68k !mipsel !mips64el !powerpc !ppc64 !s390x !sparc64],
 # --enable-libpulse
