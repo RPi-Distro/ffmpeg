@@ -1,3 +1,12 @@
+ffmpeg (7:5.0-3) experimental; urgency=medium
+
+  * debian/rules: Ignore two test failures on ppc64el
+  * debian/:
+    - Build with --enable-libplacebo
+    - Build without svt-av1 support on i386 for now
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 17 Feb 2022 22:00:15 +0100
+
 ffmpeg (7:5.0-2) experimental; urgency=medium
 
   * debian/rules: Remove --disable-msa2
