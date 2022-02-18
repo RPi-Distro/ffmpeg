@@ -212,7 +212,7 @@ endif
 # (introduced in 5fdb5ed6132687219d0ef2127115ebaf95514058)
 # https://trac.ffmpeg.org/ticket/9604
 ifeq (ppc64el,$(DEB_HOST_ARCH))
-	CONFIG += --ignore-test=checkasm-sw_scale,filter-scale2ref_keep_aspect
+	CONFIG += --ignore-tests=checkasm-sw_scale,filter-scale2ref_keep_aspect
 endif
 
 # Set cross-build prefix for compiler, pkg-config...
