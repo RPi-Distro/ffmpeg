@@ -60,6 +60,7 @@ CONFIG := --prefix=/usr \
 	--enable-libspeex \
 	--enable-libsrt \
 	--enable-libssh \
+	--enable-libsvtav1 \
 	--enable-libtheora \
 	--enable-libtwolame \
 	--enable-libvidstab \
@@ -89,14 +90,8 @@ ifeq (,$(filter alpha hppa hurd-i386 ia64 kfreebsd-amd64 kfreebsd-i386 m86k sh4 
 CONFIG += --enable-librsvg
 endif
 
-# enable libmfx support on amd64
 ifeq (amd64,$(DEB_HOST_ARCH))
 CONFIG += --enable-libmfx
-endif
-
-# enable svt-av1 support on !i386 (bug#1004073)
-ifneq (i386,$(DEB_HOST_ARCH))
-CONFIG += --enable-libsvtav1
 endif
 
 # The standard configuration only uses the shared CONFIG.
