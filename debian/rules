@@ -78,6 +78,9 @@ CONFIG := --prefix=/usr \
 	--enable-opengl \
 	--enable-sdl2
 
+# disable sndio, it's pulled in via libopenal-dev and autodected
+CONFIG += --disable-sndio
+
 # link with -latomic on armel and mipsel (https://trac.ffmpeg.org/ticket/9275)
 ifneq (,$(filter armel mipsel,$(DEB_HOST_ARCH)))
 CONFIG += --extra-libs=-latomic
