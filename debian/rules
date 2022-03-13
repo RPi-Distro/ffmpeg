@@ -80,7 +80,7 @@ CONFIG := --prefix=/usr \
 	--enable-opengl \
 	--enable-sdl2
 
-# disable sndio, it's pulled in via libopenal-dev and autodected
+# disable sndio, it's pulled in via libopenal-dev and autodetected
 CONFIG += --disable-sndio
 
 # avoid pocketsphinx on mips (bug#812335), alpha, ia64 and big-endian (bug#968456)
