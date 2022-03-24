@@ -176,6 +176,7 @@ endif
 ifeq (linux,$(DEB_HOST_ARCH_OS))
 	CONFIG += --enable-libdc1394 \
 		--enable-libdrm \
+		--enable-vout-drm \
 		--enable-libiec61883
 endif
 
