@@ -53,6 +53,7 @@ CONFIG := --prefix=/usr \
 	--enable-libopus \
 	--enable-libpulse \
 	--enable-librabbitmq \
+	--enable-librist \
 	--enable-librubberband \
 	--enable-libshine \
 	--enable-libsnappy \

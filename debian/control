@@ -113,6 +113,8 @@ Build-Depends:
  libpulse-dev,
 # --enable-librabbitmq
  librabbitmq-dev,
+# --enable-librist
+ librist-dev,
 # --enable-librubberband
  librubberband-dev,
 # --enable-librsvg
