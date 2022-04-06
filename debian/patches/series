@@ -1,3 +1,1 @@
 0001-avcodec-arm-sbcenc-avoid-callee-preserved-vfp-regist.patch
-0002-fate-ffmpeg-add-missing-samples-dependency-to-fate-s.patch
-0003-configure-link-to-libatomic-when-it-s-present.patch
