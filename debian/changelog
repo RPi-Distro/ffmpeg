@@ -1,3 +1,14 @@
+ffmpeg (7:5.0.1-1) experimental; urgency=medium
+
+  * New upstream version 5.0.1
+  * debian/:
+    - Revert "Build without svt-av1 support on i386 for now"
+    - Disable sndio
+    - Build with librist (Closes: #1008172)
+  * debian/patches: Remove patches from upstream
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 06 Apr 2022 11:28:57 +0200
+
 ffmpeg (7:5.0-3) experimental; urgency=medium
 
   * debian/rules: Ignore two test failures on ppc64el
