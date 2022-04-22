@@ -1,3 +1,9 @@
+ffmpeg (7:4.3.4-1) bullseye-security; urgency=medium
+
+  * New upstream version 4.3.4
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 22 Apr 2022 19:45:26 +0200
+
 ffmpeg (7:4.3.3-0+deb11u1) bullseye-security; urgency=medium
 
   * New upstream version 4.3.3
