@@ -180,8 +180,6 @@ Build-Depends:
  libxv-dev,
 # --enable-libxvid
  libxvidcore-dev,
-# autodetected: decoder 'mpeg_xvmc'; outdev 'xv'
- libxvmc-dev,
 # --enable-libzimg
  libzimg-dev,
 # --enable-libzmq
