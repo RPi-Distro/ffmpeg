@@ -1,0 +1,26 @@
+From: Andreas Rheinhardt <andreas.rheinhardt@outlook.com>
+Date: Sun, 24 Jul 2022 21:34:58 +0200
+Subject: fate/imf: Rename IMF fate-target
+
+It conflicts with the name of the test using the testtool
+in libavformat.mak.
+
+Fixes ticket #9841.
+
+Reviewed-by: Pierre-Anthony Lemieux <pal@sandflow.com>
+Signed-off-by: Andreas Rheinhardt <andreas.rheinhardt@outlook.com>
+(cherry picked from commit 3b923116e5a348945281b8d827074ac8f897464d)
+---
+ tests/fate/imf.mak | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/fate/imf.mak b/tests/fate/imf.mak
+index 70a3efd..feb54d1 100644
+--- a/tests/fate/imf.mak
++++ b/tests/fate/imf.mak
+@@ -3,4 +3,4 @@ fate-imf-cpl-with-repeat: CMD = framecrc -f imf -i $(TARGET_SAMPLES)/imf/countdo
+ 
+ FATE_SAMPLES_FFMPEG-$(CONFIG_IMF_DEMUXER) += $(FATE_IMF)
+ 
+-fate-imf: $(FATE_IMF)
++fate-imfdec: $(FATE_IMF)
