@@ -1,3 +1,13 @@
+ffmpeg (7:5.1-1) unstable; urgency=medium
+
+  * New upstream version 5.1
+  * debian/control: Remove libxvmc-dev; decoder mpeg_xvmc was removed
+  * debian/patches: Apply some upstream patches from the release/5.1 branch
+  * debian/ffmpeg-doc.install: Fix installation of documentation
+  * debian/*.symbols: Add new symbols
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 31 Jul 2022 20:07:37 +0200
+
 ffmpeg (7:5.0.1-3) unstable; urgency=medium
 
   * debian/tests: Update encoders for autopkgtests
