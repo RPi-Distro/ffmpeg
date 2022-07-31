@@ -2,7 +2,7 @@
 libavformat.so.59 libavformat59 #MINVER#
 * Build-Depends-Package: libavformat-dev
  (optional|regex)^avpriv_ 0
- LIBAVFORMAT_59@LIBAVFORMAT_59 7:5.0
+ LIBAVFORMAT_59@LIBAVFORMAT_59 7:5.1
  av_add_index_entry@LIBAVFORMAT_59 7:5.0
  av_append_packet@LIBAVFORMAT_59 7:5.0
  av_codec_get_id@LIBAVFORMAT_59 7:5.0
@@ -135,6 +135,7 @@ libavformat.so.59 libavformat59 #MINVER#
  avio_seek_time@LIBAVFORMAT_59 7:5.0
  avio_size@LIBAVFORMAT_59 7:5.0
  avio_skip@LIBAVFORMAT_59 7:5.0
+ avio_vprintf@LIBAVFORMAT_59 7:5.1
  avio_w8@LIBAVFORMAT_59 7:5.0
  avio_wb16@LIBAVFORMAT_59 7:5.0
  avio_wb24@LIBAVFORMAT_59 7:5.0

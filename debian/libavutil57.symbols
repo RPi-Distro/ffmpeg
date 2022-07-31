@@ -1,7 +1,7 @@
 # SymbolsHelper-Confirmed: 7:5.0 amd64
 libavutil.so.57 libavutil57 #MINVER#
 * Build-Depends-Package: libavutil-dev
- LIBAVUTIL_57@LIBAVUTIL_57 7:5.0
+ LIBAVUTIL_57@LIBAVUTIL_57 7:5.1
  (optional|regex)^avpriv_ 0
  av_add_i@LIBAVUTIL_57 7:5.0
  av_add_q@LIBAVUTIL_57 7:5.0
@@ -80,7 +80,27 @@ libavutil.so.57 libavutil57 #MINVER#
  av_cast5_crypt@LIBAVUTIL_57 7:5.0
  av_cast5_init@LIBAVUTIL_57 7:5.0
  av_cast5_size@LIBAVUTIL_57 7:5.0
+ av_channel_description@LIBAVUTIL_57 7:5.1
+ av_channel_description_bprint@LIBAVUTIL_57 7:5.1
+ av_channel_from_string@LIBAVUTIL_57 7:5.1
+ av_channel_layout_channel_from_index@LIBAVUTIL_57 7:5.1
+ av_channel_layout_channel_from_string@LIBAVUTIL_57 7:5.1
+ av_channel_layout_check@LIBAVUTIL_57 7:5.1
+ av_channel_layout_compare@LIBAVUTIL_57 7:5.1
+ av_channel_layout_copy@LIBAVUTIL_57 7:5.1
+ av_channel_layout_default@LIBAVUTIL_57 7:5.1
+ av_channel_layout_describe@LIBAVUTIL_57 7:5.1
+ av_channel_layout_describe_bprint@LIBAVUTIL_57 7:5.1
  av_channel_layout_extract_channel@LIBAVUTIL_57 7:5.0
+ av_channel_layout_from_mask@LIBAVUTIL_57 7:5.1
+ av_channel_layout_from_string@LIBAVUTIL_57 7:5.1
+ av_channel_layout_index_from_channel@LIBAVUTIL_57 7:5.1
+ av_channel_layout_index_from_string@LIBAVUTIL_57 7:5.1
+ av_channel_layout_standard@LIBAVUTIL_57 7:5.1
+ av_channel_layout_subset@LIBAVUTIL_57 7:5.1
+ av_channel_layout_uninit@LIBAVUTIL_57 7:5.1
+ av_channel_name@LIBAVUTIL_57 7:5.1
+ av_channel_name_bprint@LIBAVUTIL_57 7:5.1
  av_chroma_location_from_name@LIBAVUTIL_57 7:5.0
  av_chroma_location_name@LIBAVUTIL_57 7:5.0
  av_cmp_i@LIBAVUTIL_57 7:5.0
@@ -102,6 +122,9 @@ libavutil.so.57 libavutil57 #MINVER#
  av_crc@LIBAVUTIL_57 7:5.0
  av_crc_get_table@LIBAVUTIL_57 7:5.0
  av_crc_init@LIBAVUTIL_57 7:5.0
+ av_csp_luma_coeffs_from_avcsp@LIBAVUTIL_57 7:5.1
+ av_csp_primaries_desc_from_id@LIBAVUTIL_57 7:5.1
+ av_csp_primaries_id_from_desc@LIBAVUTIL_57 7:5.1
  av_d2q@LIBAVUTIL_57 7:5.0
  av_d2str@LIBAVUTIL_57 7:5.0
  av_default_get_category@LIBAVUTIL_57 7:5.0
@@ -131,6 +154,8 @@ libavutil.so.57 libavutil57 #MINVER#
  av_downmix_info_update_side_data@LIBAVUTIL_57 7:5.0
  av_dynamic_hdr_plus_alloc@LIBAVUTIL_57 7:5.0
  av_dynamic_hdr_plus_create_side_data@LIBAVUTIL_57 7:5.0
+ av_dynamic_hdr_vivid_alloc@LIBAVUTIL_57 7:5.1
+ av_dynamic_hdr_vivid_create_side_data@LIBAVUTIL_57 7:5.1
  av_dynarray2_add@LIBAVUTIL_57 7:5.0
  av_dynarray_add@LIBAVUTIL_57 7:5.0
  av_dynarray_add_nofree@LIBAVUTIL_57 7:5.0
@@ -153,20 +178,35 @@ libavutil.so.57 libavutil57 #MINVER#
  av_fast_malloc@LIBAVUTIL_57 7:5.0
  av_fast_mallocz@LIBAVUTIL_57 7:5.0
  av_fast_realloc@LIBAVUTIL_57 7:5.0
+ av_fifo_alloc2@LIBAVUTIL_57 7:5.1
  av_fifo_alloc@LIBAVUTIL_57 7:5.0
  av_fifo_alloc_array@LIBAVUTIL_57 7:5.0
+ av_fifo_auto_grow_limit@LIBAVUTIL_57 7:5.1
+ av_fifo_can_read@LIBAVUTIL_57 7:5.1
+ av_fifo_can_write@LIBAVUTIL_57 7:5.1
+ av_fifo_drain2@LIBAVUTIL_57 7:5.1
  av_fifo_drain@LIBAVUTIL_57 7:5.0
+ av_fifo_elem_size@LIBAVUTIL_57 7:5.1
  av_fifo_free@LIBAVUTIL_57 7:5.0
+ av_fifo_freep2@LIBAVUTIL_57 7:5.1
  av_fifo_freep@LIBAVUTIL_57 7:5.0
  av_fifo_generic_peek@LIBAVUTIL_57 7:5.0
  av_fifo_generic_peek_at@LIBAVUTIL_57 7:5.0
  av_fifo_generic_read@LIBAVUTIL_57 7:5.0
  av_fifo_generic_write@LIBAVUTIL_57 7:5.0
+ av_fifo_grow2@LIBAVUTIL_57 7:5.1
  av_fifo_grow@LIBAVUTIL_57 7:5.0
+ av_fifo_peek@LIBAVUTIL_57 7:5.1
+ av_fifo_peek_to_cb@LIBAVUTIL_57 7:5.1
+ av_fifo_read@LIBAVUTIL_57 7:5.1
+ av_fifo_read_to_cb@LIBAVUTIL_57 7:5.1
  av_fifo_realloc2@LIBAVUTIL_57 7:5.0
+ av_fifo_reset2@LIBAVUTIL_57 7:5.1
  av_fifo_reset@LIBAVUTIL_57 7:5.0
  av_fifo_size@LIBAVUTIL_57 7:5.0
  av_fifo_space@LIBAVUTIL_57 7:5.0
+ av_fifo_write@LIBAVUTIL_57 7:5.1
+ av_fifo_write_from_cb@LIBAVUTIL_57 7:5.1
  av_file_map@LIBAVUTIL_57 7:5.0
  av_file_unmap@LIBAVUTIL_57 7:5.0
  av_film_grain_params_alloc@LIBAVUTIL_57 7:5.0
@@ -345,6 +385,7 @@ libavutil.so.57 libavutil57 #MINVER#
  av_opt_freep_ranges@LIBAVUTIL_57 7:5.0
  av_opt_get@LIBAVUTIL_57 7:5.0
  av_opt_get_channel_layout@LIBAVUTIL_57 7:5.0
+ av_opt_get_chlayout@LIBAVUTIL_57 7:5.1
  av_opt_get_dict_val@LIBAVUTIL_57 7:5.0
  av_opt_get_double@LIBAVUTIL_57 7:5.0
  av_opt_get_image_size@LIBAVUTIL_57 7:5.0
@@ -364,6 +405,7 @@ libavutil.so.57 libavutil57 #MINVER#
  av_opt_set@LIBAVUTIL_57 7:5.0
  av_opt_set_bin@LIBAVUTIL_57 7:5.0
  av_opt_set_channel_layout@LIBAVUTIL_57 7:5.0
+ av_opt_set_chlayout@LIBAVUTIL_57 7:5.1
  av_opt_set_defaults2@LIBAVUTIL_57 7:5.0
  av_opt_set_defaults@LIBAVUTIL_57 7:5.0
  av_opt_set_dict2@LIBAVUTIL_57 7:5.0
@@ -501,6 +543,10 @@ libavutil.so.57 libavutil57 #MINVER#
  av_usleep@LIBAVUTIL_57 7:5.0
  av_utf8_decode@LIBAVUTIL_57 7:5.0
  av_util_ffversion@LIBAVUTIL_57 7:5.0
+ av_uuid_parse@LIBAVUTIL_57 7:5.1
+ av_uuid_parse_range@LIBAVUTIL_57 7:5.1
+ av_uuid_unparse@LIBAVUTIL_57 7:5.1
+ av_uuid_urn_parse@LIBAVUTIL_57 7:5.1
  av_vbprintf@LIBAVUTIL_57 7:5.0
  av_version_info@LIBAVUTIL_57 7:5.0
  av_video_enc_params_alloc@LIBAVUTIL_57 7:5.0
