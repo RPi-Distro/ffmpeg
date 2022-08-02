@@ -213,6 +213,10 @@ endif
 ifeq (ppc64el,$(DEB_HOST_ARCH))
 	CONFIG += --ignore-tests=checkasm-sw_scale,filter-scale2ref_keep_aspect
 endif
+# https://trac.ffmpeg.org/ticket/9855
+ifeq (s390x,$(DEB_HOST_ARCH))
+	CONFIG += --ignore-tests=filter-overlay_yuv420p10
+endif
 
 # Set cross-build prefix for compiler, pkg-config...
 ifneq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
