@@ -1,3 +1,11 @@
+ffmpeg (7:5.1-2) unstable; urgency=medium
+
+  * debian/: Fix test failures on s390x (Closes: #1016519)
+    * Apply upstream fixes for some s390x test failures
+    * Disable one new failing test
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 02 Aug 2022 20:27:24 +0200
+
 ffmpeg (7:5.1-1) unstable; urgency=medium
 
   * New upstream version 5.1
