@@ -2,3 +2,5 @@
 0002-configure-properly-require-libx264-if-enabled.patch
 0003-avcodec-alac-don-t-fail-if-channels-aren-t-set-durin.patch
 0004-fate-imf-Rename-IMF-fate-target.patch
+0005-tests-fate-run-Allow-to-skip-file-checksums-for-lavf.patch
+0006-fate-lavf-image-Disable-file-checksums-for-exr-tests.patch
