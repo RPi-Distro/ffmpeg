@@ -1,3 +1,9 @@
+ffmpeg (7:4.3.4-0+deb11u1+rpt3) bullseye; urgency=medium
+
+  * HW accel patch 14
+
+ -- Serge Schneider <serge@raspberrypi.com>  Thu, 04 Aug 2022 13:14:22 +0100
+
 ffmpeg (7:4.3.4-0+deb11u1+rpt2) bullseye; urgency=medium
 
   * HW accel patch 13

@@ -415,7 +415,7 @@
 +OBJS-$(CONFIG_HEVC_RPI4_8_HWACCEL)        += rpivid_hevc.o
 +OBJS-$(CONFIG_HEVC_RPI4_10_HWACCEL)       += rpivid_hevc.o
 +OBJS-$(CONFIG_HEVC_V4L2REQUEST_HWACCEL)   += v4l2_request_hevc.o v4l2_req_decode_q.o\
-+                                             v4l2_req_hevc_v1.o v4l2_req_hevc_v2.o v4l2_req_hevc_v3.o
++                                             v4l2_req_hevc_v1.o v4l2_req_hevc_v2.o v4l2_req_hevc_v3.o  v4l2_req_hevc_v4.o
  OBJS-$(CONFIG_HEVC_VAAPI_HWACCEL)         += vaapi_hevc.o h265_profile_level.o
  OBJS-$(CONFIG_HEVC_VDPAU_HWACCEL)         += vdpau_hevc.o
  OBJS-$(CONFIG_MJPEG_NVDEC_HWACCEL)        += nvdec_mjpeg.o
@@ -18770,6 +18770,524 @@
 + * (separate_colour_plane_flag is not supported).
 + */
 +#define V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP	(V4L2_CID_CODEC_HANTRO_BASE + 0)
++
++#endif
+--- /dev/null
++++ b/libavcodec/hevc-ctrls-v4.h
+@@ -0,0 +1,515 @@
++/* SPDX-License-Identifier: ((GPL-2.0+ WITH Linux-syscall-note) OR BSD-3-Clause) */
++/*
++ *  Video for Linux Two controls header file
++ *
++ *  Copyright (C) 1999-2012 the contributors
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  Alternatively you can redistribute this file under the terms of the
++ *  BSD license as stated below:
++ *
++ *  Redistribution and use in source and binary forms, with or without
++ *  modification, are permitted provided that the following conditions
++ *  are met:
++ *  1. Redistributions of source code must retain the above copyright
++ *     notice, this list of conditions and the following disclaimer.
++ *  2. Redistributions in binary form must reproduce the above copyright
++ *     notice, this list of conditions and the following disclaimer in
++ *     the documentation and/or other materials provided with the
++ *     distribution.
++ *  3. The names of its contributors may not be used to endorse or promote
++ *     products derived from this software without specific prior written
++ *     permission.
++ *
++ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
++ *  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
++ *  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
++ *  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
++ *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
++ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
++ *  The contents of this header was split off from videodev2.h. All control
++ *  definitions should be added to this header, which is included by
++ *  videodev2.h.
++ */
++
++#ifndef AVCODEC_HEVC_CTRLS_V4_H
++#define AVCODEC_HEVC_CTRLS_V4_H
++
++#include <linux/const.h>
++#include <linux/types.h>
++
++#define V4L2_CID_STATELESS_HEVC_SPS		(V4L2_CID_CODEC_STATELESS_BASE + 400)
++#define V4L2_CID_STATELESS_HEVC_PPS		(V4L2_CID_CODEC_STATELESS_BASE + 401)
++#define V4L2_CID_STATELESS_HEVC_SLICE_PARAMS	(V4L2_CID_CODEC_STATELESS_BASE + 402)
++#define V4L2_CID_STATELESS_HEVC_SCALING_MATRIX	(V4L2_CID_CODEC_STATELESS_BASE + 403)
++#define V4L2_CID_STATELESS_HEVC_DECODE_PARAMS	(V4L2_CID_CODEC_STATELESS_BASE + 404)
++#define V4L2_CID_STATELESS_HEVC_DECODE_MODE	(V4L2_CID_CODEC_STATELESS_BASE + 405)
++#define V4L2_CID_STATELESS_HEVC_START_CODE	(V4L2_CID_CODEC_STATELESS_BASE + 406)
++#define V4L2_CID_STATELESS_HEVC_ENTRY_POINT_OFFSETS (V4L2_CID_CODEC_STATELESS_BASE + 407)
++
++enum v4l2_stateless_hevc_decode_mode {
++	V4L2_STATELESS_HEVC_DECODE_MODE_SLICE_BASED,
++	V4L2_STATELESS_HEVC_DECODE_MODE_FRAME_BASED,
++};
++
++enum v4l2_stateless_hevc_start_code {
++	V4L2_STATELESS_HEVC_START_CODE_NONE,
++	V4L2_STATELESS_HEVC_START_CODE_ANNEX_B,
++};
++
++#define V4L2_HEVC_SLICE_TYPE_B	0
++#define V4L2_HEVC_SLICE_TYPE_P	1
++#define V4L2_HEVC_SLICE_TYPE_I	2
++
++#define V4L2_HEVC_SPS_FLAG_SEPARATE_COLOUR_PLANE		(1ULL << 0)
++#define V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED			(1ULL << 1)
++#define V4L2_HEVC_SPS_FLAG_AMP_ENABLED				(1ULL << 2)
++#define V4L2_HEVC_SPS_FLAG_SAMPLE_ADAPTIVE_OFFSET		(1ULL << 3)
++#define V4L2_HEVC_SPS_FLAG_PCM_ENABLED				(1ULL << 4)
++#define V4L2_HEVC_SPS_FLAG_PCM_LOOP_FILTER_DISABLED		(1ULL << 5)
++#define V4L2_HEVC_SPS_FLAG_LONG_TERM_REF_PICS_PRESENT		(1ULL << 6)
++#define V4L2_HEVC_SPS_FLAG_SPS_TEMPORAL_MVP_ENABLED		(1ULL << 7)
++#define V4L2_HEVC_SPS_FLAG_STRONG_INTRA_SMOOTHING_ENABLED	(1ULL << 8)
++
++/**
++ * struct v4l2_ctrl_hevc_sps - ITU-T Rec. H.265: Sequence parameter set
++ *
++ * @video_parameter_set_id: specifies the value of the
++ *			vps_video_parameter_set_id of the active VPS
++ * @seq_parameter_set_id: provides an identifier for the SPS for
++ *			  reference by other syntax elements
++ * @pic_width_in_luma_samples:	specifies the width of each decoded picture
++ *				in units of luma samples
++ * @pic_height_in_luma_samples: specifies the height of each decoded picture
++ *				in units of luma samples
++ * @bit_depth_luma_minus8: this value plus 8specifies the bit depth of the
++ *                         samples of the luma array
++ * @bit_depth_chroma_minus8: this value plus 8 specifies the bit depth of the
++ *                           samples of the chroma arrays
++ * @log2_max_pic_order_cnt_lsb_minus4: this value plus 4 specifies the value of
++ *                                     the variable MaxPicOrderCntLsb
++ * @sps_max_dec_pic_buffering_minus1: this value plus 1 specifies the maximum
++ *                                    required size of the decoded picture
++ *                                    buffer for the codec video sequence
++ * @sps_max_num_reorder_pics: indicates the maximum allowed number of pictures
++ * @sps_max_latency_increase_plus1: not equal to 0 is used to compute the
++ *				    value of SpsMaxLatencyPictures array
++ * @log2_min_luma_coding_block_size_minus3: plus 3 specifies the minimum
++ *					    luma coding block size
++ * @log2_diff_max_min_luma_coding_block_size: specifies the difference between
++ *					      the maximum and minimum luma
++ *					      coding block size
++ * @log2_min_luma_transform_block_size_minus2: plus 2 specifies the minimum luma
++ *					       transform block size
++ * @log2_diff_max_min_luma_transform_block_size: specifies the difference between
++ *						 the maximum and minimum luma
++ *						 transform block size
++ * @max_transform_hierarchy_depth_inter: specifies the maximum hierarchy
++ *					 depth for transform units of
++ *					 coding units coded in inter
++ *					 prediction mode
++ * @max_transform_hierarchy_depth_intra: specifies the maximum hierarchy
++ *					 depth for transform units of
++ *					 coding units coded in intra
++ *					 prediction mode
++ * @pcm_sample_bit_depth_luma_minus1: this value plus 1 specifies the number of
++ *                                    bits used to represent each of PCM sample
++ *                                    values of the luma component
++ * @pcm_sample_bit_depth_chroma_minus1: this value plus 1 specifies the number
++ *                                      of bits used to represent each of PCM
++ *                                      sample values of the chroma components
++ * @log2_min_pcm_luma_coding_block_size_minus3: this value plus 3 specifies the
++ *                                              minimum size of coding blocks
++ * @log2_diff_max_min_pcm_luma_coding_block_size: specifies the difference between
++ *						  the maximum and minimum size of
++ *						  coding blocks
++ * @num_short_term_ref_pic_sets: specifies the number of st_ref_pic_set()
++ *				 syntax structures included in the SPS
++ * @num_long_term_ref_pics_sps: specifies the number of candidate long-term
++ *				reference pictures that are specified in the SPS
++ * @chroma_format_idc: specifies the chroma sampling
++ * @sps_max_sub_layers_minus1: this value plus 1 specifies the maximum number
++ *                             of temporal sub-layers
++ * @reserved: padding field. Should be zeroed by applications.
++ * @flags: see V4L2_HEVC_SPS_FLAG_{}
++ */
++struct v4l2_ctrl_hevc_sps {
++	__u8	video_parameter_set_id;
++	__u8	seq_parameter_set_id;
++	__u16	pic_width_in_luma_samples;
++	__u16	pic_height_in_luma_samples;
++	__u8	bit_depth_luma_minus8;
++	__u8	bit_depth_chroma_minus8;
++	__u8	log2_max_pic_order_cnt_lsb_minus4;
++	__u8	sps_max_dec_pic_buffering_minus1;
++	__u8	sps_max_num_reorder_pics;
++	__u8	sps_max_latency_increase_plus1;
++	__u8	log2_min_luma_coding_block_size_minus3;
++	__u8	log2_diff_max_min_luma_coding_block_size;
++	__u8	log2_min_luma_transform_block_size_minus2;
++	__u8	log2_diff_max_min_luma_transform_block_size;
++	__u8	max_transform_hierarchy_depth_inter;
++	__u8	max_transform_hierarchy_depth_intra;
++	__u8	pcm_sample_bit_depth_luma_minus1;
++	__u8	pcm_sample_bit_depth_chroma_minus1;
++	__u8	log2_min_pcm_luma_coding_block_size_minus3;
++	__u8	log2_diff_max_min_pcm_luma_coding_block_size;
++	__u8	num_short_term_ref_pic_sets;
++	__u8	num_long_term_ref_pics_sps;
++	__u8	chroma_format_idc;
++	__u8	sps_max_sub_layers_minus1;
++
++	__u8	reserved[6];
++	__u64	flags;
++};
++
++#define V4L2_HEVC_PPS_FLAG_DEPENDENT_SLICE_SEGMENT_ENABLED	(1ULL << 0)
++#define V4L2_HEVC_PPS_FLAG_OUTPUT_FLAG_PRESENT			(1ULL << 1)
++#define V4L2_HEVC_PPS_FLAG_SIGN_DATA_HIDING_ENABLED		(1ULL << 2)
++#define V4L2_HEVC_PPS_FLAG_CABAC_INIT_PRESENT			(1ULL << 3)
++#define V4L2_HEVC_PPS_FLAG_CONSTRAINED_INTRA_PRED		(1ULL << 4)
++#define V4L2_HEVC_PPS_FLAG_TRANSFORM_SKIP_ENABLED		(1ULL << 5)
++#define V4L2_HEVC_PPS_FLAG_CU_QP_DELTA_ENABLED			(1ULL << 6)
++#define V4L2_HEVC_PPS_FLAG_PPS_SLICE_CHROMA_QP_OFFSETS_PRESENT	(1ULL << 7)
++#define V4L2_HEVC_PPS_FLAG_WEIGHTED_PRED			(1ULL << 8)
++#define V4L2_HEVC_PPS_FLAG_WEIGHTED_BIPRED			(1ULL << 9)
++#define V4L2_HEVC_PPS_FLAG_TRANSQUANT_BYPASS_ENABLED		(1ULL << 10)
++#define V4L2_HEVC_PPS_FLAG_TILES_ENABLED			(1ULL << 11)
++#define V4L2_HEVC_PPS_FLAG_ENTROPY_CODING_SYNC_ENABLED		(1ULL << 12)
++#define V4L2_HEVC_PPS_FLAG_LOOP_FILTER_ACROSS_TILES_ENABLED	(1ULL << 13)
++#define V4L2_HEVC_PPS_FLAG_PPS_LOOP_FILTER_ACROSS_SLICES_ENABLED (1ULL << 14)
++#define V4L2_HEVC_PPS_FLAG_DEBLOCKING_FILTER_OVERRIDE_ENABLED	(1ULL << 15)
++#define V4L2_HEVC_PPS_FLAG_PPS_DISABLE_DEBLOCKING_FILTER	(1ULL << 16)
++#define V4L2_HEVC_PPS_FLAG_LISTS_MODIFICATION_PRESENT		(1ULL << 17)
++#define V4L2_HEVC_PPS_FLAG_SLICE_SEGMENT_HEADER_EXTENSION_PRESENT (1ULL << 18)
++#define V4L2_HEVC_PPS_FLAG_DEBLOCKING_FILTER_CONTROL_PRESENT	(1ULL << 19)
++#define V4L2_HEVC_PPS_FLAG_UNIFORM_SPACING			(1ULL << 20)
++
++/**
++ * struct v4l2_ctrl_hevc_pps - ITU-T Rec. H.265: Picture parameter set
++ *
++ * @pic_parameter_set_id: identifies the PPS for reference by other
++ *			  syntax elements
++ * @num_extra_slice_header_bits: specifies the number of extra slice header
++ *				 bits that are present in the slice header RBSP
++ *				 for coded pictures referring to the PPS.
++ * @num_ref_idx_l0_default_active_minus1: this value plus 1 specifies the
++ *                                        inferred value of num_ref_idx_l0_active_minus1
++ * @num_ref_idx_l1_default_active_minus1: this value plus 1 specifies the
++ *                                        inferred value of num_ref_idx_l1_active_minus1
++ * @init_qp_minus26: this value plus 26 specifies the initial value of SliceQp Y for
++ *		     each slice referring to the PPS
++ * @diff_cu_qp_delta_depth: specifies the difference between the luma coding
++ *			    tree block size and the minimum luma coding block
++ *			    size of coding units that convey cu_qp_delta_abs
++ *			    and cu_qp_delta_sign_flag
++ * @pps_cb_qp_offset: specify the offsets to the luma quantization parameter Cb
++ * @pps_cr_qp_offset: specify the offsets to the luma quantization parameter Cr
++ * @num_tile_columns_minus1: this value plus 1 specifies the number of tile columns
++ *			     partitioning the picture
++ * @num_tile_rows_minus1: this value plus 1 specifies the number of tile rows partitioning
++ *			  the picture
++ * @column_width_minus1: this value plus 1 specifies the width of the each tile column in
++ *			 units of coding tree blocks
++ * @row_height_minus1: this value plus 1 specifies the height of the each tile row in
++ *		       units of coding tree blocks
++ * @pps_beta_offset_div2: specify the default deblocking parameter offsets for
++ *			  beta divided by 2
++ * @pps_tc_offset_div2: specify the default deblocking parameter offsets for tC
++ *			divided by 2
++ * @log2_parallel_merge_level_minus2: this value plus 2 specifies the value of
++ *                                    the variable Log2ParMrgLevel
++ * @reserved: padding field. Should be zeroed by applications.
++ * @flags: see V4L2_HEVC_PPS_FLAG_{}
++ */
++struct v4l2_ctrl_hevc_pps {
++	__u8	pic_parameter_set_id;
++	__u8	num_extra_slice_header_bits;
++	__u8	num_ref_idx_l0_default_active_minus1;
++	__u8	num_ref_idx_l1_default_active_minus1;
++	__s8	init_qp_minus26;
++	__u8	diff_cu_qp_delta_depth;
++	__s8	pps_cb_qp_offset;
++	__s8	pps_cr_qp_offset;
++	__u8	num_tile_columns_minus1;
++	__u8	num_tile_rows_minus1;
++	__u8	column_width_minus1[20];
++	__u8	row_height_minus1[22];
++	__s8	pps_beta_offset_div2;
++	__s8	pps_tc_offset_div2;
++	__u8	log2_parallel_merge_level_minus2;
++	__u8	reserved;
++	__u64	flags;
++};
++
++#define V4L2_HEVC_DPB_ENTRY_LONG_TERM_REFERENCE	0x01
++
++#define V4L2_HEVC_SEI_PIC_STRUCT_FRAME				0
++#define V4L2_HEVC_SEI_PIC_STRUCT_TOP_FIELD			1
++#define V4L2_HEVC_SEI_PIC_STRUCT_BOTTOM_FIELD			2
++#define V4L2_HEVC_SEI_PIC_STRUCT_TOP_BOTTOM			3
++#define V4L2_HEVC_SEI_PIC_STRUCT_BOTTOM_TOP			4
++#define V4L2_HEVC_SEI_PIC_STRUCT_TOP_BOTTOM_TOP			5
++#define V4L2_HEVC_SEI_PIC_STRUCT_BOTTOM_TOP_BOTTOM		6
++#define V4L2_HEVC_SEI_PIC_STRUCT_FRAME_DOUBLING			7
++#define V4L2_HEVC_SEI_PIC_STRUCT_FRAME_TRIPLING			8
++#define V4L2_HEVC_SEI_PIC_STRUCT_TOP_PAIRED_PREVIOUS_BOTTOM	9
++#define V4L2_HEVC_SEI_PIC_STRUCT_BOTTOM_PAIRED_PREVIOUS_TOP	10
++#define V4L2_HEVC_SEI_PIC_STRUCT_TOP_PAIRED_NEXT_BOTTOM		11
++#define V4L2_HEVC_SEI_PIC_STRUCT_BOTTOM_PAIRED_NEXT_TOP		12
++
++#define V4L2_HEVC_DPB_ENTRIES_NUM_MAX		16
++
++/**
++ * struct v4l2_hevc_dpb_entry - HEVC decoded picture buffer entry
++ *
++ * @timestamp: timestamp of the V4L2 capture buffer to use as reference.
++ * @flags: long term flag for the reference frame
++ * @field_pic: whether the reference is a field picture or a frame.
++ * @reserved: padding field. Should be zeroed by applications.
++ * @pic_order_cnt_val: the picture order count of the current picture.
++ */
++struct v4l2_hevc_dpb_entry {
++	__u64	timestamp;
++	__u8	flags;
++	__u8	field_pic;
++	__u16	reserved;
++	__s32	pic_order_cnt_val;
++};
++
++/**
++ * struct v4l2_hevc_pred_weight_table - HEVC weighted prediction parameters
++ *
++ * @delta_luma_weight_l0: the difference of the weighting factor applied
++ *			  to the luma prediction value for list 0
++ * @luma_offset_l0: the additive offset applied to the luma prediction value
++ *		    for list 0
++ * @delta_chroma_weight_l0: the difference of the weighting factor applied
++ *			    to the chroma prediction values for list 0
++ * @chroma_offset_l0: the difference of the additive offset applied to
++ *		      the chroma prediction values for list 0
++ * @delta_luma_weight_l1: the difference of the weighting factor applied
++ *			  to the luma prediction value for list 1
++ * @luma_offset_l1: the additive offset applied to the luma prediction value
++ *		    for list 1
++ * @delta_chroma_weight_l1: the difference of the weighting factor applied
++ *			    to the chroma prediction values for list 1
++ * @chroma_offset_l1: the difference of the additive offset applied to
++ *		      the chroma prediction values for list 1
++ * @luma_log2_weight_denom: the base 2 logarithm of the denominator for
++ *			    all luma weighting factors
++ * @delta_chroma_log2_weight_denom: the difference of the base 2 logarithm
++ *				    of the denominator for all chroma
++ *				    weighting factors
++ */
++struct v4l2_hevc_pred_weight_table {
++	__s8	delta_luma_weight_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
++	__s8	luma_offset_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
++	__s8	delta_chroma_weight_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX][2];
++	__s8	chroma_offset_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX][2];
++
++	__s8	delta_luma_weight_l1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
++	__s8	luma_offset_l1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
++	__s8	delta_chroma_weight_l1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX][2];
++	__s8	chroma_offset_l1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX][2];
++
++	__u8	luma_log2_weight_denom;
++	__s8	delta_chroma_log2_weight_denom;
++};
++
++#define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_SAO_LUMA		(1ULL << 0)
++#define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_SAO_CHROMA		(1ULL << 1)
++#define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_TEMPORAL_MVP_ENABLED	(1ULL << 2)
++#define V4L2_HEVC_SLICE_PARAMS_FLAG_MVD_L1_ZERO			(1ULL << 3)
++#define V4L2_HEVC_SLICE_PARAMS_FLAG_CABAC_INIT			(1ULL << 4)
++#define V4L2_HEVC_SLICE_PARAMS_FLAG_COLLOCATED_FROM_L0		(1ULL << 5)
++#define V4L2_HEVC_SLICE_PARAMS_FLAG_USE_INTEGER_MV		(1ULL << 6)
++#define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_DEBLOCKING_FILTER_DISABLED (1ULL << 7)
++#define V4L2_HEVC_SLICE_PARAMS_FLAG_SLICE_LOOP_FILTER_ACROSS_SLICES_ENABLED (1ULL << 8)
++#define V4L2_HEVC_SLICE_PARAMS_FLAG_DEPENDENT_SLICE_SEGMENT	(1ULL << 9)
++
++/**
++ * struct v4l2_ctrl_hevc_slice_params - HEVC slice parameters
++ *
++ * This control is a dynamically sized 1-dimensional array,
++ * V4L2_CTRL_FLAG_DYNAMIC_ARRAY flag must be set when using it.
++ *
++ * @bit_size: size (in bits) of the current slice data
++ * @data_byte_offset: offset (in bytes) to the video data in the current slice data
++ * @num_entry_point_offsets: specifies the number of entry point offset syntax
++ *			     elements in the slice header.
++ * @nal_unit_type: specifies the coding type of the slice (B, P or I)
++ * @nuh_temporal_id_plus1: minus 1 specifies a temporal identifier for the NAL unit
++ * @slice_type: see V4L2_HEVC_SLICE_TYPE_{}
++ * @colour_plane_id: specifies the colour plane associated with the current slice
++ * @slice_pic_order_cnt: specifies the picture order count
++ * @num_ref_idx_l0_active_minus1: this value plus 1 specifies the maximum
++ *                                reference index for reference picture list 0
++ *                                that may be used to decode the slice
++ * @num_ref_idx_l1_active_minus1: this value plus 1 specifies the maximum
++ *                                reference index for reference picture list 1
++ *                                that may be used to decode the slice
++ * @collocated_ref_idx: specifies the reference index of the collocated picture used
++ *			for temporal motion vector prediction
++ * @five_minus_max_num_merge_cand: specifies the maximum number of merging
++ *				   motion vector prediction candidates supported in
++ *				   the slice subtracted from 5
++ * @slice_qp_delta: specifies the initial value of QpY to be used for the coding
++ *		    blocks in the slice
++ * @slice_cb_qp_offset: specifies a difference to be added to the value of pps_cb_qp_offset
++ * @slice_cr_qp_offset: specifies a difference to be added to the value of pps_cr_qp_offset
++ * @slice_act_y_qp_offset: screen content extension parameters
++ * @slice_act_cb_qp_offset: screen content extension parameters
++ * @slice_act_cr_qp_offset: screen content extension parameters
++ * @slice_beta_offset_div2: specify the deblocking parameter offsets for beta divided by 2
++ * @slice_tc_offset_div2: specify the deblocking parameter offsets for tC divided by 2
++ * @pic_struct: indicates whether a picture should be displayed as a frame or as one or
++ *		more fields
++ * @reserved0: padding field. Should be zeroed by applications.
++ * @slice_segment_addr: specifies the address of the first coding tree block in
++ *			the slice segment
++ * @ref_idx_l0: the list of L0 reference elements as indices in the DPB
++ * @ref_idx_l1: the list of L1 reference elements as indices in the DPB
++ * @short_term_ref_pic_set_size: specifies the size of short-term reference
++ *				 pictures set included in the SPS
++ * @long_term_ref_pic_set_size: specifies the size of long-term reference
++ *				pictures set include in the SPS
++ * @pred_weight_table: the prediction weight coefficients for inter-picture
++ *		       prediction
++ * @reserved1: padding field. Should be zeroed by applications.
++ * @flags: see V4L2_HEVC_SLICE_PARAMS_FLAG_{}
++ */
++struct v4l2_ctrl_hevc_slice_params {
++	__u32	bit_size;
++	__u32	data_byte_offset;
++	__u32	num_entry_point_offsets;
++
++	/* ISO/IEC 23008-2, ITU-T Rec. H.265: NAL unit header */
++	__u8	nal_unit_type;
++	__u8	nuh_temporal_id_plus1;
++
++	/* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header */
++	__u8	slice_type;
++	__u8	colour_plane_id;
++	__s32	slice_pic_order_cnt;
++	__u8	num_ref_idx_l0_active_minus1;
++	__u8	num_ref_idx_l1_active_minus1;
++	__u8	collocated_ref_idx;
++	__u8	five_minus_max_num_merge_cand;
++	__s8	slice_qp_delta;
++	__s8	slice_cb_qp_offset;
++	__s8	slice_cr_qp_offset;
++	__s8	slice_act_y_qp_offset;
++	__s8	slice_act_cb_qp_offset;
++	__s8	slice_act_cr_qp_offset;
++	__s8	slice_beta_offset_div2;
++	__s8	slice_tc_offset_div2;
++
++	/* ISO/IEC 23008-2, ITU-T Rec. H.265: Picture timing SEI message */
++	__u8	pic_struct;
++
++	__u8	reserved0[3];
++	/* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header */
++	__u32	slice_segment_addr;
++	__u8	ref_idx_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
++	__u8	ref_idx_l1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
++	__u16	short_term_ref_pic_set_size;
++	__u16	long_term_ref_pic_set_size;
++
++	/* ISO/IEC 23008-2, ITU-T Rec. H.265: Weighted prediction parameter */
++	struct v4l2_hevc_pred_weight_table pred_weight_table;
++
++	__u8	reserved1[2];
++	__u64	flags;
++};
++
++#define V4L2_HEVC_DECODE_PARAM_FLAG_IRAP_PIC		0x1
++#define V4L2_HEVC_DECODE_PARAM_FLAG_IDR_PIC		0x2
++#define V4L2_HEVC_DECODE_PARAM_FLAG_NO_OUTPUT_OF_PRIOR  0x4
++
++/**
++ * struct v4l2_ctrl_hevc_decode_params - HEVC decode parameters
++ *
++ * @pic_order_cnt_val: picture order count
++ * @short_term_ref_pic_set_size: specifies the size of short-term reference
++ *				 pictures set included in the SPS of the first slice
++ * @long_term_ref_pic_set_size: specifies the size of long-term reference
++ *				pictures set include in the SPS of the first slice
++ * @num_active_dpb_entries: the number of entries in dpb
++ * @num_poc_st_curr_before: the number of reference pictures in the short-term
++ *			    set that come before the current frame
++ * @num_poc_st_curr_after: the number of reference pictures in the short-term
++ *			   set that come after the current frame
++ * @num_poc_lt_curr: the number of reference pictures in the long-term set
++ * @poc_st_curr_before: provides the index of the short term before references
++ *			in DPB array
++ * @poc_st_curr_after: provides the index of the short term after references
++ *		       in DPB array
++ * @poc_lt_curr: provides the index of the long term references in DPB array
++ * @reserved: padding field. Should be zeroed by applications.
++ * @dpb: the decoded picture buffer, for meta-data about reference frames
++ * @flags: see V4L2_HEVC_DECODE_PARAM_FLAG_{}
++ */
++struct v4l2_ctrl_hevc_decode_params {
++	__s32	pic_order_cnt_val;
++	__u16	short_term_ref_pic_set_size;
++	__u16	long_term_ref_pic_set_size;
++	__u8	num_active_dpb_entries;
++	__u8	num_poc_st_curr_before;
++	__u8	num_poc_st_curr_after;
++	__u8	num_poc_lt_curr;
++	__u8	poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
++	__u8	poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
++	__u8	poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
++	__u8	reserved[4];
++	struct	v4l2_hevc_dpb_entry dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
++	__u64	flags;
++};
++
++/**
++ * struct v4l2_ctrl_hevc_scaling_matrix - HEVC scaling lists parameters
++ *
++ * @scaling_list_4x4: scaling list is used for the scaling process for
++ *		      transform coefficients. The values on each scaling
++ *		      list are expected in raster scan order
++ * @scaling_list_8x8: scaling list is used for the scaling process for
++ *		      transform coefficients. The values on each scaling
++ *		      list are expected in raster scan order
++ * @scaling_list_16x16:	scaling list is used for the scaling process for
++ *			transform coefficients. The values on each scaling
++ *			list are expected in raster scan order
++ * @scaling_list_32x32:	scaling list is used for the scaling process for
++ *			transform coefficients. The values on each scaling
++ *			list are expected in raster scan order
++ * @scaling_list_dc_coef_16x16:	scaling list is used for the scaling process
++ *				for transform coefficients. The values on each
++ *				scaling list are expected in raster scan order.
++ * @scaling_list_dc_coef_32x32:	scaling list is used for the scaling process
++ *				for transform coefficients. The values on each
++ *				scaling list are expected in raster scan order.
++ */
++struct v4l2_ctrl_hevc_scaling_matrix {
++	__u8	scaling_list_4x4[6][16];
++	__u8	scaling_list_8x8[6][64];
++	__u8	scaling_list_16x16[6][64];
++	__u8	scaling_list_32x32[2][64];
++	__u8	scaling_list_dc_coef_16x16[6];
++	__u8	scaling_list_dc_coef_32x32[2];
++};
 +
 +#endif
 --- a/libavcodec/hevc_parser.c
@@ -49346,10 +49864,13 @@
  }
  
  static enum AVColorPrimaries v4l2_get_color_primaries(V4L2Buffer *buf)
-@@ -116,6 +142,105 @@ static enum AVColorPrimaries v4l2_get_co
+@@ -116,49 +142,176 @@ static enum AVColorPrimaries v4l2_get_co
      return AVCOL_PRI_UNSPECIFIED;
  }
  
+-static enum AVColorRange v4l2_get_color_range(V4L2Buffer *buf)
+-{
+-    enum v4l2_quantization qt;
 +static void v4l2_set_color(V4L2Buffer *buf,
 +                           const enum AVColorPrimaries avcp,
 +                           const enum AVColorSpace avcs,
@@ -49390,7 +49911,10 @@
 +    default:
 +        break;
 +    }
-+
+ 
+-    qt = V4L2_TYPE_IS_MULTIPLANAR(buf->buf.type) ?
+-        buf->context->format.fmt.pix_mp.quantization :
+-        buf->context->format.fmt.pix.quantization;
 +    switch (avcs) {
 +    case AVCOL_SPC_RGB:
 +        cs = V4L2_COLORSPACE_SRGB;
@@ -49420,7 +49944,10 @@
 +    default:
 +        break;
 +    }
-+
+ 
+-    switch (qt) {
+-    case V4L2_QUANTIZATION_LIM_RANGE: return AVCOL_RANGE_MPEG;
+-    case V4L2_QUANTIZATION_FULL_RANGE: return AVCOL_RANGE_JPEG;
 +    switch (xfer) {
 +    case AVCOL_TRC_BT709:
 +        xfer = V4L2_XFER_FUNC_709;
@@ -49434,10 +49961,11 @@
 +    case AVCOL_TRC_SMPTE2084:
 +        xfer = V4L2_XFER_FUNC_SMPTE2084;
 +        break;
-+    default:
-+        break;
-+    }
-+
+     default:
+         break;
+     }
+ 
+-     return AVCOL_RANGE_UNSPECIFIED;
 +    if (V4L2_TYPE_IS_MULTIPLANAR(buf->buf.type)) {
 +        buf->context->format.fmt.pix_mp.colorspace = cs;
 +        buf->context->format.fmt.pix_mp.ycbcr_enc = ycbcr;
@@ -49447,15 +49975,58 @@
 +        buf->context->format.fmt.pix.ycbcr_enc = ycbcr;
 +        buf->context->format.fmt.pix.xfer_func = xfer;
 +    }
-+}
-+
- static enum AVColorRange v4l2_get_color_range(V4L2Buffer *buf)
- {
-     enum v4l2_quantization qt;
-@@ -134,6 +259,20 @@ static enum AVColorRange v4l2_get_color_
-      return AVCOL_RANGE_UNSPECIFIED;
  }
  
+-static enum AVColorSpace v4l2_get_color_space(V4L2Buffer *buf)
++static inline enum v4l2_quantization
++buf_quantization(const V4L2Buffer * const buf)
+ {
+-    enum v4l2_ycbcr_encoding ycbcr;
+-    enum v4l2_colorspace cs;
++    return V4L2_TYPE_IS_MULTIPLANAR(buf->buf.type) ?
++        buf->context->format.fmt.pix_mp.quantization :
++        buf->context->format.fmt.pix.quantization;
++}
+ 
+-    cs = V4L2_TYPE_IS_MULTIPLANAR(buf->buf.type) ?
++static inline enum v4l2_colorspace
++buf_colorspace(const V4L2Buffer * const buf)
++{
++    return V4L2_TYPE_IS_MULTIPLANAR(buf->buf.type) ?
+         buf->context->format.fmt.pix_mp.colorspace :
+         buf->context->format.fmt.pix.colorspace;
++}
+ 
+-    ycbcr = V4L2_TYPE_IS_MULTIPLANAR(buf->buf.type) ?
++static inline enum v4l2_ycbcr_encoding
++buf_ycbcr_enc(const V4L2Buffer * const buf)
++{
++    return V4L2_TYPE_IS_MULTIPLANAR(buf->buf.type) ?
+         buf->context->format.fmt.pix_mp.ycbcr_enc:
+         buf->context->format.fmt.pix.ycbcr_enc;
++}
+ 
+-    switch(cs) {
+-    case V4L2_COLORSPACE_SRGB: return AVCOL_SPC_RGB;
++static enum AVColorRange v4l2_get_color_range(V4L2Buffer *buf)
++{
++    switch (buf_quantization(buf)) {
++    case V4L2_QUANTIZATION_LIM_RANGE:
++        return AVCOL_RANGE_MPEG;
++    case V4L2_QUANTIZATION_FULL_RANGE:
++        return AVCOL_RANGE_JPEG;
++    case V4L2_QUANTIZATION_DEFAULT:
++        // If YUV (which we assume for all video decode) then, from the header
++        // comments, range is limited unless CS is JPEG
++        return buf_colorspace(buf) == V4L2_COLORSPACE_JPEG ?
++            AVCOL_RANGE_JPEG : AVCOL_RANGE_MPEG;
++    default:
++        break;
++    }
++
++     return AVCOL_RANGE_UNSPECIFIED;
++}
++
 +static void v4l2_set_color_range(V4L2Buffer *buf, const enum AVColorRange avcr)
 +{
 +    const enum v4l2_quantization q =
@@ -49470,10 +50041,48 @@
 +    }
 +}
 +
- static enum AVColorSpace v4l2_get_color_space(V4L2Buffer *buf)
++static enum AVColorSpace v4l2_get_color_space(V4L2Buffer *buf)
++{
++    switch (buf_colorspace(buf)) {
++    case V4L2_COLORSPACE_JPEG:  // JPEG -> SRGB
++    case V4L2_COLORSPACE_SRGB:
++        return AVCOL_SPC_RGB;
+     case V4L2_COLORSPACE_REC709: return AVCOL_SPC_BT709;
+     case V4L2_COLORSPACE_470_SYSTEM_M: return AVCOL_SPC_FCC;
+     case V4L2_COLORSPACE_470_SYSTEM_BG: return AVCOL_SPC_BT470BG;
+     case V4L2_COLORSPACE_SMPTE170M: return AVCOL_SPC_SMPTE170M;
+     case V4L2_COLORSPACE_SMPTE240M: return AVCOL_SPC_SMPTE240M;
+     case V4L2_COLORSPACE_BT2020:
+-        if (ycbcr == V4L2_YCBCR_ENC_BT2020_CONST_LUM)
+-            return AVCOL_SPC_BT2020_CL;
+-        else
+-             return AVCOL_SPC_BT2020_NCL;
++        return buf_ycbcr_enc(buf) == V4L2_YCBCR_ENC_BT2020_CONST_LUM ?
++            AVCOL_SPC_BT2020_CL : AVCOL_SPC_BT2020_NCL;
+     default:
+         break;
+     }
+@@ -168,17 +321,9 @@ static enum AVColorSpace v4l2_get_color_
+ 
+ static enum AVColorTransferCharacteristic v4l2_get_color_trc(V4L2Buffer *buf)
  {
-     enum v4l2_ycbcr_encoding ycbcr;
-@@ -210,73 +349,165 @@ static enum AVColorTransferCharacteristi
+-    enum v4l2_ycbcr_encoding ycbcr;
++    const enum v4l2_ycbcr_encoding ycbcr = buf_ycbcr_enc(buf);
+     enum v4l2_xfer_func xfer;
+-    enum v4l2_colorspace cs;
+-
+-    cs = V4L2_TYPE_IS_MULTIPLANAR(buf->buf.type) ?
+-        buf->context->format.fmt.pix_mp.colorspace :
+-        buf->context->format.fmt.pix.colorspace;
+-
+-    ycbcr = V4L2_TYPE_IS_MULTIPLANAR(buf->buf.type) ?
+-        buf->context->format.fmt.pix_mp.ycbcr_enc:
+-        buf->context->format.fmt.pix.ycbcr_enc;
++    const enum v4l2_colorspace cs = buf_colorspace(buf);
+ 
+     xfer = V4L2_TYPE_IS_MULTIPLANAR(buf->buf.type) ?
+         buf->context->format.fmt.pix_mp.xfer_func:
+@@ -210,73 +355,165 @@ static enum AVColorTransferCharacteristi
      return AVCOL_TRC_UNSPECIFIED;
  }
  
@@ -49684,7 +50293,7 @@
  
      if (plane >= out->num_planes)
          return AVERROR(EINVAL);
-@@ -284,32 +515,57 @@ static int v4l2_bufref_to_buf(V4L2Buffer
+@@ -284,32 +521,57 @@ static int v4l2_bufref_to_buf(V4L2Buffer
      length = out->plane_info[plane].length;
      bytesused = FFMIN(size+offset, length);
  
@@ -49757,7 +50366,7 @@
      }
  
      /* fixup special cases */
-@@ -318,17 +574,17 @@ static int v4l2_buffer_buf_to_swframe(AV
+@@ -318,17 +580,17 @@ static int v4l2_buffer_buf_to_swframe(AV
      case AV_PIX_FMT_NV21:
          if (avbuf->num_planes > 1)
              break;
@@ -49781,7 +50390,7 @@
          break;
  
      default:
-@@ -338,68 +594,127 @@ static int v4l2_buffer_buf_to_swframe(AV
+@@ -338,68 +600,127 @@ static int v4l2_buffer_buf_to_swframe(AV
      return 0;
  }
  
@@ -49963,7 +50572,7 @@
      return 0;
  }
  
-@@ -409,16 +724,31 @@ static int v4l2_buffer_swframe_to_buf(co
+@@ -409,16 +730,31 @@ static int v4l2_buffer_swframe_to_buf(co
   *
   ******************************************************************************/
  
@@ -49999,7 +50608,7 @@
  
      av_frame_unref(frame);
  
-@@ -429,17 +759,32 @@ int ff_v4l2_buffer_buf_to_avframe(AVFram
+@@ -429,17 +765,32 @@ int ff_v4l2_buffer_buf_to_avframe(AVFram
  
      /* 2. get frame information */
      frame->key_frame = !!(avbuf->buf.flags & V4L2_BUF_FLAG_KEYFRAME);
@@ -50035,7 +50644,7 @@
  
      /* 3. report errors upstream */
      if (avbuf->buf.flags & V4L2_BUF_FLAG_ERROR) {
-@@ -452,15 +797,15 @@ int ff_v4l2_buffer_buf_to_avframe(AVFram
+@@ -452,15 +803,15 @@ int ff_v4l2_buffer_buf_to_avframe(AVFram
  
  int ff_v4l2_buffer_buf_to_avpkt(AVPacket *pkt, V4L2Buffer *avbuf)
  {
@@ -50057,7 +50666,7 @@
  
      if (avbuf->buf.flags & V4L2_BUF_FLAG_KEYFRAME)
          pkt->flags |= AV_PKT_FLAG_KEY;
-@@ -475,31 +820,91 @@ int ff_v4l2_buffer_buf_to_avpkt(AVPacket
+@@ -475,31 +826,91 @@ int ff_v4l2_buffer_buf_to_avpkt(AVPacket
      return 0;
  }
  
@@ -50133,7 +50742,8 @@
      int ret, i;
 +    V4L2Buffer * const avbuf = av_mallocz(sizeof(*avbuf));
 +    AVBufferRef * bufref;
-+
+ 
+-    avbuf->buf.memory = V4L2_MEMORY_MMAP;
 +    *pbufref = NULL;
 +    if (avbuf == NULL)
 +        return AVERROR(ENOMEM);
@@ -50143,8 +50753,7 @@
 +        av_free(avbuf);
 +        return AVERROR(ENOMEM);
 +    }
- 
--    avbuf->buf.memory = V4L2_MEMORY_MMAP;
++
 +    avbuf->context = ctx;
 +    avbuf->buf.memory = mem;
      avbuf->buf.type = ctx->type;
@@ -50159,7 +50768,7 @@
      if (V4L2_TYPE_IS_MULTIPLANAR(ctx->type)) {
          avbuf->buf.length = VIDEO_MAX_PLANES;
          avbuf->buf.m.planes = avbuf->planes;
-@@ -507,7 +912,7 @@ int ff_v4l2_buffer_initialize(V4L2Buffer
+@@ -507,7 +918,7 @@ int ff_v4l2_buffer_initialize(V4L2Buffer
  
      ret = ioctl(buf_to_m2mctx(avbuf)->fd, VIDIOC_QUERYBUF, &avbuf->buf);
      if (ret < 0)
@@ -50168,7 +50777,7 @@
  
      if (V4L2_TYPE_IS_MULTIPLANAR(ctx->type)) {
          avbuf->num_planes = 0;
-@@ -520,6 +925,8 @@ int ff_v4l2_buffer_initialize(V4L2Buffer
+@@ -520,6 +931,8 @@ int ff_v4l2_buffer_initialize(V4L2Buffer
          avbuf->num_planes = 1;
  
      for (i = 0; i < avbuf->num_planes; i++) {
@@ -50177,7 +50786,7 @@
  
          avbuf->plane_info[i].bytesperline = V4L2_TYPE_IS_MULTIPLANAR(ctx->type) ?
              ctx->format.fmt.pix_mp.plane_fmt[i].bytesperline :
-@@ -527,25 +934,29 @@ int ff_v4l2_buffer_initialize(V4L2Buffer
+@@ -527,25 +940,29 @@ int ff_v4l2_buffer_initialize(V4L2Buffer
  
          if (V4L2_TYPE_IS_MULTIPLANAR(ctx->type)) {
              avbuf->plane_info[i].length = avbuf->buf.m.planes[i].length;
@@ -50218,7 +50827,7 @@
      if (V4L2_TYPE_IS_MULTIPLANAR(ctx->type)) {
          avbuf->buf.m.planes = avbuf->planes;
          avbuf->buf.length   = avbuf->num_planes;
-@@ -555,20 +966,51 @@ int ff_v4l2_buffer_initialize(V4L2Buffer
+@@ -555,20 +972,51 @@ int ff_v4l2_buffer_initialize(V4L2Buffer
          avbuf->buf.length    = avbuf->planes[0].length;
      }
  
@@ -52060,7 +52669,7 @@
  #include "libavutil/pixfmt.h"
  #include "libavutil/pixdesc.h"
  #include "libavutil/opt.h"
-@@ -30,75 +34,107 @@
+@@ -30,75 +34,111 @@
  #include "libavcodec/decode.h"
  #include "libavcodec/internal.h"
  
@@ -52076,6 +52685,10 @@
 +// Pick 64 for max last count - that is >1sec at 60fps
 +#define STATS_LAST_COUNT_MAX 64
 +#define STATS_INTERVAL_MAX (1 << 30)
++
++#ifndef FF_API_BUFFER_SIZE_T
++#define FF_API_BUFFER_SIZE_T 1
++#endif
 +
 +static int64_t pts_stats_guess(const pts_stats_t * const stats)
  {
@@ -52219,7 +52832,7 @@
      return 0;
  }
  
-@@ -133,52 +169,522 @@ static int v4l2_prepare_decoder(V4L2m2mC
+@@ -133,52 +173,525 @@ static int v4l2_prepare_decoder(V4L2m2mC
      return 0;
  }
  
@@ -52337,8 +52950,11 @@
 +
 +        for (i = 0; i < 256; ++i) {
 +            uint8_t * side_data;
++#if FF_API_BUFFER_SIZE_T
++            int side_size;
++#else
 +            size_t side_size;
-+
++#endif
 +            ret = ff_decode_get_packet(avctx, &s->buf_pkt);
 +            if (ret != 0)
 +                break;
@@ -52349,7 +52965,7 @@
 +                av_log(avctx, AV_LOG_DEBUG, "New extradata\n");
 +                av_freep(&s->extdata_data);
 +                if ((s->extdata_data = av_malloc(side_size ? side_size : 1)) == NULL) {
-+                    av_log(avctx, AV_LOG_ERROR, "Failed to alloc %zd bytes of extra data\n", side_size);
++                    av_log(avctx, AV_LOG_ERROR, "Failed to alloc %d bytes of extra data\n", (int)side_size);
 +                    return AVERROR(ENOMEM);
 +                }
 +                memcpy(s->extdata_data, side_data, side_size);
@@ -52773,7 +53389,7 @@
  }
  
  static av_cold int v4l2_decode_init(AVCodecContext *avctx)
-@@ -186,12 +692,29 @@ static av_cold int v4l2_decode_init(AVCo
+@@ -186,12 +699,29 @@ static av_cold int v4l2_decode_init(AVCo
      V4L2Context *capture, *output;
      V4L2m2mContext *s;
      V4L2m2mPriv *priv = avctx->priv_data;
@@ -52803,7 +53419,7 @@
      capture = &s->capture;
      output = &s->output;
  
-@@ -199,34 +722,127 @@ static av_cold int v4l2_decode_init(AVCo
+@@ -199,34 +729,127 @@ static av_cold int v4l2_decode_init(AVCo
       * by the v4l2 driver; this event will trigger a full pipeline reconfig and
       * the proper values will be retrieved from the kernel driver.
       */
@@ -52940,7 +53556,7 @@
  }
  
  #define OFFSET(x) offsetof(V4L2m2mPriv, x)
-@@ -235,10 +851,16 @@ static av_cold int v4l2_decode_close(AVC
+@@ -235,10 +858,16 @@ static av_cold int v4l2_decode_close(AVC
  static const AVOption options[] = {
      V4L_M2M_DEFAULT_OPTS,
      { "num_capture_buffers", "Number of buffers in the capture context",
@@ -52958,7 +53574,7 @@
  #define M2MDEC_CLASS(NAME) \
      static const AVClass v4l2_m2m_ ## NAME ## _dec_class = { \
          .class_name = #NAME "_v4l2m2m_decoder", \
-@@ -259,9 +881,15 @@ static const AVOption options[] = {
+@@ -259,9 +888,15 @@ static const AVOption options[] = {
          .init           = v4l2_decode_init, \
          .receive_frame  = v4l2_receive_frame, \
          .close          = v4l2_decode_close, \
@@ -54254,15 +54870,19 @@
 +#include "v4l2_req_hevc_vx.c"
 +
 --- /dev/null
++++ b/libavcodec/v4l2_req_hevc_v4.c
+@@ -0,0 +1,3 @@
++#define HEVC_CTRLS_VERSION 4
++#include "v4l2_req_hevc_vx.c"
++
+--- /dev/null
 +++ b/libavcodec/v4l2_req_hevc_vx.c
-@@ -0,0 +1,1228 @@
+@@ -0,0 +1,1365 @@
 +// File included by v4l2_req_hevc_v* - not compiled on its own
 +
 +#include "decode.h"
 +#include "hevcdec.h"
 +#include "hwconfig.h"
-+
-+#include "v4l2_request_hevc.h"
 +
 +#if HEVC_CTRLS_VERSION == 1
 +#include "hevc-ctrls-v1.h"
@@ -54274,9 +54894,36 @@
 +#include "hevc-ctrls-v2.h"
 +#elif HEVC_CTRLS_VERSION == 3
 +#include "hevc-ctrls-v3.h"
++#elif HEVC_CTRLS_VERSION == 4
++#include <linux/v4l2-controls.h>
++#if !defined(V4L2_CID_STATELESS_HEVC_SPS)
++#include "hevc-ctrls-v4.h"
++#endif
 +#else
 +#error Unknown HEVC_CTRLS_VERSION
 +#endif
++
++#ifndef V4L2_CID_STATELESS_HEVC_SPS
++#define V4L2_CID_STATELESS_HEVC_SPS                     V4L2_CID_MPEG_VIDEO_HEVC_SPS
++#define V4L2_CID_STATELESS_HEVC_PPS                     V4L2_CID_MPEG_VIDEO_HEVC_PPS
++#define V4L2_CID_STATELESS_HEVC_SLICE_PARAMS            V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS
++#define V4L2_CID_STATELESS_HEVC_SCALING_MATRIX          V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX
++#define V4L2_CID_STATELESS_HEVC_DECODE_PARAMS           V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS
++#define V4L2_CID_STATELESS_HEVC_DECODE_MODE             V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE
++#define V4L2_CID_STATELESS_HEVC_START_CODE              V4L2_CID_MPEG_VIDEO_HEVC_START_CODE
++
++#define V4L2_STATELESS_HEVC_DECODE_MODE_SLICE_BASED     V4L2_MPEG_VIDEO_HEVC_DECODE_MODE_SLICE_BASED
++#define V4L2_STATELESS_HEVC_DECODE_MODE_FRAME_BASED     V4L2_MPEG_VIDEO_HEVC_DECODE_MODE_FRAME_BASED
++#define V4L2_STATELESS_HEVC_START_CODE_NONE             V4L2_MPEG_VIDEO_HEVC_START_CODE_NONE
++#define V4L2_STATELESS_HEVC_START_CODE_ANNEX_B          V4L2_MPEG_VIDEO_HEVC_START_CODE_ANNEX_B
++#endif
++
++// Should be in videodev2 but we might not have a good enough one
++#ifndef V4L2_PIX_FMT_HEVC_SLICE
++#define V4L2_PIX_FMT_HEVC_SLICE v4l2_fourcc('S', '2', '6', '5') /* HEVC parsed slices */
++#endif
++
++#include "v4l2_request_hevc.h"
 +
 +#include "libavutil/hwcontext_drm.h"
 +
@@ -54313,11 +54960,16 @@
 +    struct v4l2_ctrl_hevc_slice_params * slice_params;
 +    struct slice_info * slices;
 +
++    size_t num_offsets;
++    size_t alloced_offsets;
++    uint32_t *offsets;
++
 +} V4L2MediaReqDescriptor;
 +
 +struct slice_info {
 +    const uint8_t * ptr;
 +    size_t len; // bytes
++    size_t n_offsets;
 +};
 +
 +// Handy container for accumulating controls before setting
@@ -54476,7 +55128,7 @@
 +    if (rd->num_slices >= rd->alloced_slices) {
 +        struct v4l2_ctrl_hevc_slice_params * p2;
 +        struct slice_info * s2;
-+        size_t n2 = rd->num_slices == 0 ? 8 : rd->num_slices * 2;
++        size_t n2 = rd->alloced_slices == 0 ? 8 : rd->alloced_slices * 2;
 +
 +        p2 = av_realloc_array(rd->slice_params, n2, sizeof(*p2));
 +        if (p2 == NULL)
@@ -54491,6 +55143,23 @@
 +        rd->alloced_slices = n2;
 +    }
 +    ++rd->num_slices;
++    return 0;
++}
++
++static int offsets_add(V4L2MediaReqDescriptor *const rd, const size_t n, const unsigned * const offsets)
++{
++    if (rd->num_offsets + n > rd->alloced_offsets) {
++        size_t n2 = rd->alloced_slices == 0 ? 128 : rd->alloced_slices * 2;
++        void * p2;
++        while (rd->num_offsets + n > n2)
++            n2 *= 2;
++        if ((p2 = av_realloc_array(rd->offsets, n2, sizeof(*rd->offsets))) == NULL)
++            return AVERROR(ENOMEM);
++        rd->offsets = p2;
++        rd->alloced_offsets = n2;
++    }
++    for (size_t i = 0; i != n; ++i)
++        rd->offsets[rd->num_offsets++] = offsets[i] - 1;
 +    return 0;
 +}
 +
@@ -54515,9 +55184,13 @@
 +#endif
 +            entry->field_pic = frame->frame->interlaced_frame;
 +
++#if HEVC_CTRLS_VERSION <= 3
 +            /* TODO: Interleaved: Get the POC for each field. */
 +            entry->pic_order_cnt[0] = frame->poc;
 +            entry->pic_order_cnt[1] = frame->poc;
++#else
++            entry->pic_order_cnt_val = frame->poc;
++#endif
 +        }
 +    }
 +    return n;
@@ -54543,8 +55216,11 @@
 +
 +    *slice_params = (struct v4l2_ctrl_hevc_slice_params) {
 +        .bit_size = bit_size,
++#if HEVC_CTRLS_VERSION <= 3
 +        .data_bit_offset = bit_offset,
-+
++#else
++        .data_byte_offset = bit_offset / 8 + 1,
++#endif
 +        /* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header */
 +        .slice_segment_addr = sh->slice_segment_addr,
 +
@@ -54627,6 +55303,7 @@
 +    fill_pred_table(h, &slice_params->pred_weight_table);
 +
 +    slice_params->num_entry_point_offsets = sh->num_entry_point_offsets;
++#if HEVC_CTRLS_VERSION <= 3
 +    if (slice_params->num_entry_point_offsets > 256) {
 +        slice_params->num_entry_point_offsets = 256;
 +        av_log(NULL, AV_LOG_ERROR, "%s: Currently only 256 entry points are supported, but slice has %d entry points.\n", __func__, sh->num_entry_point_offsets);
@@ -54634,6 +55311,7 @@
 +
 +    for (i = 0; i < slice_params->num_entry_point_offsets; i++)
 +        slice_params->entry_point_offset_minus1[i] = sh->entry_point_offset[i] - 1;
++#endif
 +}
 +
 +#if HEVC_CTRLS_VERSION >= 2
@@ -55009,51 +55687,66 @@
 +#if HEVC_CTRLS_VERSION >= 2
 +    struct v4l2_ctrl_hevc_decode_params * const dec,
 +#endif
-+    struct v4l2_ctrl_hevc_slice_params * const slices,
-+    const unsigned int slice_no,
-+    const unsigned int slice_count)
++    struct v4l2_ctrl_hevc_slice_params * const slices, const unsigned int slice_count,
++    void * const offsets, const size_t offset_count)
 +{
 +    int rv;
++#if HEVC_CTRLS_VERSION >= 2
++    unsigned int n = 3;
++#else
++    unsigned int n = 2;
++#endif
 +
-+    struct v4l2_ext_control control[] = {
++    struct v4l2_ext_control control[6] = {
 +        {
-+            .id = V4L2_CID_MPEG_VIDEO_HEVC_SPS,
++            .id = V4L2_CID_STATELESS_HEVC_SPS,
 +            .ptr = &controls->sps,
 +            .size = sizeof(controls->sps),
 +        },
 +        {
-+            .id = V4L2_CID_MPEG_VIDEO_HEVC_PPS,
++            .id = V4L2_CID_STATELESS_HEVC_PPS,
 +            .ptr = &controls->pps,
 +            .size = sizeof(controls->pps),
 +        },
 +#if HEVC_CTRLS_VERSION >= 2
 +        {
-+            .id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS,
++            .id = V4L2_CID_STATELESS_HEVC_DECODE_PARAMS,
 +            .ptr = dec,
 +            .size = sizeof(*dec),
 +        },
 +#endif
-+        {
-+            .id = V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS,
-+            .ptr = slices + slice_no,
-+            .size = sizeof(*slices) * slice_count,
-+        },
-+        // Optional
-+        {
-+            .id = V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX,
-+            .ptr = &controls->scaling_matrix,
-+            .size = sizeof(controls->scaling_matrix),
-+        },
 +    };
 +
-+    rv = mediabufs_ctl_set_ext_ctrls(ctx->mbufs, mreq, control,
-+            controls->has_scaling ?
-+                FF_ARRAY_ELEMS(control) :
-+                FF_ARRAY_ELEMS(control) - 1);
++    if (slices)
++        control[n++] = (struct v4l2_ext_control) {
++            .id = V4L2_CID_STATELESS_HEVC_SLICE_PARAMS,
++            .ptr = slices,
++            .size = sizeof(*slices) * slice_count,
++        };
++
++    if (controls->has_scaling)
++        control[n++] = (struct v4l2_ext_control) {
++            .id = V4L2_CID_STATELESS_HEVC_SCALING_MATRIX,
++            .ptr = &controls->scaling_matrix,
++            .size = sizeof(controls->scaling_matrix),
++        };
++
++#if HEVC_CTRLS_VERSION >= 4
++    if (offsets)
++        control[n++] = (struct v4l2_ext_control) {
++            .id = V4L2_CID_STATELESS_HEVC_ENTRY_POINT_OFFSETS,
++            .ptr = offsets,
++            .size = sizeof(((struct V4L2MediaReqDescriptor *)0)->offsets[0]) * offset_count,
++        };
++#endif
++
++    rv = mediabufs_ctl_set_ext_ctrls(ctx->mbufs, mreq, control, n);
 +
 +    return rv;
 +}
 +
++// This only works because we started out from a single coded frame buffer
++// that will remain intact until after end_frame
 +static int v4l2_request_hevc_decode_slice(AVCodecContext *avctx, const uint8_t *buffer, uint32_t size)
 +{
 +    const HEVCContext * const h = avctx->priv_data;
@@ -55062,18 +55755,45 @@
 +    int bcount = get_bits_count(&h->HEVClc->gb);
 +    uint32_t boff = (ptr_from_index(buffer, bcount/8 + 1) - (buffer + bcount/8 + 1)) * 8 + bcount;
 +
++    const unsigned int n = rd->num_slices;
++    const unsigned int block_start = (n / ctx->max_slices) * ctx->max_slices;
++
 +    int rv;
 +    struct slice_info * si;
++
++    // This looks dodgy but we know that FFmpeg has parsed this from a buffer
++    // that contains the entire frame including the start code
++    if (ctx->start_code == V4L2_STATELESS_HEVC_START_CODE_ANNEX_B) {
++        buffer -= 3;
++        size += 3;
++        boff += 24;
++        if (buffer[0] != 0 || buffer[1] != 0 || buffer[2] != 1) {
++            av_log(avctx, AV_LOG_ERROR, "Start code requested but missing %02x:%02x:%02x\n",
++                   buffer[0], buffer[1], buffer[2]);
++        }
++    }
++
++    if (ctx->decode_mode == V4L2_STATELESS_HEVC_DECODE_MODE_FRAME_BASED) {
++        if (rd->slices == NULL) {
++            if ((rd->slices = av_mallocz(sizeof(*rd->slices))) == NULL)
++                return AVERROR(ENOMEM);
++            rd->slices->ptr = buffer;
++            rd->num_slices = 1;
++        }
++        rd->slices->len = buffer - rd->slices->ptr + size;
++        return 0;
++    }
 +
 +    if ((rv = slice_add(rd)) != 0)
 +        return rv;
 +
-+    si = rd->slices + rd->num_slices - 1;
++    si = rd->slices + n;
 +    si->ptr = buffer;
 +    si->len = size;
++    si->n_offsets = rd->num_offsets;
 +
-+    if (ctx->multi_slice && rd->num_slices > 1) {
-+        struct slice_info *const si0 = rd->slices;
++    if (n != block_start) {
++        struct slice_info *const si0 = rd->slices + block_start;
 +        const size_t offset = (buffer - si0->ptr);
 +        boff += offset * 8;
 +        size += offset;
@@ -55081,12 +55801,15 @@
 +    }
 +
 +#if HEVC_CTRLS_VERSION >= 2
-+    if (rd->num_slices == 1)
++    if (n == 0)
 +        fill_decode_params(h, &rd->dec);
-+    fill_slice_params(h, &rd->dec, rd->slice_params + rd->num_slices - 1, size * 8, boff);
++    fill_slice_params(h, &rd->dec, rd->slice_params + n, size * 8, boff);
 +#else
-+    fill_slice_params(h, rd->slice_params + rd->num_slices - 1, size * 8, boff);
++    fill_slice_params(h, rd->slice_params + n, size * 8, boff);
 +#endif
++    if (ctx->max_offsets != 0 &&
++        (rv = offsets_add(rd, h->sh.num_entry_point_offsets, h->sh.entry_point_offset)) != 0)
++        return rv;
 +
 +    return 0;
 +}
@@ -55112,10 +55835,13 @@
 +{
 +    V4L2RequestContextHEVC * const ctx = avctx->internal->hwaccel_priv_data;
 +
++    const int is_last = (j == rd->num_slices);
 +    struct slice_info *const si = rd->slices + i;
 +    struct media_request * req = NULL;
 +    struct qent_src * src = NULL;
 +    MediaBufsStatus stat;
++    void * offsets = rd->offsets + rd->slices[i].n_offsets;
++    size_t n_offsets = (is_last ? rd->num_offsets : rd->slices[j].n_offsets) - rd->slices[i].n_offsets;
 +
 +    if ((req = media_request_get(ctx->mpool)) == NULL) {
 +        av_log(avctx, AV_LOG_ERROR, "%s: Failed to alloc media request\n", __func__);
@@ -55127,8 +55853,8 @@
 +#if HEVC_CTRLS_VERSION >= 2
 +                     &rd->dec,
 +#endif
-+                     rd->slice_params,
-+                     i, j - i)) {
++                     rd->slice_params + i, j - i,
++                     offsets, n_offsets)) {
 +        av_log(avctx, AV_LOG_ERROR, "%s: Failed to set req ctls\n", __func__);
 +        goto fail1;
 +    }
@@ -55148,13 +55874,9 @@
 +        goto fail2;
 +    }
 +
-+#warning ANNEX_B start code
-+//        if (ctx->start_code == V4L2_MPEG_VIDEO_HEVC_START_CODE_ANNEX_B) {
-+//        }
-+
 +    stat = mediabufs_start_request(ctx->mbufs, &req, &src,
 +                                   i == 0 ? rd->qe_dst : NULL,
-+                                   j == rd->num_slices);
++                                   is_last);
 +
 +    if (stat != MEDIABUFS_STATUS_SUCCESS) {
 +        av_log(avctx, AV_LOG_ERROR, "%s: Failed to start request\n", __func__);
@@ -55219,17 +55941,10 @@
 +    }
 +
 +    // Send as slices
-+    if (ctx->multi_slice)
-+    {
-+        if ((rv = send_slice(avctx, rd, &rc, 0, rd->num_slices)) != 0)
++    for (i = 0; i < rd->num_slices; i += ctx->max_slices) {
++        const unsigned int e = FFMIN(rd->num_slices, i + ctx->max_slices);
++        if ((rv = send_slice(avctx, rd, &rc, i, e)) != 0)
 +            goto fail;
-+    }
-+    else
-+    {
-+        for (i = 0; i != rd->num_slices; ++i) {
-+            if ((rv = send_slice(avctx, rd, &rc, i, i + 1)) != 0)
-+                goto fail;
-+        }
 +    }
 +
 +    // Set the drm_prime desriptor
@@ -55245,6 +55960,12 @@
 +    return rv;
 +}
 +
++static inline int
++ctrl_valid(const struct v4l2_query_ext_ctrl * const c, const int64_t v)
++{
++    return v >= c->minimum && v <= c->maximum;
++}
++
 +// Initial check & init
 +static int
 +probe(AVCodecContext * const avctx, V4L2RequestContextHEVC * const ctx)
@@ -55256,17 +55977,19 @@
 +
 +    // Check for var slice array
 +    struct v4l2_query_ext_ctrl qc[] = {
-+        { .id = V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS },
-+        { .id = V4L2_CID_MPEG_VIDEO_HEVC_SPS },
-+        { .id = V4L2_CID_MPEG_VIDEO_HEVC_PPS },
-+        { .id = V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX },
++        { .id = V4L2_CID_STATELESS_HEVC_SLICE_PARAMS },
++        { .id = V4L2_CID_STATELESS_HEVC_DECODE_MODE, },
++        { .id = V4L2_CID_STATELESS_HEVC_SPS },
++        { .id = V4L2_CID_STATELESS_HEVC_PPS },
++        { .id = V4L2_CID_STATELESS_HEVC_SCALING_MATRIX },
 +#if HEVC_CTRLS_VERSION >= 2
-+        { .id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS },
++        { .id = V4L2_CID_STATELESS_HEVC_DECODE_PARAMS },
 +#endif
 +    };
 +    // Order & size must match!
 +    static const size_t ctrl_sizes[] = {
 +        sizeof(struct v4l2_ctrl_hevc_slice_params),
++        sizeof(int32_t),
 +        sizeof(struct v4l2_ctrl_hevc_sps),
 +        sizeof(struct v4l2_ctrl_hevc_pps),
 +        sizeof(struct v4l2_ctrl_hevc_scaling_matrix),
@@ -55284,11 +56007,22 @@
 +        return AVERROR(EINVAL);
 +#endif
 +
-+    if (mediabufs_ctl_query_ext_ctrls(ctx->mbufs, qc, noof_ctrls)) {
-+        av_log(avctx, AV_LOG_DEBUG, "Probed V%d control missing\n", HEVC_CTRLS_VERSION);
++    mediabufs_ctl_query_ext_ctrls(ctx->mbufs, qc, noof_ctrls);
++    i = 0;
++#if HEVC_CTRLS_VERSION >= 4
++    // Skip slice check if no slice mode
++    if (qc[1].type != 0 && !ctrl_valid(qc + 1, V4L2_STATELESS_HEVC_DECODE_MODE_SLICE_BASED))
++        i = 1;
++#else
++    // Fail frame mode silently for anything prior to V4
++    if (qc[1].type == 0 || !ctrl_valid(qc + 1, V4L2_STATELESS_HEVC_DECODE_MODE_SLICE_BASED))
 +        return AVERROR(EINVAL);
-+    }
-+    for (i = 0; i != noof_ctrls; ++i) {
++#endif
++    for (; i != noof_ctrls; ++i) {
++        if (qc[i].type == 0) {
++            av_log(avctx, AV_LOG_DEBUG, "Probed V%d control %#x missing\n", HEVC_CTRLS_VERSION, qc[i].id);
++            return AVERROR(EINVAL);
++        }
 +        if (ctrl_sizes[i] != (size_t)qc[i].elem_size) {
 +            av_log(avctx, AV_LOG_DEBUG, "Probed V%d control %d size mismatch %zu != %zu\n",
 +                   HEVC_CTRLS_VERSION, i, ctrl_sizes[i], (size_t)qc[i].elem_size);
@@ -55298,12 +56032,11 @@
 +
 +    fill_sps(&ctrl_sps, sps);
 +
-+    if (mediabufs_set_ext_ctrl(ctx->mbufs, NULL, V4L2_CID_MPEG_VIDEO_HEVC_SPS, &ctrl_sps, sizeof(ctrl_sps))) {
++    if (mediabufs_set_ext_ctrl(ctx->mbufs, NULL, V4L2_CID_STATELESS_HEVC_SPS, &ctrl_sps, sizeof(ctrl_sps))) {
 +        av_log(avctx, AV_LOG_ERROR, "Failed to set initial SPS\n");
 +        return AVERROR(EINVAL);
 +    }
 +
-+    ctx->multi_slice = (qc[0].flags & V4L2_CTRL_FLAG_DYNAMIC_ARRAY) != 0;
 +    return 0;
 +}
 +
@@ -55314,38 +56047,63 @@
 +    int ret;
 +
 +    struct v4l2_query_ext_ctrl querys[] = {
-+        { .id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE, },
-+        { .id = V4L2_CID_MPEG_VIDEO_HEVC_START_CODE, },
-+        { .id = V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS, },
++        { .id = V4L2_CID_STATELESS_HEVC_DECODE_MODE, },
++        { .id = V4L2_CID_STATELESS_HEVC_START_CODE, },
++        { .id = V4L2_CID_STATELESS_HEVC_SLICE_PARAMS, },
++#if HEVC_CTRLS_VERSION >= 4
++        { .id = V4L2_CID_STATELESS_HEVC_ENTRY_POINT_OFFSETS, },
++#endif
 +    };
 +
 +    struct v4l2_ext_control ctrls[] = {
-+        { .id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE, },
-+        { .id = V4L2_CID_MPEG_VIDEO_HEVC_START_CODE, },
++        { .id = V4L2_CID_STATELESS_HEVC_DECODE_MODE, },
++        { .id = V4L2_CID_STATELESS_HEVC_START_CODE, },
 +    };
 +
 +    mediabufs_ctl_query_ext_ctrls(ctx->mbufs, querys, FF_ARRAY_ELEMS(querys));
 +
-+    ctx->decode_mode = querys[0].default_value;
++    ctx->max_slices = (!(querys[2].flags & V4L2_CTRL_FLAG_DYNAMIC_ARRAY) ||
++                       querys[2].nr_of_dims != 1 || querys[2].dims[0] == 0) ?
++        1 : querys[2].dims[0];
++    av_log(avctx, AV_LOG_DEBUG, "%s: Max slices %d\n", __func__, ctx->max_slices);
 +
-+    if (ctx->decode_mode != V4L2_MPEG_VIDEO_HEVC_DECODE_MODE_SLICE_BASED &&
-+        ctx->decode_mode != V4L2_MPEG_VIDEO_HEVC_DECODE_MODE_FRAME_BASED) {
-+        av_log(avctx, AV_LOG_ERROR, "%s: unsupported decode mode, %d\n", __func__, ctx->decode_mode);
++#if HEVC_CTRLS_VERSION >= 4
++    ctx->max_offsets = (querys[3].type == 0 || querys[3].nr_of_dims != 1) ?
++        0 : querys[3].dims[0];
++    av_log(avctx, AV_LOG_DEBUG, "%s: Entry point offsets %d\n", __func__, ctx->max_offsets);
++#else
++    ctx->max_offsets = 0;
++#endif
++
++    if (querys[0].default_value == V4L2_STATELESS_HEVC_DECODE_MODE_SLICE_BASED ||
++        querys[0].default_value == V4L2_STATELESS_HEVC_DECODE_MODE_FRAME_BASED)
++        ctx->decode_mode = querys[0].default_value;
++    else if (ctrl_valid(querys + 0, V4L2_STATELESS_HEVC_DECODE_MODE_FRAME_BASED))
++        ctx->decode_mode = V4L2_STATELESS_HEVC_DECODE_MODE_FRAME_BASED;
++    else if (ctrl_valid(querys + 0, V4L2_STATELESS_HEVC_DECODE_MODE_SLICE_BASED))
++        ctx->decode_mode = V4L2_STATELESS_HEVC_DECODE_MODE_SLICE_BASED;
++    else {
++        av_log(avctx, AV_LOG_ERROR, "%s: unsupported decode mode\n", __func__);
 +        return AVERROR(EINVAL);
 +    }
 +
-+    ctx->start_code = querys[1].default_value;
-+    if (ctx->start_code != V4L2_MPEG_VIDEO_HEVC_START_CODE_NONE &&
-+        ctx->start_code != V4L2_MPEG_VIDEO_HEVC_START_CODE_ANNEX_B) {
-+        av_log(avctx, AV_LOG_ERROR, "%s: unsupported start code, %d\n", __func__, ctx->start_code);
++    if (querys[1].default_value == V4L2_STATELESS_HEVC_START_CODE_NONE ||
++        querys[1].default_value == V4L2_STATELESS_HEVC_START_CODE_ANNEX_B)
++        ctx->start_code = querys[1].default_value;
++    else if (ctrl_valid(querys + 1, V4L2_STATELESS_HEVC_START_CODE_ANNEX_B))
++        ctx->start_code = V4L2_STATELESS_HEVC_START_CODE_ANNEX_B;
++    else if (ctrl_valid(querys + 1, V4L2_STATELESS_HEVC_START_CODE_NONE))
++        ctx->start_code = V4L2_STATELESS_HEVC_START_CODE_NONE;
++    else {
++        av_log(avctx, AV_LOG_ERROR, "%s: unsupported start code\n", __func__);
 +        return AVERROR(EINVAL);
 +    }
 +
-+    ctx->max_slices = querys[2].elems;
-+    if (ctx->max_slices > MAX_SLICES) {
-+        av_log(avctx, AV_LOG_ERROR, "%s: unsupported max slices, %d\n", __func__, ctx->max_slices);
-+        return AVERROR(EINVAL);
-+    }
++    // If we are in slice mode & START_CODE_NONE supported then pick that
++    // as it doesn't require the slightly dodgy look backwards in our raw buffer
++    if (ctx->decode_mode == V4L2_STATELESS_HEVC_DECODE_MODE_SLICE_BASED &&
++        ctrl_valid(querys + 1, V4L2_STATELESS_HEVC_START_CODE_NONE))
++        ctx->start_code = V4L2_STATELESS_HEVC_START_CODE_NONE;
 +
 +    ctrls[0].value = ctx->decode_mode;
 +    ctrls[1].value = ctx->start_code;
@@ -55369,6 +56127,7 @@
 +
 +    av_freep(&rd->slices);
 +    av_freep(&rd->slice_params);
++    av_freep(&rd->offsets);
 +
 +    av_free(rd);
 +}
@@ -57657,7 +58416,7 @@
 +
 --- /dev/null
 +++ b/libavcodec/v4l2_request_hevc.c
-@@ -0,0 +1,311 @@
+@@ -0,0 +1,315 @@
 +/*
 + * This file is part of FFmpeg.
 + *
@@ -57869,7 +58628,11 @@
 +        goto fail4;
 +    }
 +
-+    if (V2(ff_v4l2_req_hevc, 3).probe(avctx, ctx) == 0) {
++    if (V2(ff_v4l2_req_hevc, 4).probe(avctx, ctx) == 0) {
++        av_log(avctx, AV_LOG_DEBUG, "HEVC API version 4 probed successfully\n");
++        ctx->fns = &V2(ff_v4l2_req_hevc, 4);
++    }
++    else if (V2(ff_v4l2_req_hevc, 3).probe(avctx, ctx) == 0) {
 +        av_log(avctx, AV_LOG_DEBUG, "HEVC API version 3 probed successfully\n");
 +        ctx->fns = &V2(ff_v4l2_req_hevc, 3);
 +    }
@@ -57971,7 +58734,7 @@
 +};
 --- /dev/null
 +++ b/libavcodec/v4l2_request_hevc.h
-@@ -0,0 +1,102 @@
+@@ -0,0 +1,101 @@
 +#ifndef AVCODEC_V4L2_REQUEST_HEVC_H
 +#define AVCODEC_V4L2_REQUEST_HEVC_H
 +
@@ -58019,8 +58782,6 @@
 +#define V4L2_CTRL_FLAG_DYNAMIC_ARRAY	0x0800
 +#endif
 +
-+#define MAX_SLICES 128
-+
 +#define VCAT(name, version) name##_v##version
 +#define V2(n,v) VCAT(n, v)
 +#define V(n) V2(n, HEVC_CTRLS_VERSION)
@@ -58037,10 +58798,10 @@
 +
 +    unsigned int timestamp;  // ?? maybe uint64_t
 +
-+    int multi_slice;
 +    int decode_mode;
 +    int start_code;
-+    int max_slices;
++    unsigned int max_slices;    // 0 => not wanted (frame mode)
++    unsigned int max_offsets;   // 0 => not wanted
 +
 +    req_decode_q decode_q;
 +
@@ -58072,6 +58833,7 @@
 +extern const v4l2_req_decode_fns V2(ff_v4l2_req_hevc, 1);
 +extern const v4l2_req_decode_fns V2(ff_v4l2_req_hevc, 2);
 +extern const v4l2_req_decode_fns V2(ff_v4l2_req_hevc, 3);
++extern const v4l2_req_decode_fns V2(ff_v4l2_req_hevc, 4);
 +
 +#endif
 --- a/libavcodec/vc1dec.c
@@ -60518,7 +61280,7 @@
          case AVMEDIA_TYPE_AUDIO:
 --- /dev/null
 +++ b/libavfilter/vf_deinterlace_v4l2m2m.c
-@@ -0,0 +1,1282 @@
+@@ -0,0 +1,1336 @@
 +/*
 + * This file is part of FFmpeg.
 + *
@@ -60894,14 +61656,16 @@
 +		 fmt->fmt.pix_mp.plane_fmt[0].sizeimage, fmt->fmt.pix_mp.plane_fmt[0].bytesperline);
 +
 +    if (V4L2_TYPE_IS_MULTIPLANAR(fmt->type)) {
-+        if (fmt->fmt.pix_mp.pixelformat != V4L2_PIX_FMT_YUV420 ||
++        if ((fmt->fmt.pix_mp.pixelformat != V4L2_PIX_FMT_YUV420 &&
++             fmt->fmt.pix_mp.pixelformat != V4L2_PIX_FMT_NV12) ||
 +            fmt->fmt.pix_mp.field != field) {
 +            av_log(ctx->logctx, AV_LOG_DEBUG, "format not supported for type %d\n", fmt->type);
 +
 +            return AVERROR(EINVAL);
 +        }
 +    } else {
-+        if (fmt->fmt.pix.pixelformat != V4L2_PIX_FMT_YUV420 ||
++        if ((fmt->fmt.pix.pixelformat != V4L2_PIX_FMT_YUV420 &&
++             fmt->fmt.pix.pixelformat != V4L2_PIX_FMT_NV12) ||
 +            fmt->fmt.pix.field != field) {
 +            av_log(ctx->logctx, AV_LOG_DEBUG, "format not supported for type %d\n", fmt->type);
 +
@@ -60912,7 +61676,7 @@
 +    return 0;
 +}
 +
-+static int deint_v4l2m2m_set_format(V4L2Queue *queue, uint32_t field, int width, int height, int pitch, int ysize)
++static int deint_v4l2m2m_set_format(V4L2Queue *queue, uint32_t pixelformat, uint32_t field, int width, int height, int pitch, int ysize)
 +{
 +    struct v4l2_format *fmt        = &queue->format;
 +    DeintV4L2M2MContextShared *ctx = queue->ctx;
@@ -60923,13 +61687,16 @@
 +        .target = V4L2_TYPE_IS_OUTPUT(fmt->type) ? V4L2_SEL_TGT_CROP_BOUNDS : V4L2_SEL_TGT_COMPOSE_BOUNDS,
 +    };
 +
++    // This works for most single object 4:2:0 types
 +    if (V4L2_TYPE_IS_MULTIPLANAR(fmt->type)) {
++        fmt->fmt.pix_mp.pixelformat = pixelformat;
 +        fmt->fmt.pix_mp.field = field;
 +        fmt->fmt.pix_mp.width = width;
 +        fmt->fmt.pix_mp.height = ysize / pitch;
 +        fmt->fmt.pix_mp.plane_fmt[0].bytesperline = pitch;
 +        fmt->fmt.pix_mp.plane_fmt[0].sizeimage = ysize + (ysize >> 1);
 +    } else {
++        fmt->fmt.pix.pixelformat = pixelformat;
 +        fmt->fmt.pix.field = field;
 +        fmt->fmt.pix.width = width;
 +        fmt->fmt.pix.height = height;
@@ -60938,12 +61705,22 @@
 +    }
 +
 +    ret = ioctl(ctx->fd, VIDIOC_S_FMT, fmt);
-+    if (ret)
++    if (ret) {
++        ret = AVERROR(errno);
 +        av_log(ctx->logctx, AV_LOG_ERROR, "VIDIOC_S_FMT failed: %d\n", ret);
++        return ret;
++    }
++
++    if (pixelformat != fmt->fmt.pix.pixelformat) {
++        av_log(ctx->logctx, AV_LOG_ERROR, "Format not supported: %s; S_FMT returned %s\n", av_fourcc2str(pixelformat), av_fourcc2str(fmt->fmt.pix.pixelformat));
++        return AVERROR(EINVAL);
++    }
 +
 +    ret = ioctl(ctx->fd, VIDIOC_G_SELECTION, &sel);
-+    if (ret)
-+        av_log(ctx->logctx, AV_LOG_ERROR, "VIDIOC_G_SELECTION failed: %d\n", ret);
++    if (ret) {
++        ret = AVERROR(errno);
++        av_log(ctx->logctx, AV_LOG_WARNING, "VIDIOC_G_SELECTION failed: %d\n", ret);
++    }
 +
 +    sel.r.width = width;
 +    sel.r.height = height;
@@ -60953,10 +61730,12 @@
 +    sel.flags = V4L2_SEL_FLAG_LE;
 +
 +    ret = ioctl(ctx->fd, VIDIOC_S_SELECTION, &sel);
-+    if (ret)
-+        av_log(ctx->logctx, AV_LOG_ERROR, "VIDIOC_S_SELECTION failed: %d\n", ret);
++    if (ret) {
++        ret = AVERROR(errno);
++        av_log(ctx->logctx, AV_LOG_WARNING, "VIDIOC_S_SELECTION failed: %d\n", ret);
++    }
 +
-+    return ret;
++    return 0;
 +}
 +
 +static int deint_v4l2m2m_probe_device(DeintV4L2M2MContextShared *ctx, char *node)
@@ -61038,10 +61817,25 @@
 +    return 0;
 +}
 +
-+static int v4l2_buffer_export_drm(V4L2Buffer* avbuf)
++static int v4l2_buffer_export_drm(V4L2Buffer* avbuf, const uint32_t pixelformat)
 +{
 +    struct v4l2_exportbuffer expbuf;
 +    int i, ret;
++    uint64_t mod = DRM_FORMAT_MOD_LINEAR;
++    uint32_t fmt = 0;
++
++    switch (pixelformat) {
++    case V4L2_PIX_FMT_NV12:
++        fmt = DRM_FORMAT_NV12;
++        break;
++    case V4L2_PIX_FMT_YUV420:
++        fmt = DRM_FORMAT_YUV420;
++        break;
++    default:
++        return AVERROR(EINVAL);
++    }
++
++    avbuf->drm_frame.layers[0].format = fmt;
 +
 +    for (i = 0; i < avbuf->num_planes; i++) {
 +        memset(&expbuf, 0, sizeof(expbuf));
@@ -61060,12 +61854,12 @@
 +            /* drm frame */
 +            avbuf->drm_frame.objects[i].size = avbuf->buffer.m.planes[i].length;
 +            avbuf->drm_frame.objects[i].fd = expbuf.fd;
-+            avbuf->drm_frame.objects[i].format_modifier = DRM_FORMAT_MOD_LINEAR;
++            avbuf->drm_frame.objects[i].format_modifier = mod;
 +        } else {
 +            /* drm frame */
 +            avbuf->drm_frame.objects[0].size = avbuf->buffer.length;
 +            avbuf->drm_frame.objects[0].fd = expbuf.fd;
-+            avbuf->drm_frame.objects[0].format_modifier = DRM_FORMAT_MOD_LINEAR;
++            avbuf->drm_frame.objects[0].format_modifier = mod;
 +        }
 +    }
 +
@@ -61150,7 +61944,7 @@
 +            if (ret)
 +                goto fail;
 +
-+            ret = v4l2_buffer_export_drm(buf);
++            ret = v4l2_buffer_export_drm(buf, multiplanar ? fmt->fmt.pix_mp.pixelformat : fmt->fmt.pix.pixelformat);
 +            if (ret)
 +                goto fail;
 +        }
@@ -61399,7 +62193,6 @@
 +
 +static uint8_t * v4l2_get_drm_frame(V4L2Buffer *avbuf, int height)
 +{
-+    int av_pix_fmt = AV_PIX_FMT_YUV420P;
 +    AVDRMFrameDescriptor *drm_desc = &avbuf->drm_frame;
 +    AVDRMLayerDescriptor *layer;
 +
@@ -61416,20 +62209,13 @@
 +        layer->planes[i].pitch = avbuf->plane_info[i].bytesperline;
 +    }
 +
-+    switch (av_pix_fmt) {
-+    case AV_PIX_FMT_YUYV422:
-+
-+        layer->format = DRM_FORMAT_YUYV;
++    switch (layer->format) {
++    case DRM_FORMAT_YUYV:
 +        layer->nb_planes = 1;
-+
 +        break;
 +
-+    case AV_PIX_FMT_NV12:
-+    case AV_PIX_FMT_NV21:
-+
-+        layer->format = av_pix_fmt == AV_PIX_FMT_NV12 ?
-+            DRM_FORMAT_NV12 : DRM_FORMAT_NV21;
-+
++    case DRM_FORMAT_NV12:
++    case DRM_FORMAT_NV21:
 +        if (avbuf->num_planes > 1)
 +            break;
 +
@@ -61441,10 +62227,7 @@
 +        layer->planes[1].pitch = avbuf->plane_info[0].bytesperline;
 +        break;
 +
-+    case AV_PIX_FMT_YUV420P:
-+
-+        layer->format = DRM_FORMAT_YUV420;
-+
++    case DRM_FORMAT_YUV420:
 +        if (avbuf->num_planes > 1)
 +            break;
 +
@@ -61564,6 +62347,26 @@
 +    return ff_set_common_formats(avctx, ff_make_format_list(pixel_formats));
 +}
 +
++static uint32_t desc_pixelformat(const AVDRMFrameDescriptor * const drm_desc)
++{
++    const int is_linear = (drm_desc->objects[0].format_modifier == DRM_FORMAT_MOD_LINEAR ||
++            drm_desc->objects[0].format_modifier == DRM_FORMAT_MOD_INVALID);
++
++    switch (drm_desc->layers[0].format) {
++    case DRM_FORMAT_YUV420:
++        if (is_linear)
++            return drm_desc->nb_objects == 1 ? V4L2_PIX_FMT_YUV420 : 0;
++        break;
++    case DRM_FORMAT_NV12:
++        if (is_linear)
++            return drm_desc->nb_objects == 1 ? V4L2_PIX_FMT_NV12 : 0;
++        break;
++    default:
++        break;
++    }
++    return 0;
++}
++
 +static int deint_v4l2m2m_filter_frame(AVFilterLink *link, AVFrame *in)
 +{
 +    AVFilterContext *avctx         = link->dst;
@@ -61579,23 +62382,27 @@
 +           avctx->inputs[0]->status_in, avctx->inputs[0]->status_out, avctx->outputs[0]->status_in, avctx->outputs[0]->status_out);
 +
 +    if (ctx->field_order == V4L2_FIELD_ANY) {
-+        AVDRMFrameDescriptor *drm_desc = (AVDRMFrameDescriptor *)in->data[0];
++        const AVDRMFrameDescriptor * const drm_desc = (AVDRMFrameDescriptor *)in->data[0];
++        const uint32_t pixelformat = desc_pixelformat(drm_desc);
++
++        if (pixelformat == 0) {
++            av_log(avctx, AV_LOG_ERROR, "Unsupported DRM format %s in %d objects, modifier %#" PRIx64 "\n",
++                   av_fourcc2str(drm_desc->layers[0].format),
++                   drm_desc->nb_objects, drm_desc->objects[0].format_modifier);
++            return AVERROR(EINVAL);
++        }
++
 +        ctx->orig_width = drm_desc->layers[0].planes[0].pitch;
 +        ctx->orig_height = drm_desc->layers[0].planes[1].offset / ctx->orig_width;
 +
-+        av_log(priv, AV_LOG_DEBUG, "%s: %dx%d (%d,%d)\n", __func__, ctx->width, ctx->height,
++        av_log(priv, AV_LOG_DEBUG, "%s: %dx%d (%td,%td)\n", __func__, ctx->width, ctx->height,
 +           drm_desc->layers[0].planes[0].pitch, drm_desc->layers[0].planes[1].offset);
 +
-+        if (in->top_field_first)
-+            ctx->field_order = V4L2_FIELD_INTERLACED_TB;
-+        else
-+            ctx->field_order = V4L2_FIELD_INTERLACED_BT;
-+
-+        ret = deint_v4l2m2m_set_format(output, ctx->field_order, ctx->width, ctx->height, ctx->orig_width, drm_desc->layers[0].planes[1].offset);
++        ret = deint_v4l2m2m_set_format(output, pixelformat, ctx->field_order, ctx->width, ctx->height, ctx->orig_width, drm_desc->layers[0].planes[1].offset);
 +        if (ret)
 +            return ret;
 +
-+        ret = deint_v4l2m2m_set_format(capture, V4L2_FIELD_NONE, ctx->width, ctx->height, ctx->orig_width, drm_desc->layers[0].planes[1].offset);
++        ret = deint_v4l2m2m_set_format(capture, pixelformat, V4L2_FIELD_NONE, ctx->width, ctx->height, ctx->orig_width, drm_desc->layers[0].planes[1].offset);
 +        if (ret)
 +            return ret;
 +
@@ -61614,6 +62421,12 @@
 +        ret = deint_v4l2m2m_streamon(output);
 +        if (ret)
 +            return ret;
++
++        if (in->top_field_first)
++            ctx->field_order = V4L2_FIELD_INTERLACED_TB;
++        else
++            ctx->field_order = V4L2_FIELD_INTERLACED_BT;
++
 +    }
 +
 +    ret = deint_v4l2m2m_enqueue_frame(output, in);
@@ -61689,28 +62502,31 @@
 +        return 0;
 +    }
 +
-+    {
++    recycle_q(&s->output);
++    n = count_enqueued(&s->output);
++
++    while (n < 6) {
 +        AVFrame * frame;
 +        int rv;
 +
-+        recycle_q(&s->output);
-+        n = count_enqueued(&s->output);
-+
-+        while (n < 6) {
-+            if ((rv = ff_inlink_consume_frame(inlink, &frame)) < 0) {
-+                av_log(priv, AV_LOG_ERROR, "%s: consume in failed: %s\n", __func__, av_err2str(rv));
-+                return rv;
-+            }
-+
-+            if (frame == NULL) {
-+                av_log(priv, AV_LOG_TRACE, "%s: No frame\n", __func__);
-+                break;
-+            }
-+
-+            deint_v4l2m2m_filter_frame(inlink, frame);
-+            av_log(priv, AV_LOG_TRACE, "%s: Q frame\n", __func__);
-+            ++n;
++        if ((rv = ff_inlink_consume_frame(inlink, &frame)) < 0) {
++            av_log(priv, AV_LOG_ERROR, "%s: consume in failed: %s\n", __func__, av_err2str(rv));
++            return rv;
 +        }
++
++        if (frame == NULL) {
++            av_log(priv, AV_LOG_TRACE, "%s: No frame\n", __func__);
++            break;
++        }
++
++        rv = deint_v4l2m2m_filter_frame(inlink, frame);
++        av_frame_free(&frame);
++
++        if (rv != 0)
++            return rv;
++
++        av_log(priv, AV_LOG_TRACE, "%s: Q frame\n", __func__);
++        ++n;
 +    }
 +
 +    if (n < 6) {
@@ -64376,7 +65192,7 @@
      if (!map)
 --- a/libavutil/pixdesc.c
 +++ b/libavutil/pixdesc.c
-@@ -2371,6 +2371,38 @@ static const AVPixFmtDescriptor av_pix_f
+@@ -2371,6 +2371,50 @@ static const AVPixFmtDescriptor av_pix_f
          .name = "vulkan",
          .flags = AV_PIX_FMT_FLAG_HWACCEL,
      },
@@ -64404,12 +65220,24 @@
 +        },
 +        .flags = 0,
 +    },
++    [AV_PIX_FMT_SAND64_16] = {
++        .name = "sand64_16",
++        .nb_components = 3,
++        .log2_chroma_w = 1,
++        .log2_chroma_h = 1,
++        .comp = {
++            { 0, 2, 0, 0, 16, 0, 15, 1 },        /* Y */
++            { 1, 4, 0, 0, 16, 3, 15, 1 },        /* U */
++            { 1, 4, 2, 0, 16, 3, 15, 3 },        /* V */
++        },
++        .flags = 0,
++    },
 +    [AV_PIX_FMT_RPI4_8] = {
-+        .name = "rpi",
++        .name = "rpi4_8",
 +        .flags = AV_PIX_FMT_FLAG_HWACCEL,
 +    },
 +    [AV_PIX_FMT_RPI4_10] = {
-+        .name = "rpi",
++        .name = "rpi4_10",
 +        .flags = AV_PIX_FMT_FLAG_HWACCEL,
 +    },
  };
