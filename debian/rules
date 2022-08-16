@@ -155,8 +155,13 @@ else
 	CONFIG += \
 		--enable-chromaprint \
 		--enable-frei0r \
-		--enable-libplacebo \
 		--enable-libx264
+# Some libraries are built only on linux.
+ifeq (linux,$(DEB_HOST_ARCH_OS))
+	CONFIG += --enable-libplacebo
+else
+	CONFIG += --disable-libplacebo
+endif
 endif
 
 # Disable altivec optimizations on powerpc, because they are not always available on this architecture.
