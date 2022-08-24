@@ -4,3 +4,4 @@
 0004-fate-imf-Rename-IMF-fate-target.patch
 0005-tests-fate-run-Allow-to-skip-file-checksums-for-lavf.patch
 0006-fate-lavf-image-Disable-file-checksums-for-exr-tests.patch
+0007-ipfsgateway-Remove-default-gateway.patch
