@@ -1,3 +1,10 @@
+ffmpeg (7:5.1.1-1) unstable; urgency=medium
+
+  * New upstream version 5.1.1
+  * debian/patches: Remove upstream patches
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 03 Sep 2022 09:46:14 +0200
+
 ffmpeg (7:5.1-3) unstable; urgency=medium
 
   * debian/: Build with vulkan and libplacebo only on Linux (Closes: #1017108)
