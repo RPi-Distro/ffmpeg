@@ -113,6 +113,8 @@ Build-Depends:
  libpulse-dev,
 # --enable-librabbitmq
  librabbitmq-dev,
+# --enable-librav1e
+ librav1e-dev [!alpha !hppa !hurd-i386 !ia64 !kfreebsd-amd64 !kfreebsd-i386 !m68k !riscv64 !sh4 !sparc64 !x32] <!pkg.ffmpeg.stage1>,
 # --enable-librist
  librist-dev,
 # --enable-librubberband

@@ -145,11 +145,13 @@ endif
 
 # ffmpeg is involved in build-dependency cycles with x264 and chromaprint, so disable them in stage one.
 # Also disable frei0r, which build-depends on opencv.
+# Also disable rav1e for bootstrap to avoid a complete rust toolchain.
 ifneq (,$(filter pkg.ffmpeg.stage1,$(DEB_BUILD_PROFILES)))
 	CONFIG += \
 		--disable-chromaprint \
 		--disable-frei0r \
 		--disable-libplacebo \
+		--disable-librav1e \
 		--disable-libx264
 else
 	CONFIG += \
@@ -161,6 +163,12 @@ ifeq (linux,$(DEB_HOST_ARCH_OS))
 	CONFIG += --enable-libplacebo
 else
 	CONFIG += --disable-libplacebo
+endif
+# Rust not available on most of ports
+ifeq (,$(filter alpha hppa hurd-i386 ia64 kfreebsd-amd64 kfreebsd-i386 m68k riscv64 sh4 sparc64 x32,$(DEB_HOST_ARCH)))
+	CONFIG += --enable-librav1e
+else
+	CONFIG += --disable-librav1e
 endif
 endif
 
