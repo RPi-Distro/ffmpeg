@@ -1,3 +1,13 @@
+ffmpeg (7:5.1.1-2) unstable; urgency=medium
+
+  * debian/rules: Disable filter-overlay_yuv420p10 on all BE architectures
+    (Closes: #1019133)
+  * debian/: Enable librav1e support
+  * debian/patches: Apply upstream patch to limit automatic number of threads
+    to 16
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 16 Sep 2022 23:50:22 +0200
+
 ffmpeg (7:5.1.1-1) unstable; urgency=medium
 
   * New upstream version 5.1.1
