@@ -90,7 +90,7 @@ CONFIG += --enable-pocketsphinx
 endif
 
 # avoid librsvg on almost all ports (bug#983344, bug#991556)
-ifeq (,$(filter alpha hppa hurd-i386 ia64 kfreebsd-amd64 kfreebsd-i386 m86k sh4 x32,$(DEB_HOST_ARCH)))
+ifeq (,$(filter alpha hppa hurd-i386 ia64 kfreebsd-amd64 kfreebsd-i386 m68k sh4 x32,$(DEB_HOST_ARCH)))
 CONFIG += --enable-librsvg
 endif
 
