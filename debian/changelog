@@ -1,8 +1,6 @@
 ffmpeg (7:4.3.5-0+deb11u1) bullseye-security; urgency=medium
 
   * New upstream release 4.3.5
-    - Fixes security issues:
-      CVE-2020-21041
   * debian/patches: Remove patches integrated upstream
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sat, 29 Oct 2022 12:35:02 +0200
