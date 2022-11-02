@@ -1,20 +1,15 @@
-ffmpeg (7:4.3.4-0+deb11u1+rpt3) bullseye; urgency=medium
+ffmpeg (7:4.3.5-0+deb11u1+rpt1) bullseye; urgency=medium
 
   * HW accel patch 14
 
- -- Serge Schneider <serge@raspberrypi.com>  Thu, 04 Aug 2022 13:14:22 +0100
+ -- Serge Schneider <serge@raspberrypi.com>  Wed, 02 Nov 2022 11:32:36 +0000
 
-ffmpeg (7:4.3.4-0+deb11u1+rpt2) bullseye; urgency=medium
+ffmpeg (7:4.3.5-0+deb11u1) bullseye-security; urgency=medium
 
-  * HW accel patch 13
+  * New upstream release 4.3.5
+  * debian/patches: Remove patches integrated upstream
 
- -- Serge Schneider <serge@raspberrypi.com>  Thu, 09 Jun 2022 13:12:48 +0100
-
-ffmpeg (7:4.3.4-0+deb11u1+rpt1) bullseye; urgency=medium
-
-  * HW accel patch 12
-
- -- Serge Schneider <serge@raspberrypi.com>  Wed, 27 Apr 2022 15:04:42 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 29 Oct 2022 12:35:02 +0200
 
 ffmpeg (7:4.3.4-0+deb11u1) bullseye-security; urgency=medium
 
