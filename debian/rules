@@ -84,6 +84,11 @@ CONFIG := --prefix=/usr \
 # disable sndio, it's pulled in via libopenal-dev and autodetected
 CONFIG += --disable-sndio
 
+# avoid libjxl on big-endian for now
+ifeq (,$(filter big,$(DEB_HOST_ARCH_ENDIAN)))
+CONFIG += --enable-libjxl
+endif
+
 # avoid pocketsphinx on mips (bug#812335), alpha, ia64 and big-endian (bug#968456)
 ifeq (,$(filter mips% alpha ia64,$(DEB_HOST_ARCH))$(filter big,$(DEB_HOST_ARCH_ENDIAN)))
 CONFIG += --enable-pocketsphinx
