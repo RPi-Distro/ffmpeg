@@ -1,3 +1,8 @@
 ---
 include:
   - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/recipes/debian.yml
+
+variables:
+  # Disable 'blhc' for now until `CFLAGS missing` and `LDFLAGS missing` issues
+  # are resolved
+  SALSA_CI_DISABLE_BLHC: 1
