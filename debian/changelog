@@ -1,3 +1,16 @@
+ffmpeg (7:5.1.2-2) unstable; urgency=medium
+
+  [ Mathieu Malaterre ]
+  * d/control: Add support for JPEG-XL. (Closes: #1023646)
+
+  [ Diederik de Haas ]
+  * ci: Enable Salsa's CI
+
+  [ Sebastian Ramacher ]
+  * debian/control: Bump Standards-Version
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 22 Jan 2023 13:07:50 +0100
+
 ffmpeg (7:5.1.2-1) unstable; urgency=medium
 
   * New upstream version 5.1.2

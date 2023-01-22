@@ -85,7 +85,7 @@ CONFIG := --prefix=/usr \
 CONFIG += --disable-sndio
 
 # avoid libjxl on alpha for now
-ifeq (alpha,$(DEB_HOST_ARCH))
+ifneq (alpha,$(DEB_HOST_ARCH))
 CONFIG += --enable-libjxl
 endif
 
