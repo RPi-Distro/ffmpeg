@@ -82,7 +82,7 @@ Build-Depends:
 # --enable-libjack
  libjack-jackd2-dev,
 # --enable-libjxl
- libjxl-dev [!alpha !hppa !powerpc !ppc64 !s390x !sparc64],
+ libjxl-dev [!alpha],
 # --enable-lv2
  liblilv-dev,
 # autodetected for the tiff decoder

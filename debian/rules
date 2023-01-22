@@ -84,8 +84,8 @@ CONFIG := --prefix=/usr \
 # disable sndio, it's pulled in via libopenal-dev and autodetected
 CONFIG += --disable-sndio
 
-# avoid libjxl on big-endian for now
-ifeq (,$(filter big,$(DEB_HOST_ARCH_ENDIAN)))
+# avoid libjxl on alpha for now
+ifeq (alpha,$(DEB_HOST_ARCH))
 CONFIG += --enable-libjxl
 endif
 
