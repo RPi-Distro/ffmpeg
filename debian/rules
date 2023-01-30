@@ -232,8 +232,11 @@ ifeq (ppc64el,$(DEB_HOST_ARCH))
 	CONFIG += --ignore-tests=checkasm-sw_scale,filter-scale2ref_keep_aspect
 endif
 # https://trac.ffmpeg.org/ticket/9855
-ifneq (,$(filter hppa m68k powerpc ppc64 sparc64 s390x,$(DEB_HOST_ARCH_CPU)))
+ifneq (,$(filter hppa m68k powerpc sparc64 s390x,$(DEB_HOST_ARCH_CPU)))
 	CONFIG += --ignore-tests=filter-overlay_yuv420p10
+endif
+ifeq (ppc64,$(DEB_HOST_ARCH))
+	CONFIG += --ignore-tests=checkasm-sw_scale,filter-overlay_yuv420p10
 endif
 
 # Set cross-build prefix for compiler, pkg-config...
