@@ -1,3 +1,11 @@
+ffmpeg (7:5.1.2-3) unstable; urgency=medium
+
+  * debian/rules: Disable more tests on ppc64 (Closes: #1022764)
+  * debian/patches: Add upstream patch to fix FTBFS after vulkan changes
+    (Closes: #1031447)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 17 Feb 2023 08:26:22 +0100
+
 ffmpeg (7:5.1.2-2) unstable; urgency=medium
 
   [ Mathieu Malaterre ]
