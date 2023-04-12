@@ -326,21 +326,14 @@ override_dh_install:
 	dh_install $(addprefix -p,$(EXTRA_PKGS)) --sourcedir=debian/tmp/extra
 	dh_install --remaining-packages
 
-override_dh_shlibdeps:
-	$(RM) debian/shlibs.local
-	set -e && for pkg in $(SHLIB_PKGS); do \
-		lib=`echo $$pkg | sed 's/\([a-z]*\)\([0-9]*\)/\1/'`; \
-		abi=`echo $$pkg | sed 's/\([a-z]*\)\([0-9]*\)/\2/'`; \
-		ver=${DEB_VERSION}; \
-		echo "$$lib $$abi $$pkg (= $$ver)" >> debian/shlibs.local; \
-	done
+debian/%.symbols: debian/%.symbols.in
+	sed 's/@DEB_VERSION@/${DEB_VERSION}/;s/@DEB_VERSION_EPOCH_UPSTREAM@/${DEB_VERSION_EPOCH_UPSTREAM}/' $< > $@
+
+execute_before_dh_makeshlibs: $(patsubst %,debian/%.symbols,$(SHLIB_PKGS))
 	set -e && for pkg in $(EXTRA_PKGS); do \
 		mainpkg=`echo $$pkg | sed 's/-extra//'`; \
 		cp -f debian/$$mainpkg.symbols debian/$$pkg.symbols; \
-		dh_shlibdeps -p$$pkg; \
-		rm -f debian/$$pkg.symbols; \
 	done
-	dh_shlibdeps --remaining-packages
 
 # avoid error: Unknown DWARF DW_OP_0
 override_dh_dwz:
