@@ -1,3 +1,9 @@
+ffmpeg (7:4.3.6-0+deb11u1) bullseye-security; urgency=medium
+
+  * New upstream release 4.3.6
+
+ -- Moritz Mühlenhoff <jmm@debian.org>  Thu, 27 Apr 2023 17:02:51 +0200
+
 ffmpeg (7:4.3.5-0+deb11u1) bullseye-security; urgency=medium
 
   * New upstream release 4.3.5
