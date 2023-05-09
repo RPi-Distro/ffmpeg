@@ -97,6 +97,8 @@ Build-Depends:
  libopenal-dev,
 # --enable-omx
  libomxil-bellagio-dev,
+# --enable-omx-rpi
+ libraspberrypi-dev [armhf arm64],
 # --enable-libopencore_amrnb
  libopencore-amrnb-dev,
 # --enable-libopencore_amrwb
@@ -194,13 +196,20 @@ Build-Depends:
  ocl-icd-opencl-dev | opencl-dev,
 # used to detect libraries
  pkg-config,
+ linux-libc-dev,
 # HTML documentation
  texinfo,
 # assembler optimizations
  nasm,
  pkg-kde-tools,
 # autodetected zlib
- zlib1g-dev
+ zlib1g-dev,
+ libepoxy-dev,
+ libxcb-dri3-dev,
+ libxcb1-dev,
+ libx11-dev,
+ libx11-xcb-dev,
+ libdrm-dev
 
 Package: ffmpeg
 Architecture: any
@@ -246,7 +255,8 @@ Section: libs
 Multi-Arch: same
 Depends:
  ${shlibs:Depends},
- ${misc:Depends}
+ ${misc:Depends},
+ libraspberrypi0 [armhf arm64]
 Suggests:
  libcuda1 [amd64 arm64 i386],
  libnvcuvid1 [amd64 arm64 i386],
@@ -275,7 +285,8 @@ Conflicts: libavcodec59
 Provides: libavcodec59 (= ${binary:Version})
 Depends:
  ${shlibs:Depends},
- ${misc:Depends}
+ ${misc:Depends},
+ libraspberrypi0 [armhf arm64]
 Suggests:
  libcuda1 [amd64 arm64 i386],
  libnvcuvid1 [amd64 arm64 i386],
@@ -354,7 +365,8 @@ Section: libs
 Multi-Arch: same
 Depends:
  ${shlibs:Depends},
- ${misc:Depends}
+ ${misc:Depends},
+ libraspberrypi0 [armhf arm64]
 Description: FFmpeg library for handling input and output devices - runtime files
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and
@@ -399,7 +411,8 @@ Section: libs
 Multi-Arch: same
 Depends:
  ${shlibs:Depends},
- ${misc:Depends}
+ ${misc:Depends},
+ libraspberrypi0 [armhf arm64]
 Description: FFmpeg library containing media filters - runtime files
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and
@@ -419,7 +432,8 @@ Conflicts: libavfilter8
 Provides: libavfilter8 (= ${binary:Version})
 Depends:
  ${shlibs:Depends},
- ${misc:Depends}
+ ${misc:Depends},
+ libraspberrypi0 [armhf arm64]
 Description: FFmpeg library with extra media filters - runtime files
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and
@@ -485,7 +499,8 @@ Section: libs
 Multi-Arch: same
 Depends:
  ${shlibs:Depends},
- ${misc:Depends}
+ ${misc:Depends},
+ libraspberrypi0 [armhf arm64]
 Description: FFmpeg library with (de)muxers for multimedia containers - runtime files
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and

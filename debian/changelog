@@ -1,3 +1,13 @@
+ffmpeg (7:5.1.2-3+rpt1) bookworm; urgency=medium
+
+  * HW accel patch 17
+  * Disable MMAL on all platforms
+  * Remove --enable-rpi
+  * Remove --enable-lensfun
+  * Enable SAND on all platforms
+
+ -- Serge Schneider <serge@raspberrypi.com>  Wed, 08 Mar 2023 16:08:43 +0000
+
 ffmpeg (7:5.1.2-3) unstable; urgency=medium
 
   * debian/rules: Disable more tests on ppc64 (Closes: #1022764)
