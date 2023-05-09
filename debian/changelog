@@ -1,3 +1,10 @@
+ffmpeg (8:4.3.6-0+deb11u1+rpt2) bullseye; urgency=medium
+
+  * HW accel patch 18
+  * Bump epoch to take priority over Debian and Raspbian builds
+
+ -- Serge Schneider <serge@raspberrypi.com>  Tue, 09 May 2023 08:27:20 +0100
+
 ffmpeg (7:4.3.6-0+deb11u1+rpt1) bullseye; urgency=medium
 
   * HW accel patch 17
