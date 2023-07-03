@@ -1,9 +1,23 @@
-ffmpeg (7:4.1.9-0+deb10u1+rpt1) buster; urgency=medium
+ffmpeg (7:4.1.11-0+deb10u1+rpt1) buster; urgency=medium
 
   * MMAL patch 7
   * avcodec/omx: Fix handling of fragmented buffers
 
- -- Serge Schneider <serge@raspberrypi.com>  Tue, 03 May 2022 14:58:19 +0100
+ -- Serge Schneider <serge@raspberrypi.com>  Mon, 26 Jun 2023 15:28:25 +0100
+
+ffmpeg (7:4.1.11-0+deb10u1) buster-security; urgency=medium
+
+  * Non-maintainer upload by the LTS Security Team.
+  * New upstream release (CVE-2022-3109, CVE-2022-3341).
+
+ -- Sylvain Beucler <beuc@debian.org>  Tue, 13 Jun 2023 10:16:38 +0200
+
+ffmpeg (7:4.1.10-0+deb10u1) buster-security; urgency=medium
+
+  * Non-maintainer upload by the LTS Security Team.
+  * New upstream release.
+
+ -- Sylvain Beucler <beuc@debian.org>  Thu, 03 Nov 2022 17:11:47 +0100
 
 ffmpeg (7:4.1.9-0+deb10u1) buster-security; urgency=medium
 

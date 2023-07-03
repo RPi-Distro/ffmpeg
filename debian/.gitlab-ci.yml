@@ -1,0 +1,2 @@
+include:
+- https://salsa.debian.org/lts-team/pipeline/raw/master/recipes/buster.yml
