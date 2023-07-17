@@ -4836,7 +4836,7 @@
      atomic_init(&s->refcount, 0);
      sem_init(&s->refsync, 0, 0);
  
-@@ -84,12 +95,14 @@ static int v4l2_prepare_contexts(V4L2m2m
+@@ -84,18 +95,58 @@ static int v4l2_prepare_contexts(V4L2m2m
      if (v4l2_mplane_video(&cap)) {
          s->capture.type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
          s->output.type = V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
@@ -4851,7 +4851,63 @@
          return 0;
      }
  
-@@ -214,13 +227,7 @@ int ff_v4l2_m2m_codec_reinit(V4L2m2mCont
+     return AVERROR(EINVAL);
+ }
+ 
++static int check_size(AVCodecContext * const avctx, V4L2m2mContext * const s)
++{
++    struct v4l2_format fmt = {.type = s->output.type};
++    int rv;
++    uint32_t pixfmt = ff_v4l2_format_avfmt_to_v4l2(avctx->pix_fmt);
++    unsigned int w;
++    unsigned int h;
++
++    if (V4L2_TYPE_IS_MULTIPLANAR(fmt.type)) {
++        fmt.fmt.pix_mp.pixelformat = pixfmt;
++        fmt.fmt.pix_mp.width = avctx->width;
++        fmt.fmt.pix_mp.height = avctx->height;
++    }
++    else {
++        fmt.fmt.pix.pixelformat = pixfmt;
++        fmt.fmt.pix.width = avctx->width;
++        fmt.fmt.pix.height = avctx->height;
++    }
++
++    rv = ioctl(s->fd, VIDIOC_TRY_FMT, &fmt);
++
++    if (rv != 0) {
++        rv = AVERROR(errno);
++        av_log(avctx, AV_LOG_ERROR, "%s: Tryfmt failed: %s\n", __func__, av_err2str(rv));
++        return rv;
++    }
++
++    w = ff_v4l2_get_format_width(&fmt);
++    h = ff_v4l2_get_format_height(&fmt);
++
++    if (w < avctx->width || h < avctx->height) {
++        av_log(avctx, AV_LOG_WARNING, "%s: Size check failed: asked for %dx%d, got: %dx%d\n", __func__, avctx->width, avctx->height, w, h);
++        return AVERROR(EINVAL);
++    }
++
++    return 0;
++}
++
+ static int v4l2_probe_driver(V4L2m2mContext *s)
+ {
+     void *log_ctx = s->avctx;
+@@ -115,6 +166,11 @@ static int v4l2_probe_driver(V4L2m2mCont
+         goto done;
+     }
+ 
++    // If being given frames (encode) check that V4L2 can cope with the size
++    if (s->output.av_codec_id == AV_CODEC_ID_RAWVIDEO &&
++        (ret = check_size(s->avctx, s)) != 0)
++        goto done;
++
+     ret = ff_v4l2_context_get_format(&s->capture, 1);
+     if (ret) {
+         av_log(log_ctx, AV_LOG_DEBUG, "v4l2 capture format not supported\n");
+@@ -214,13 +270,7 @@ int ff_v4l2_m2m_codec_reinit(V4L2m2mCont
          av_log(log_ctx, AV_LOG_ERROR, "capture VIDIOC_STREAMOFF\n");
  
      /* 2. unmap the capture buffers (v4l2 and ffmpeg):
@@ -4865,7 +4921,7 @@
      ff_v4l2_context_release(&s->capture);
  
      /* 3. get the new capture format */
-@@ -239,7 +246,6 @@ int ff_v4l2_m2m_codec_reinit(V4L2m2mCont
+@@ -239,7 +289,6 @@ int ff_v4l2_m2m_codec_reinit(V4L2m2mCont
  
      /* 5. complete reinit */
      s->draining = 0;
@@ -4873,7 +4929,7 @@
  
      return 0;
  }
-@@ -256,6 +262,9 @@ static void v4l2_m2m_destroy_context(voi
+@@ -256,6 +305,9 @@ static void v4l2_m2m_destroy_context(voi
      av_frame_unref(s->frame);
      av_frame_free(&s->frame);
      av_packet_unref(&s->buf_pkt);
@@ -4883,7 +4939,7 @@
  
      av_free(s);
  }
-@@ -268,6 +277,11 @@ int ff_v4l2_m2m_codec_end(V4L2m2mPriv *p
+@@ -268,6 +320,11 @@ int ff_v4l2_m2m_codec_end(V4L2m2mPriv *p
      if (!s)
          return 0;
  
@@ -4895,7 +4951,7 @@
      if (s->fd >= 0) {
          ret = ff_v4l2_context_set_status(&s->output, VIDIOC_STREAMOFF);
          if (ret)
-@@ -280,7 +294,15 @@ int ff_v4l2_m2m_codec_end(V4L2m2mPriv *p
+@@ -280,7 +337,15 @@ int ff_v4l2_m2m_codec_end(V4L2m2mPriv *p
  
      ff_v4l2_context_release(&s->output);
  
@@ -4911,7 +4967,7 @@
      av_buffer_unref(&priv->context_ref);
  
      return 0;
-@@ -324,35 +346,38 @@ int ff_v4l2_m2m_codec_init(V4L2m2mPriv *
+@@ -324,35 +389,38 @@ int ff_v4l2_m2m_codec_init(V4L2m2mPriv *
      return v4l2_configure_contexts(s);
  }
  
@@ -5025,7 +5081,7 @@
      AVPacket buf_pkt;
  
      /* Reference to a frame. Only used during encoding */
-@@ -66,6 +99,35 @@ typedef struct V4L2m2mContext {
+@@ -66,6 +99,36 @@ typedef struct V4L2m2mContext {
  
      /* reference back to V4L2m2mPriv */
      void *priv;
@@ -5045,6 +5101,7 @@
 +
 +    /* req pkt */
 +    int req_pkt;
++    int reorder_size;
 +
 +    /* Ext data sent */
 +    int extdata_sent;
@@ -5061,7 +5118,7 @@
  } V4L2m2mContext;
  
  typedef struct V4L2m2mPriv {
-@@ -76,6 +138,8 @@ typedef struct V4L2m2mPriv {
+@@ -76,6 +139,8 @@ typedef struct V4L2m2mPriv {
  
      int num_output_buffers;
      int num_capture_buffers;
@@ -5070,7 +5127,7 @@
  } V4L2m2mPriv;
  
  /**
-@@ -129,4 +193,26 @@ int ff_v4l2_m2m_codec_reinit(V4L2m2mCont
+@@ -129,4 +194,26 @@ int ff_v4l2_m2m_codec_reinit(V4L2m2mCont
   */
  int ff_v4l2_m2m_codec_full_reinit(V4L2m2mContext *ctx);
  
@@ -5114,7 +5171,7 @@
  #include "libavutil/pixfmt.h"
  #include "libavutil/pixdesc.h"
  #include "libavutil/opt.h"
-@@ -30,75 +36,274 @@
+@@ -30,75 +36,279 @@
  #include "codec_internal.h"
  #include "libavcodec/decode.h"
  
@@ -5224,13 +5281,18 @@
 -    if (ret) {
 -        av_log(avctx, AV_LOG_WARNING, "VIDIOC_G_FMT ioctl\n");
 -        return ret;
-+static int64_t pts_stats_guess(const pts_stats_t * const stats)
++static unsigned int pts_stats_interval(const pts_stats_t * const stats)
++{
++    return stats->last_interval;
++}
++
++static int64_t pts_stats_guess(const pts_stats_t * const stats, const int fail_bad_guess)
 +{
 +    if (stats->last_count <= 1)
 +        return stats->last_pts;
 +    if (stats->last_pts == AV_NOPTS_VALUE ||
-+            stats->last_interval == 0 ||
-+            stats->last_count >= STATS_LAST_COUNT_MAX)
++            fail_bad_guess && (stats->last_interval == 0 ||
++                               stats->last_count >= STATS_LAST_COUNT_MAX))
 +        return AV_NOPTS_VALUE;
 +    return stats->last_pts + (int64_t)(stats->last_count - 1) * (int64_t)stats->last_interval;
 +}
@@ -5437,7 +5499,7 @@
      return 0;
  }
  
-@@ -133,62 +338,734 @@ static int v4l2_prepare_decoder(V4L2m2mC
+@@ -133,62 +343,760 @@ static int v4l2_prepare_decoder(V4L2m2mC
      return 0;
  }
  
@@ -5449,7 +5511,7 @@
 +{
 +    pts_stats_add(ps, frame->pts);
 +
-+    frame->best_effort_timestamp = pts_stats_guess(ps);
++    frame->best_effort_timestamp = pts_stats_guess(ps, 1);
 +    // If we can't guess from just PTS - try DTS
 +    if (frame->best_effort_timestamp == AV_NOPTS_VALUE)
 +        frame->best_effort_timestamp = frame->pkt_dts;
@@ -5484,14 +5546,24 @@
 +}
 +
 +static int
-+xlat_pending(const xlat_track_t * const x)
++xlat_pending(const V4L2m2mContext * const s)
 +{
++    const xlat_track_t *const x = &s->xlat;
 +    unsigned int n = x->track_no % FF_V4L2_M2M_TRACK_SIZE;
 +    int i;
-+    const int64_t now = x->last_pts;
++    const int64_t now = pts_stats_guess(&s->pts_stat, 0);
++    int64_t first_dts = AV_NOPTS_VALUE;
++    int no_dts_count = 0;
++    unsigned int interval = pts_stats_interval(&s->pts_stat);
 +
 +    for (i = 0; i < FF_V4L2_M2M_TRACK_SIZE; ++i, n = (n - 1) & (FF_V4L2_M2M_TRACK_SIZE - 1)) {
 +        const V4L2m2mTrackEl * const t = x->track_els + n;
++
++        if (first_dts == AV_NOPTS_VALUE)
++            if (t->dts == AV_NOPTS_VALUE)
++                ++no_dts_count;
++            else
++                first_dts = t->dts;
 +
 +        // Discard only set on never-set or flushed entries
 +        // So if we get here we've never successfully decoded a frame so allow
@@ -5510,6 +5582,18 @@
 +
 +        if (t->dts != AV_NOPTS_VALUE && now >= t->dts)
 +            break;
++    }
++
++    if (first_dts != AV_NOPTS_VALUE && now != AV_NOPTS_VALUE && interval != 0 && s->reorder_size != 0) {
++        const int iframes = (first_dts - now) / (int)interval;
++        const int t = iframes - s->reorder_size + no_dts_count;
++
++//        av_log(s->avctx, AV_LOG_DEBUG, "Last:%"PRId64", Now:%"PRId64", First:%"PRId64", delta=%"PRId64", frames=%d, nodts=%d\n",
++//               x->last_dts, now, first_dts, first_dts - now, iframes, no_dts_count);
++
++        if (iframes > 0 && iframes < 64 && t < i) {
++            return t;
++        }
 +    }
 +
 +    return i;
@@ -5675,6 +5759,15 @@
 -            goto fail;
 +            av_log(avctx, AV_LOG_ERROR, "Packet enqueue failure: err=%d\n", ret);
 +            return ret;
++        }
++    }
++
++    // Start if we haven't
++    {
++        const int ret2 = v4l2_try_start(avctx);
++        if (ret2) {
++            av_log(avctx, AV_LOG_DEBUG, "Start failure: err=%d\n", ret2);
++            ret = (ret2 == AVERROR(ENOMEM)) ? ret2 : NQ_DEAD;
          }
      }
  
@@ -5682,18 +5775,9 @@
 -    return ff_v4l2_context_dequeue_frame(capture, frame, -1);
 -fail:
 -    av_packet_unref(&s->buf_pkt);
-+    // Start if we haven't
-+    {
-+        const int ret2 = v4l2_try_start(avctx);
-+        if (ret2) {
-+            av_log(avctx, AV_LOG_DEBUG, "Start failure: err=%d\n", ret2);
-+            ret = (ret2 == AVERROR(ENOMEM)) ? ret2 : NQ_DEAD;
-+        }
-+    }
-+
-+    return ret;
-+}
-+
+     return ret;
+ }
+ 
 +static int qbuf_wait(AVCodecContext * const avctx, V4L2Context * const ctx)
 +{
 +    int rv = 0;
@@ -5715,12 +5799,12 @@
 +static int v4l2_receive_frame(AVCodecContext *avctx, AVFrame *frame)
 +{
 +    V4L2m2mContext *const s = ((V4L2m2mPriv*)avctx->priv_data)->context;
-+    int src_rv = NQ_OK;
++    int src_rv = -1;
 +    int dst_rv = 1;  // Non-zero (done), non-negative (error) number
 +    unsigned int i = 0;
 +
 +    do {
-+        const int pending = xlat_pending(&s->xlat);
++        const int pending = xlat_pending(s);
 +        const int prefer_dq = (pending > 4);
 +        const int last_src_rv = src_rv;
 +
@@ -5850,8 +5934,8 @@
 +    ret = v4l2_receive_frame2(avctx, frame);
 +    done = us_time();
 +    av_log(avctx, AV_LOG_TRACE, ">>> %s: rx time=%" PRId64 ", rv=%d\n", __func__, done - now, ret);
-     return ret;
- }
++    return ret;
++}
 +#endif
 +
 +static uint32_t
@@ -6096,8 +6180,10 @@
 +}
 +
 +static void
-+parse_extradata(AVCodecContext *avctx)
++parse_extradata(AVCodecContext * const avctx, V4L2m2mContext * const s)
 +{
++    s->reorder_size = 0;
++
 +    if (!avctx->extradata || !avctx->extradata_size)
 +        return;
 +
@@ -6125,6 +6211,7 @@
 +                if (sps) {
 +                    avctx->profile = ff_h264_get_profile(sps);
 +                    avctx->level = sps->level_idc;
++                    s->reorder_size = sps->num_reorder_frames;
 +                }
 +            }
 +            ff_h264_ps_uninit(&ps);
@@ -6155,6 +6242,7 @@
 +                if (sps) {
 +                    avctx->profile = sps->ptl.general_ptl.profile_idc;
 +                    avctx->level   = sps->ptl.general_ptl.level_idc;
++                    s->reorder_size = sps->temporal_layer[sps->max_sub_layers - 1].max_dec_pic_buffering;
 +                }
 +            }
 +            ff_hevc_ps_uninit(&ps);
@@ -6166,7 +6254,7 @@
 +            break;
 +    }
 +}
- 
++
  static av_cold int v4l2_decode_init(AVCodecContext *avctx)
  {
      V4L2Context *capture, *output;
@@ -6187,19 +6275,19 @@
 +        avctx->ticks_per_frame = 2;
 +    }
 +
-+    parse_extradata(avctx);
-+
      ret = ff_v4l2_m2m_create_context(priv, &s);
      if (ret < 0)
          return ret;
  
++    parse_extradata(avctx, s);
++
 +    xlat_init(&s->xlat);
 +    pts_stats_init(&s->pts_stat, avctx, "decoder");
 +
      capture = &s->capture;
      output = &s->output;
  
-@@ -196,14 +1073,65 @@ static av_cold int v4l2_decode_init(AVCo
+@@ -196,14 +1104,65 @@ static av_cold int v4l2_decode_init(AVCo
       * by the v4l2 driver; this event will trigger a full pipeline reconfig and
       * the proper values will be retrieved from the kernel driver.
       */
@@ -6267,7 +6355,7 @@
  
      s->avctx = avctx;
      ret = ff_v4l2_m2m_codec_init(priv);
-@@ -212,12 +1140,88 @@ static av_cold int v4l2_decode_init(AVCo
+@@ -212,12 +1171,88 @@ static av_cold int v4l2_decode_init(AVCo
          return ret;
      }
  
@@ -6358,7 +6446,7 @@
  }
  
  #define OFFSET(x) offsetof(V4L2m2mPriv, x)
-@@ -226,10 +1230,17 @@ static av_cold int v4l2_decode_close(AVC
+@@ -226,10 +1261,17 @@ static av_cold int v4l2_decode_close(AVC
  static const AVOption options[] = {
      V4L_M2M_DEFAULT_OPTS,
      { "num_capture_buffers", "Number of buffers in the capture context",
@@ -6377,7 +6465,7 @@
  #define M2MDEC_CLASS(NAME) \
      static const AVClass v4l2_m2m_ ## NAME ## _dec_class = { \
          .class_name = #NAME "_v4l2m2m_decoder", \
-@@ -250,10 +1261,16 @@ static const AVOption options[] = {
+@@ -250,10 +1292,16 @@ static const AVOption options[] = {
          .init           = v4l2_decode_init, \
          FF_CODEC_RECEIVE_FRAME_CB(v4l2_receive_frame), \
          .close          = v4l2_decode_close, \
@@ -13730,6 +13818,933 @@
  OBJS-$(CONFIG_UNSHARP_FILTER)                += vf_unsharp.o
  OBJS-$(CONFIG_UNSHARP_OPENCL_FILTER)         += vf_unsharp_opencl.o opencl.o \
                                                  opencl/unsharp.o
+--- a/libavfilter/aarch64/Makefile
++++ b/libavfilter/aarch64/Makefile
+@@ -1,3 +1,5 @@
++OBJS-$(CONFIG_BWDIF_FILTER)                  += aarch64/vf_bwdif_init_aarch64.o
+ OBJS-$(CONFIG_NLMEANS_FILTER)                += aarch64/vf_nlmeans_init.o
+ 
++NEON-OBJS-$(CONFIG_BWDIF_FILTER)             += aarch64/vf_bwdif_neon.o
+ NEON-OBJS-$(CONFIG_NLMEANS_FILTER)           += aarch64/vf_nlmeans_neon.o
+--- /dev/null
++++ b/libavfilter/aarch64/vf_bwdif_init_aarch64.c
+@@ -0,0 +1,125 @@
++/*
++ * bwdif aarch64 NEON optimisations
++ *
++ * Copyright (c) 2023 John Cox <jc@kynesim.co.uk>
++ *
++ * This file is part of FFmpeg.
++ *
++ * FFmpeg is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * FFmpeg is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with FFmpeg; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ */
++
++#include "libavutil/common.h"
++#include "libavfilter/bwdif.h"
++#include "libavutil/aarch64/cpu.h"
++
++void ff_bwdif_filter_edge_neon(void *dst1, void *prev1, void *cur1, void *next1,
++                               int w, int prefs, int mrefs, int prefs2, int mrefs2,
++                               int parity, int clip_max, int spat);
++
++void ff_bwdif_filter_intra_neon(void *dst1, void *cur1, int w, int prefs, int mrefs,
++                                int prefs3, int mrefs3, int parity, int clip_max);
++
++void ff_bwdif_filter_line_neon(void *dst1, void *prev1, void *cur1, void *next1,
++                               int w, int prefs, int mrefs, int prefs2, int mrefs2,
++                               int prefs3, int mrefs3, int prefs4, int mrefs4,
++                               int parity, int clip_max);
++
++void ff_bwdif_filter_line3_neon(void * dst1, int d_stride,
++                                const void * prev1, const void * cur1, const void * next1, int s_stride,
++                                int w, int parity, int clip_max);
++
++
++static void filter_line3_helper(void * dst1, int d_stride,
++                                const void * prev1, const void * cur1, const void * next1, int s_stride,
++                                int w, int parity, int clip_max)
++{
++    // Asm works on 16 byte chunks
++    // If w is a multiple of 16 then all is good - if not then if width rounded
++    // up to nearest 16 will fit in both src & dst strides then allow the asm
++    // to write over the padding bytes as that is almost certainly faster than
++    // having to invoke the C version to clean up the tail.
++    const int w1 = FFALIGN(w, 16);
++    const int w0 = clip_max != 255 ? 0 :
++                   d_stride <= w1 && s_stride <= w1 ? w : w & ~15;
++
++    ff_bwdif_filter_line3_neon(dst1, d_stride,
++                               prev1, cur1, next1, s_stride,
++                               w0, parity, clip_max);
++
++    if (w0 < w)
++        ff_bwdif_filter_line3_c((char *)dst1 + w0, d_stride,
++                                (const char *)prev1 + w0, (const char *)cur1 + w0, (const char *)next1 + w0, s_stride,
++                                w - w0, parity, clip_max);
++}
++
++static void filter_line_helper(void *dst1, void *prev1, void *cur1, void *next1,
++                               int w, int prefs, int mrefs, int prefs2, int mrefs2,
++                               int prefs3, int mrefs3, int prefs4, int mrefs4,
++                               int parity, int clip_max)
++{
++    const int w0 = clip_max != 255 ? 0 : w & ~15;
++
++    ff_bwdif_filter_line_neon(dst1, prev1, cur1, next1,
++                              w0, prefs, mrefs, prefs2, mrefs2, prefs3, mrefs3, prefs4, mrefs4, parity, clip_max);
++
++    if (w0 < w)
++        ff_bwdif_filter_line_c((char *)dst1 + w0, (char *)prev1 + w0, (char *)cur1 + w0, (char *)next1 + w0,
++                               w - w0, prefs, mrefs, prefs2, mrefs2, prefs3, mrefs3, prefs4, mrefs4, parity, clip_max);
++}
++
++static void filter_edge_helper(void *dst1, void *prev1, void *cur1, void *next1,
++                               int w, int prefs, int mrefs, int prefs2, int mrefs2,
++                               int parity, int clip_max, int spat)
++{
++    const int w0 = clip_max != 255 ? 0 : w & ~15;
++
++    ff_bwdif_filter_edge_neon(dst1, prev1, cur1, next1, w0, prefs, mrefs, prefs2, mrefs2,
++                              parity, clip_max, spat);
++
++    if (w0 < w)
++        ff_bwdif_filter_edge_c((char *)dst1 + w0, (char *)prev1 + w0, (char *)cur1 + w0, (char *)next1 + w0,
++                               w - w0, prefs, mrefs, prefs2, mrefs2,
++                               parity, clip_max, spat);
++}
++
++static void filter_intra_helper(void *dst1, void *cur1, int w, int prefs, int mrefs,
++                                int prefs3, int mrefs3, int parity, int clip_max)
++{
++    const int w0 = clip_max != 255 ? 0 : w & ~15;
++
++    ff_bwdif_filter_intra_neon(dst1, cur1, w0, prefs, mrefs, prefs3, mrefs3, parity, clip_max);
++
++    if (w0 < w)
++        ff_bwdif_filter_intra_c((char *)dst1 + w0, (char *)cur1 + w0,
++                                w - w0, prefs, mrefs, prefs3, mrefs3, parity, clip_max);
++}
++
++void
++ff_bwdif_init_aarch64(BWDIFContext *s, int bit_depth)
++{
++    const int cpu_flags = av_get_cpu_flags();
++
++    if (bit_depth != 8)
++        return;
++
++    if (!have_neon(cpu_flags))
++        return;
++
++    s->filter_intra = filter_intra_helper;
++    s->filter_line  = filter_line_helper;
++    s->filter_edge  = filter_edge_helper;
++    s->filter_line3 = filter_line3_helper;
++}
++
+--- /dev/null
++++ b/libavfilter/aarch64/vf_bwdif_neon.S
+@@ -0,0 +1,788 @@
++/*
++ * bwdif aarch64 NEON optimisations
++ *
++ * Copyright (c) 2023 John Cox <jc@kynesim.co.uk>
++ *
++ * This file is part of FFmpeg.
++ *
++ * FFmpeg is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * FFmpeg is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with FFmpeg; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ */
++
++
++#include "libavutil/aarch64/asm.S"
++
++// Space taken on the stack by an int (32-bit)
++#ifdef __APPLE__
++.set    SP_INT, 4
++#else
++.set    SP_INT, 8
++#endif
++
++.macro SQSHRUNN b, s0, s1, s2, s3, n
++        sqshrun         \s0\().4h, \s0\().4s, #\n - 8
++        sqshrun2        \s0\().8h, \s1\().4s, #\n - 8
++        sqshrun         \s1\().4h, \s2\().4s, #\n - 8
++        sqshrun2        \s1\().8h, \s3\().4s, #\n - 8
++        uzp2            \b\().16b, \s0\().16b, \s1\().16b
++.endm
++
++.macro SMULL4K a0, a1, a2, a3, s0, s1, k
++        smull           \a0\().4s, \s0\().4h, \k
++        smull2          \a1\().4s, \s0\().8h, \k
++        smull           \a2\().4s, \s1\().4h, \k
++        smull2          \a3\().4s, \s1\().8h, \k
++.endm
++
++.macro UMULL4K a0, a1, a2, a3, s0, s1, k
++        umull           \a0\().4s, \s0\().4h, \k
++        umull2          \a1\().4s, \s0\().8h, \k
++        umull           \a2\().4s, \s1\().4h, \k
++        umull2          \a3\().4s, \s1\().8h, \k
++.endm
++
++.macro UMLAL4K a0, a1, a2, a3, s0, s1, k
++        umlal           \a0\().4s, \s0\().4h, \k
++        umlal2          \a1\().4s, \s0\().8h, \k
++        umlal           \a2\().4s, \s1\().4h, \k
++        umlal2          \a3\().4s, \s1\().8h, \k
++.endm
++
++.macro UMLSL4K a0, a1, a2, a3, s0, s1, k
++        umlsl           \a0\().4s, \s0\().4h, \k
++        umlsl2          \a1\().4s, \s0\().8h, \k
++        umlsl           \a2\().4s, \s1\().4h, \k
++        umlsl2          \a3\().4s, \s1\().8h, \k
++.endm
++
++//      int b = m2s1 - m1;
++//      int f = p2s1 - p1;
++//      int dc = c0s1 - m1;
++//      int de = c0s1 - p1;
++//      int sp_max = FFMIN(p1 - c0s1, m1 - c0s1);
++//      sp_max = FFMIN(sp_max, FFMAX(-b,-f));
++//      int sp_min = FFMIN(c0s1 - p1, c0s1 - m1);
++//      sp_min = FFMIN(sp_min, FFMAX(b,f));
++//      diff = diff == 0 ? 0 : FFMAX3(diff, sp_min, sp_max);
++.macro SPAT_CHECK diff, m2s1, m1, c0s1, p1, p2s1, t0, t1, t2, t3
++        uqsub           \t0\().16b, \p1\().16b, \c0s1\().16b
++        uqsub           \t2\().16b, \m1\().16b, \c0s1\().16b
++        umin            \t2\().16b, \t0\().16b, \t2\().16b
++
++        uqsub           \t1\().16b, \m1\().16b, \m2s1\().16b
++        uqsub           \t3\().16b, \p1\().16b, \p2s1\().16b
++        umax            \t3\().16b, \t3\().16b, \t1\().16b
++        umin            \t3\().16b, \t3\().16b, \t2\().16b
++
++        uqsub           \t0\().16b, \c0s1\().16b, \p1\().16b
++        uqsub           \t2\().16b, \c0s1\().16b, \m1\().16b
++        umin            \t2\().16b, \t0\().16b, \t2\().16b
++
++        uqsub           \t1\().16b, \m2s1\().16b, \m1\().16b
++        uqsub           \t0\().16b, \p2s1\().16b, \p1\().16b
++        umax            \t0\().16b, \t0\().16b, \t1\().16b
++        umin            \t2\().16b, \t2\().16b, \t0\().16b
++
++        cmeq            \t1\().16b, \diff\().16b, #0
++        umax            \diff\().16b, \diff\().16b, \t3\().16b
++        umax            \diff\().16b, \diff\().16b, \t2\().16b
++        bic             \diff\().16b, \diff\().16b, \t1\().16b
++.endm
++
++//      i0 = s0;
++//      if (i0 > d0 + diff0)
++//          i0 = d0 + diff0;
++//      else if (i0 < d0 - diff0)
++//          i0 = d0 - diff0;
++//
++// i0 = s0 is safe
++.macro DIFF_CLIP i0, s0, d0, diff, t0, t1
++        uqadd           \t0\().16b, \d0\().16b, \diff\().16b
++        uqsub           \t1\().16b, \d0\().16b, \diff\().16b
++        umin            \i0\().16b, \s0\().16b, \t0\().16b
++        umax            \i0\().16b, \i0\().16b, \t1\().16b
++.endm
++
++//      i0 = FFABS(m1 - p1) > td0 ? i1 : i2;
++//      DIFF_CLIP
++//
++// i0 = i1 is safe
++.macro INTERPOL i0, i1, i2, m1, d0, p1, td0, diff, t0, t1, t2
++        uabd            \t0\().16b, \m1\().16b, \p1\().16b
++        cmhi            \t0\().16b, \t0\().16b, \td0\().16b
++        bsl             \t0\().16b, \i1\().16b, \i2\().16b
++        DIFF_CLIP       \i0, \t0, \d0, \diff, \t1, \t2
++.endm
++
++.macro PUSH_VREGS
++        stp             d8,  d9,  [sp, #-64]!
++        stp             d10, d11, [sp, #16]
++        stp             d12, d13, [sp, #32]
++        stp             d14, d15, [sp, #48]
++.endm
++
++.macro POP_VREGS
++        ldp             d14, d15, [sp, #48]
++        ldp             d12, d13, [sp, #32]
++        ldp             d10, d11, [sp, #16]
++        ldp             d8,  d9,  [sp], #64
++.endm
++
++.macro LDR_COEFFS d, t0
++        movrel          \t0, coeffs, 0
++        ld1             {\d\().8h}, [\t0]
++.endm
++
++// static const uint16_t coef_lf[2] = { 4309, 213 };
++// static const uint16_t coef_hf[3] = { 5570, 3801, 1016 };
++// static const uint16_t coef_sp[2] = { 5077, 981 };
++
++const coeffs, align=4   // align 4 means align on 2^4 boundry
++        .hword          4309 * 4, 213 * 4               // lf[0]*4 = v0.h[0]
++        .hword          5570, 3801, 1016, -3801         // hf[0] = v0.h[2], -hf[1] = v0.h[5]
++        .hword          5077, 981                       // sp[0] = v0.h[6]
++endconst
++
++// ===========================================================================
++//
++// void ff_bwdif_filter_line3_neon(
++//         void * dst1,         // x0
++//         int d_stride,        // w1
++//         const void * prev1,  // x2
++//         const void * cur1,   // x3
++//         const void * next1,  // x4
++//         int s_stride,        // w5
++//         int w,               // w6
++//         int parity,          // w7
++//         int clip_max);       // [sp, #0] (Ignored)
++
++function ff_bwdif_filter_line3_neon, export=1
++        // Sanity check w
++        cmp             w6, #0
++        ble             99f
++
++        LDR_COEFFS      v0, x17
++
++// #define prev2 cur
++//        const uint8_t * restrict next2 = parity ? prev : next;
++        cmp             w7, #0
++        csel            x17, x2, x4, ne
++
++        // We want all the V registers - save all the ones we must
++        PUSH_VREGS
++
++        // Some rearrangement of initial values for nice layout of refs in regs
++        mov             w10, w6                         // w10 = loop count
++        neg             w9,  w5                         // w9  = mref
++        lsl             w8,  w9,  #1                    // w8 =  mref2
++        add             w7,  w9,  w9, LSL #1            // w7  = mref3
++        lsl             w6,  w9,  #2                    // w6  = mref4
++        mov             w11, w5                         // w11 = pref
++        lsl             w12, w5,  #1                    // w12 = pref2
++        add             w13, w5,  w5, LSL #1            // w13 = pref3
++        lsl             w14, w5,  #2                    // w14 = pref4
++        add             w15, w5,  w5, LSL #2            // w15 = pref5
++        add             w16, w14, w12                   // w16 = pref6
++
++        lsl             w5,  w1,  #1                    // w5 = d_stride * 2
++
++//         for (x = 0; x < w; x++) {
++//             int diff0, diff2;
++//             int d0, d2;
++//             int temporal_diff0, temporal_diff2;
++//
++//             int i1, i2;
++//             int j1, j2;
++//             int p6, p5, p4, p3, p2, p1, c0, m1, m2, m3, m4;
++
++10:
++//             c0 = prev2[0] + next2[0];                // c0 = v20, v21
++//             d0  = c0 >> 1;                           // d0 = v10
++//             temporal_diff0 = FFABS(prev2[0] - next2[0]); // td0 = v11
++        ldr             q31, [x3]
++        ldr             q21, [x17]
++        uhadd           v10.16b, v31.16b, v21.16b
++        uabd            v11.16b, v31.16b, v21.16b
++        uaddl           v20.8h,  v21.8b,  v31.8b
++        uaddl2          v21.8h,  v21.16b, v31.16b
++
++        ldr             q31, [x3, w6, sxtw]
++        ldr             q23, [x17, w6, sxtw]
++
++//             i1 = coef_hf[0] * c0;                    // i1 = v2-v5
++        UMULL4K         v2, v3, v4, v5, v20, v21, v0.h[2]
++
++        ldr             q30, [x3, w14, sxtw]
++        ldr             q25, [x17, w14, sxtw]
++
++//             m4 = prev2[mrefs4] + next2[mrefs4];      // m4 = v22,v23
++        uaddl           v22.8h,  v23.8b,  v31.8b
++        uaddl2          v23.8h,  v23.16b, v31.16b
++
++//             p4 = prev2[prefs4] + next2[prefs4];      // p4 = v24,v25, (p4 >> 1) = v12
++        uhadd           v12.16b, v25.16b, v30.16b
++        uaddl           v24.8h,  v25.8b,  v30.8b
++        uaddl2          v25.8h,  v25.16b, v30.16b
++
++//             j1 = -coef_hf[1] * (c0 + p4);            // j1 = v6-v9  (-c0:v20,v21)
++        add             v20.8h,  v20.8h,  v24.8h
++        add             v21.8h,  v21.8h,  v25.8h
++        SMULL4K         v6, v7, v8, v9, v20, v21, v0.h[5]
++
++//             m3 = cur[mrefs3];                        // m3 = v20
++        ldr             q20, [x3, w7, sxtw]
++
++//             p3 = cur[prefs3];                        // p3 = v21
++        ldr             q21, [x3, w13, sxtw]
++
++//             i1 += coef_hf[2] * (m4 + p4);            // (-m4:v22,v23) (-p4:v24,v25)
++        add             v22.8h,  v22.8h,  v24.8h
++        add             v23.8h,  v23.8h,  v25.8h
++        UMLAL4K         v2, v3, v4, v5, v22, v23, v0.h[4]
++
++        ldr             q29, [x3, w8, sxtw]
++        ldr             q23, [x17, w8, sxtw]
++
++//             i1 -= coef_lf[1] * 4 * (m3 + p3);        // -
++        uaddl           v30.8h,  v20.8b,  v21.8b
++        uaddl2          v31.8h,  v20.16b, v21.16b
++
++        ldr             q28, [x3, w16, sxtw]
++        ldr             q25, [x17, w16, sxtw]
++
++        UMLSL4K         v2, v3, v4, v5, v30, v31, v0.h[1]
++
++//             m2 = prev2[mrefs2] + next2[mrefs2];      // m2 = v22,v23, (m2 >> 1) = v13
++        uhadd           v13.16b, v23.16b, v29.16b
++        uaddl           v22.8h,  v23.8b,  v29.8b
++        uaddl2          v23.8h,  v23.16b, v29.16b
++
++        ldr             q31, [x3, w12, sxtw]
++        ldr             q27, [x17, w12, sxtw]
++
++//             p6 = prev2[prefs6] + next2[prefs6];      // p6 = v24,v25
++        uaddl           v24.8h,  v25.8b,  v28.8b
++        uaddl2          v25.8h,  v25.16b, v28.16b
++
++//             j1 += coef_hf[2] * (m2 + p6);            // (-p6:v24,v25)
++        add             v24.8h,  v24.8h,  v22.8h
++        add             v25.8h,  v25.8h,  v23.8h
++        UMLAL4K         v6, v7, v8, v9, v24, v25, v0.h[4]
++
++//             m1 = cur[mrefs];                         // m1 = v24
++        ldr             q24, [x3, w9, sxtw]
++
++//             p5 = cur[prefs5];                        // p5 = v25
++        ldr             q25, [x3, w15, sxtw]
++
++//             p2 = prev2[prefs2] + next2[prefs2];      // p2 = v26, v27
++//             temporal_diff2 = FFABS(prev2[prefs2] - next2[prefs2]); // td2 = v14
++//             d2  = p2 >> 1;                           // d2 = v15
++        uabd            v14.16b, v31.16b, v27.16b
++        uhadd           v15.16b, v31.16b, v27.16b
++        uaddl           v26.8h,  v27.8b,  v31.8b
++        uaddl2          v27.8h,  v27.16b, v31.16b
++
++//             j1 += coef_hf[0] * p2;                   // -
++        UMLAL4K         v6, v7, v8, v9, v26, v27, v0.h[2]
++
++//             i1 -= coef_hf[1] * (m2 + p2);            // (-m2:v22,v23*) (-p2:v26*,v27*)
++        add             v22.8h,  v22.8h,  v26.8h
++        add             v23.8h,  v23.8h,  v27.8h
++        UMLSL4K         v2, v3, v4, v5, v22, v23, v0.h[3]
++
++//             p1 = cur[prefs];                         // p1 = v22
++        ldr             q22, [x3, w11, sxtw]
++
++//             j1 -= coef_lf[1] * 4 * (m1 + p5);        // -
++        uaddl           v26.8h,  v24.8b,  v25.8b
++        uaddl2          v27.8h,  v24.16b, v25.16b
++        UMLSL4K         v6, v7, v8, v9, v26, v27, v0.h[1]
++
++//             j2 = (coef_sp[0] * (p1 + p3) - coef_sp[1]  * (m1 + p5)) >> 13; // (-p5:v25*) j2=v16
++        uaddl           v18.8h,  v22.8b,  v21.8b
++        uaddl2          v19.8h,  v22.16b, v21.16b
++        UMULL4K         v28, v29, v30, v31, v18, v19, v0.h[6]
++
++        uaddl           v18.8h,  v24.8b,  v25.8b
++        uaddl2          v19.8h,  v24.16b, v25.16b
++        UMLSL4K         v28, v29, v30, v31, v18, v19, v0.h[7]
++
++        SQSHRUNN        v16, v28, v29, v30, v31, 13
++
++//             i2 = (coef_sp[0] * (m1 + p1) - coef_sp[1] * (m3 + p3)) >> 13; // (-m3:v20*) i2=v17
++        uaddl           v18.8h,  v22.8b,  v24.8b
++        uaddl2          v19.8h,  v22.16b, v24.16b
++        UMULL4K         v28, v29, v30, v31, v18, v19, v0.h[6]
++
++        uaddl           v18.8h,  v20.8b,  v21.8b
++        uaddl2          v19.8h,  v20.16b, v21.16b
++        UMLSL4K         v28, v29, v30, v31, v18, v19, v0.h[7]
++
++        SQSHRUNN        v17, v28, v29, v30, v31, 13
++
++//             i1 += coef_lf[0] * 4 * (m1 + p1);        // p1 = v22, m1 = v24
++        uaddl           v26.8h,  v24.8b,  v22.8b
++        uaddl2          v27.8h,  v24.16b, v22.16b
++        UMLAL4K         v2, v3, v4, v5, v26, v27, v0.h[0]
++
++        ldr             q31, [x2, w9, sxtw]
++        ldr             q29, [x4, w9, sxtw]
++
++//             j1 += coef_lf[0] * 4 * (p1 + p3);        // p1 = v22, p3 = v21
++        uaddl           v26.8h,  v21.8b,  v22.8b
++        uaddl2          v27.8h,  v21.16b, v22.16b
++        UMLAL4K         v6, v7, v8, v9, v26, v27, v0.h[0]
++
++        ldr             q30, [x2, w11, sxtw]
++        ldr             q28, [x4, w11, sxtw]
++
++//             i1 >>= 15;                               // i1 = v2, -v3, -v4*, -v5*
++        SQSHRUNN        v2, v2, v3, v4, v5, 15
++
++//             j1 >>= 15;                               // j1 = v3, -v6*, -v7*, -v8*, -v9*
++        SQSHRUNN        v3, v6, v7, v8, v9, 15
++
++//             {
++//                 int t1 =(FFABS(prev[mrefs] - m1) + FFABS(prev[prefs] - p1)) >> 1;
++//                 int t2 =(FFABS(next[mrefs] - m1) + FFABS(next[prefs] - p1)) >> 1;
++        uabd            v30.16b, v22.16b, v30.16b
++        uabd            v31.16b, v24.16b, v31.16b
++        uabd            v28.16b, v22.16b, v28.16b
++        uabd            v29.16b, v24.16b, v29.16b
++        uhadd           v31.16b, v31.16b, v30.16b
++        uhadd           v29.16b, v29.16b, v28.16b
++
++        ldr             q27, [x2, w13, sxtw]
++        ldr             q26, [x4, w13, sxtw]
++
++//                 diff0 = FFMAX3(temporal_diff0 >> 1, t1, t2); // diff0=v18
++        ushr            v18.16b, v11.16b, #1
++        umax            v18.16b, v18.16b, v31.16b
++        umax            v18.16b, v18.16b, v29.16b
++//             }                                        // v28, v30 preserved for next block
++//             {  // tdiff2 = v14
++//                 int t1 =(FFABS(prev[prefs] - p1) + FFABS(prev[prefs3] - p3)) >> 1;
++//                 int t2 =(FFABS(next[prefs] - p1) + FFABS(next[prefs3] - p3)) >> 1;
++        uabd            v31.16b, v21.16b, v27.16b
++        uabd            v29.16b, v21.16b, v26.16b
++        uhadd           v31.16b, v31.16b, v30.16b
++        uhadd           v29.16b, v29.16b, v28.16b
++
++//                 diff2 = FFMAX3(temporal_diff2 >> 1, t1, t2); // diff2=v19
++        ushr            v19.16b, v14.16b, #1
++        umax            v19.16b, v19.16b, v31.16b
++        umax            v19.16b, v19.16b, v29.16b
++//             }
++
++        // diff0 = v18, (m2 >> 1) = v13, m1 = v24, d0 = v10, p1 = v22, d2 = v15
++        SPAT_CHECK      v18, v13, v24, v10, v22, v15, v31, v30, v29, v28
++
++        //  diff2 = v19, d0 = v10, p1 = v22, d2 = v15, p3 = v21, (p4 >> 1) = v12
++        SPAT_CHECK      v19, v10, v22, v15, v21, v12, v31, v30, v29, v28
++
++        // j1 = v3, j2 = v16, p1 = v22, d2 = v15, p3 = v21, td2 = v14, diff2 = v19
++        INTERPOL        v3, v3, v16, v22, v15, v21, v14, v19, v31, v30, v29
++
++//                 dst[d_stride * 2] = av_clip_uint8(interpol);
++        str             q3,  [x0, w5, sxtw]
++
++//             dst[d_stride] = p1;
++        str             q22, [x0, w1, sxtw]
++
++        // i1 = v2, i2 = v17, m1 = v24, d0 = v10, p1 = v22, td2 = v11, diff2 = v18
++        INTERPOL        v2, v2, v17, v24, v10, v22, v11, v18, v31, v30, v29
++
++//                 dst[0] = av_clip_uint8(interpol);
++        str             q2,  [x0], #16
++//             }
++//
++//             dst++;
++//             cur++;
++//             prev++;
++//             prev2++;
++//             next++;
++//         }
++        subs            w10, w10, #16
++        add             x2,  x2,  #16
++        add             x3,  x3,  #16
++        add             x4,  x4,  #16
++        add             x17, x17, #16
++        bgt             10b
++
++        POP_VREGS
++99:
++        ret
++endfunc
++
++// ===========================================================================
++//
++// void filter_line(
++//      void *dst1,     // x0
++//      void *prev1,    // x1
++//      void *cur1,     // x2
++//      void *next1,    // x3
++//      int w,          // w4
++//      int prefs,      // w5
++//      int mrefs,      // w6
++//      int prefs2,     // w7
++//      int mrefs2,     // [sp, #0]
++//      int prefs3,     // [sp, #SP_INT]
++//      int mrefs3,     // [sp, #SP_INT*2]
++//      int prefs4,     // [sp, #SP_INT*3]
++//      int mrefs4,     // [sp, #SP_INT*4]
++//      int parity,     // [sp, #SP_INT*5]
++//      int clip_max)   // [sp, #SP_INT*6]
++
++function ff_bwdif_filter_line_neon, export=1
++        // Sanity check w
++        cmp             w4, #0
++        ble             99f
++
++        // Rearrange regs to be the same as line3 for ease of debug!
++        mov             w10, w4                         // w10 = loop count
++        mov             w9,  w6                         // w9  = mref
++        mov             w12, w7                         // w12 = pref2
++        mov             w11, w5                         // w11 = pref
++        ldr             w8,  [sp, #0]                   // w8 =  mref2
++        ldr             w7,  [sp, #SP_INT*2]            // w7  = mref3
++        ldr             w6,  [sp, #SP_INT*4]            // w6  = mref4
++        ldr             w13, [sp, #SP_INT]              // w13 = pref3
++        ldr             w14, [sp, #SP_INT*3]            // w14 = pref4
++
++        mov             x4,  x3
++        mov             x3,  x2
++        mov             x2,  x1
++
++        LDR_COEFFS      v0, x17
++
++// #define prev2 cur
++//        const uint8_t * restrict next2 = parity ? prev : next;
++        ldr             w17, [sp, #SP_INT*5]            // parity
++        cmp             w17, #0
++        csel            x17, x2, x4, ne
++
++        PUSH_VREGS
++
++//         for (x = 0; x < w; x++) {
++//             int diff0, diff2;
++//             int d0, d2;
++//             int temporal_diff0, temporal_diff2;
++//
++//             int i1, i2;
++//             int j1, j2;
++//             int p6, p5, p4, p3, p2, p1, c0, m1, m2, m3, m4;
++
++10:
++//             c0 = prev2[0] + next2[0];            // c0 = v20, v21
++//             d0  = c0 >> 1;                       // d0 = v10
++//             temporal_diff0 = FFABS(prev2[0] - next2[0]); // td0 = v11
++        ldr             q31, [x3]
++        ldr             q21, [x17]
++        uhadd           v10.16b, v31.16b, v21.16b
++        uabd            v11.16b, v31.16b, v21.16b
++        uaddl           v20.8h,  v21.8b,  v31.8b
++        uaddl2          v21.8h,  v21.16b, v31.16b
++
++        ldr             q31, [x3, w6, sxtw]
++        ldr             q23, [x17, w6, sxtw]
++
++//             i1 = coef_hf[0] * c0;                // i1 = v2-v5
++        UMULL4K         v2, v3, v4, v5, v20, v21, v0.h[2]
++
++        ldr             q30, [x3, w14, sxtw]
++        ldr             q25, [x17, w14, sxtw]
++
++//             m4 = prev2[mrefs4] + next2[mrefs4];  // m4 = v22,v23
++        uaddl           v22.8h,  v23.8b,  v31.8b
++        uaddl2          v23.8h,  v23.16b, v31.16b
++
++//             p4 = prev2[prefs4] + next2[prefs4];  // p4 = v24,v25, (p4 >> 1) = v12
++        uhadd           v12.16b, v25.16b, v30.16b
++        uaddl           v24.8h,  v25.8b,  v30.8b
++        uaddl2          v25.8h,  v25.16b, v30.16b
++
++//             m3 = cur[mrefs3];                    // m3 = v20
++        ldr             q20, [x3, w7, sxtw]
++
++//             p3 = cur[prefs3];                    // p3 = v21
++        ldr             q21, [x3, w13, sxtw]
++
++//             i1 += coef_hf[2] * (m4 + p4);        // (-m4:v22,v23) (-p4:v24,v25)
++        add             v22.8h,  v22.8h,  v24.8h
++        add             v23.8h,  v23.8h,  v25.8h
++        UMLAL4K         v2, v3, v4, v5, v22, v23, v0.h[4]
++
++        ldr             q29, [x3, w8, sxtw]
++        ldr             q23, [x17, w8, sxtw]
++
++//             i1 -= coef_lf[1] * 4 * (m3 + p3);    // -
++        uaddl           v30.8h,  v20.8b,  v21.8b
++        uaddl2          v31.8h,  v20.16b, v21.16b
++
++        UMLSL4K         v2, v3, v4, v5, v30, v31, v0.h[1]
++
++        ldr             q31, [x3, w12, sxtw]
++        ldr             q27, [x17, w12, sxtw]
++
++//             m2 = prev2[mrefs2] + next2[mrefs2];  // m2 = v22,v23, (m2 >> 1) = v13
++        uhadd           v13.16b, v23.16b, v29.16b
++        uaddl           v22.8h,  v23.8b,  v29.8b
++        uaddl2          v23.8h,  v23.16b, v29.16b
++
++//             m1 = cur[mrefs];                     // m1 = v24
++        ldr             q24, [x3, w9, sxtw]
++
++//             p2 = prev2[prefs2] + next2[prefs2];  // p2 = v26, v27
++//             temporal_diff2 = FFABS(prev2[prefs2] - next2[prefs2]); // td2 = v14
++//             d2  = p2 >> 1;                       // d2 = v15
++        uabd            v14.16b, v31.16b, v27.16b
++        uhadd           v15.16b, v31.16b, v27.16b
++        uaddl           v26.8h,  v27.8b,  v31.8b
++        uaddl2          v27.8h,  v27.16b, v31.16b
++
++//             i1 -= coef_hf[1] * (m2 + p2);        // (-m2:v22,v23*) (-p2:v26*,v27*)
++        add             v22.8h,  v22.8h,  v26.8h
++        add             v23.8h,  v23.8h,  v27.8h
++        UMLSL4K         v2, v3, v4, v5, v22, v23, v0.h[3]
++
++//             p1 = cur[prefs];                     // p1 = v22
++        ldr             q22, [x3, w11, sxtw]
++
++//             i2 = (coef_sp[0] * (m1 + p1) - coef_sp[1] * (m3 + p3)) >> 13; // (-m3:v20*) i2=v17
++        uaddl           v18.8h,  v22.8b,  v24.8b
++        uaddl2          v19.8h,  v22.16b, v24.16b
++        UMULL4K         v28, v29, v30, v31, v18, v19, v0.h[6]
++
++        uaddl           v18.8h,  v20.8b,  v21.8b
++        uaddl2          v19.8h,  v20.16b, v21.16b
++        UMLSL4K         v28, v29, v30, v31, v18, v19, v0.h[7]
++
++        SQSHRUNN        v17, v28, v29, v30, v31, 13
++
++//             i1 += coef_lf[0] * 4 * (m1 + p1);    // p1 = v22, m1 = v24
++        uaddl           v26.8h,  v24.8b,  v22.8b
++        uaddl2          v27.8h,  v24.16b, v22.16b
++        UMLAL4K         v2, v3, v4, v5, v26, v27, v0.h[0]
++
++        ldr             q31, [x2, w9, sxtw]
++        ldr             q29, [x4, w9, sxtw]
++
++        ldr             q30, [x2, w11, sxtw]
++        ldr             q28, [x4, w11, sxtw]
++
++//             i1 >>= 15;                            // i1 = v2, -v3, -v4*, -v5*
++        SQSHRUNN        v2, v2, v3, v4, v5, 15
++
++//             {
++//                 int t1 =(FFABS(prev[mrefs] - m1) + FFABS(prev[prefs] - p1)) >> 1;
++//                 int t2 =(FFABS(next[mrefs] - m1) + FFABS(next[prefs] - p1)) >> 1;
++        uabd            v30.16b, v22.16b, v30.16b
++        uabd            v31.16b, v24.16b, v31.16b
++        uabd            v28.16b, v22.16b, v28.16b
++        uabd            v29.16b, v24.16b, v29.16b
++        uhadd           v31.16b, v31.16b, v30.16b
++        uhadd           v29.16b, v29.16b, v28.16b
++
++//                 diff0 = FFMAX3(temporal_diff0 >> 1, t1, t2); // diff0=v18
++        ushr            v18.16b, v11.16b, #1
++        umax            v18.16b, v18.16b, v31.16b
++        umax            v18.16b, v18.16b, v29.16b
++
++        // diff0 = v18, (m2 >> 1) = v13, m1 = v24, d0 = v10, p1 = v22, d2 = v15
++        SPAT_CHECK      v18, v13, v24, v10, v22, v15, v31, v30, v29, v28
++
++        // i1 = v2, i2 = v17, m1 = v24, d0 = v10, p1 = v22, td2 = v11, diff2 = v18
++        INTERPOL        v2, v2, v17, v24, v10, v22, v11, v18, v31, v30, v29
++
++//                 dst[0] = av_clip_uint8(interpol);
++        str             q2,  [x0], #16
++//             }
++//
++//             dst++;
++//             cur++;
++//             prev++;
++//             prev2++;
++//             next++;
++//         }
++
++        subs            w10, w10, #16
++        add             x2,  x2,  #16
++        add             x3,  x3,  #16
++        add             x4,  x4,  #16
++        add             x17, x17, #16
++        bgt             10b
++
++        POP_VREGS
++99:
++        ret
++endfunc
++
++// ============================================================================
++//
++// void ff_bwdif_filter_edge_neon(
++//      void *dst1,     // x0
++//      void *prev1,    // x1
++//      void *cur1,     // x2
++//      void *next1,    // x3
++//      int w,          // w4
++//      int prefs,      // w5
++//      int mrefs,      // w6
++//      int prefs2,     // w7
++//      int mrefs2,     // [sp, #0]
++//      int parity,     // [sp, #SP_INT]
++//      int clip_max,   // [sp, #SP_INT*2]  unused
++//      int spat);      // [sp, #SP_INT*3]
++
++function ff_bwdif_filter_edge_neon, export=1
++        // Sanity check w
++        cmp             w4, #0
++        ble             99f
++
++// #define prev2 cur
++//     const uint8_t * restrict next2 = parity ? prev : next;
++
++        ldr             w8,  [sp, #0]                   // mrefs2
++
++        ldr             w17, [sp, #SP_INT]              // parity
++        ldr             w16, [sp, #SP_INT*3]            // spat
++        cmp             w17, #0
++        csel            x17, x1, x3, ne
++
++//     for (x = 0; x < w; x++) {
++
++10:
++//        int m1 = cur[mrefs];
++//        int d = (prev2[0] + next2[0]) >> 1;
++//        int p1 = cur[prefs];
++//        int temporal_diff0 = FFABS(prev2[0] - next2[0]);
++//        int temporal_diff1 =(FFABS(prev[mrefs] - m1) + FFABS(prev[prefs] - p1)) >> 1;
++//        int temporal_diff2 =(FFABS(next[mrefs] - m1) + FFABS(next[prefs] - p1)) >> 1;
++//        int diff = FFMAX3(temporal_diff0 >> 1, temporal_diff1, temporal_diff2);
++        ldr             q31, [x2]
++        ldr             q21, [x17]
++        uhadd           v16.16b, v31.16b, v21.16b       // d0 = v16
++        uabd            v17.16b, v31.16b, v21.16b       // td0 = v17
++        ldr             q24, [x2, w6, sxtw]             // m1 = v24
++        ldr             q22, [x2, w5, sxtw]             // p1 = v22
++
++        ldr             q0,  [x1, w6, sxtw]             // prev[mrefs]
++        ldr             q2,  [x1, w5, sxtw]             // prev[prefs]
++        ldr             q1,  [x3, w6, sxtw]             // next[mrefs]
++        ldr             q3,  [x3, w5, sxtw]             // next[prefs]
++
++        ushr            v29.16b, v17.16b, #1
++
++        uabd            v31.16b, v0.16b,  v24.16b
++        uabd            v30.16b, v2.16b,  v22.16b
++        uhadd           v0.16b,  v31.16b, v30.16b       // td1 = q0
++
++        uabd            v31.16b, v1.16b,  v24.16b
++        uabd            v30.16b, v3.16b,  v22.16b
++        uhadd           v1.16b,  v31.16b, v30.16b       // td2 = q1
++
++        umax            v0.16b,  v0.16b,  v29.16b
++        umax            v0.16b,  v0.16b,  v1.16b        // diff = v0
++
++//        if (spat) {
++//            SPAT_CHECK()
++//        }
++//        i0 = (m1 + p1) >> 1;
++        cbz             w16, 1f
++
++        ldr             q31, [x2,  w8, sxtw]
++        ldr             q18, [x17, w8, sxtw]
++        ldr             q30, [x2,  w7, sxtw]
++        ldr             q19, [x17, w7, sxtw]
++        uhadd           v18.16b, v18.16b, v31.16b
++        uhadd           v19.16b, v19.16b, v30.16b
++
++        SPAT_CHECK      v0, v18, v24, v16, v22, v19, v31, v30, v29, v28
++
++1:
++        uhadd           v2.16b,  v22.16b, v24.16b
++
++        // i0 = v2, s0 = v2, d0 = v16, diff = v0, t0 = v31, t1 = v30
++        DIFF_CLIP       v2, v2, v16, v0, v31, v30
++
++//        dst[0] = av_clip(interpol, 0, clip_max);
++        str             q2, [x0], #16
++
++//        dst++;
++//        cur++;
++//    }
++        subs            w4,  w4,  #16
++        add             x1,  x1,  #16
++        add             x2,  x2,  #16
++        add             x3,  x3,  #16
++        add             x17, x17, #16
++        bgt             10b
++
++99:
++        ret
++endfunc
++
++// ============================================================================
++//
++// void ff_bwdif_filter_intra_neon(
++//      void *dst1,     // x0
++//      void *cur1,     // x1
++//      int w,          // w2
++//      int prefs,      // w3
++//      int mrefs,      // w4
++//      int prefs3,     // w5
++//      int mrefs3,     // w6
++//      int parity,     // w7       unused
++//      int clip_max)   // [sp, #0] unused
++
++function ff_bwdif_filter_intra_neon, export=1
++        cmp             w2, #0
++        ble             99f
++
++        LDR_COEFFS      v0, x17
++
++//    for (x = 0; x < w; x++) {
++10:
++
++//        interpol = (coef_sp[0] * (cur[mrefs] + cur[prefs]) - coef_sp[1] * (cur[mrefs3] + cur[prefs3])) >> 13;
++        ldr             q31, [x1, w4, sxtw]
++        ldr             q30, [x1, w3, sxtw]
++        ldr             q29, [x1, w6, sxtw]
++        ldr             q28, [x1, w5, sxtw]
++
++        uaddl           v20.8h,  v31.8b,  v30.8b
++        uaddl2          v21.8h,  v31.16b, v30.16b
++
++        UMULL4K         v2, v3, v4, v5, v20, v21, v0.h[6]
++
++        uaddl           v20.8h,  v29.8b,  v28.8b
++        uaddl2          v21.8h,  v29.16b, v28.16b
++
++        UMLSL4K         v2, v3, v4, v5, v20, v21, v0.h[7]
++
++//        dst[0] = av_clip(interpol, 0, clip_max);
++        SQSHRUNN        v2, v2, v3, v4, v5, 13
++        str             q2, [x0], #16
++
++//        dst++;
++//        cur++;
++//    }
++
++        subs            w2,  w2,  #16
++        add             x1,  x1,  #16
++        bgt             10b
++
++99:
++        ret
++endfunc
 --- a/libavfilter/allfilters.c
 +++ b/libavfilter/allfilters.c
 @@ -242,6 +242,7 @@ extern const AVFilter ff_vf_derain;
@@ -13824,6 +14839,188 @@
                                       frame->format, frame->pts);
              break;
          case AVMEDIA_TYPE_AUDIO:
+--- a/libavfilter/bwdif.h
++++ b/libavfilter/bwdif.h
+@@ -35,8 +35,29 @@ typedef struct BWDIFContext {
+     void (*filter_edge)(void *dst, void *prev, void *cur, void *next,
+                         int w, int prefs, int mrefs, int prefs2, int mrefs2,
+                         int parity, int clip_max, int spat);
++    void (*filter_line3)(void *dst, int dstride,
++                         const void *prev, const void *cur, const void *next, int prefs,
++                         int w, int parity, int clip_max);
+ } BWDIFContext;
+ 
+-void ff_bwdif_init_x86(BWDIFContext *bwdif);
++void ff_bwdif_init_filter_line(BWDIFContext *bwdif, int bit_depth);
++void ff_bwdif_init_x86(BWDIFContext *bwdif, int bit_depth);
++void ff_bwdif_init_aarch64(BWDIFContext *bwdif, int bit_depth);
++
++void ff_bwdif_filter_edge_c(void *dst1, void *prev1, void *cur1, void *next1,
++                            int w, int prefs, int mrefs, int prefs2, int mrefs2,
++                            int parity, int clip_max, int spat);
++
++void ff_bwdif_filter_intra_c(void *dst1, void *cur1, int w, int prefs, int mrefs,
++                             int prefs3, int mrefs3, int parity, int clip_max);
++
++void ff_bwdif_filter_line_c(void *dst1, void *prev1, void *cur1, void *next1,
++                            int w, int prefs, int mrefs, int prefs2, int mrefs2,
++                            int prefs3, int mrefs3, int prefs4, int mrefs4,
++                            int parity, int clip_max);
++
++void ff_bwdif_filter_line3_c(void * dst1, int d_stride,
++                             const void * prev1, const void * cur1, const void * next1, int s_stride,
++                             int w, int parity, int clip_max);
+ 
+ #endif /* AVFILTER_BWDIF_H */
+--- a/libavfilter/vf_bwdif.c
++++ b/libavfilter/vf_bwdif.c
+@@ -122,8 +122,8 @@ typedef struct ThreadData {
+         next2++; \
+     }
+ 
+-static void filter_intra(void *dst1, void *cur1, int w, int prefs, int mrefs,
+-                         int prefs3, int mrefs3, int parity, int clip_max)
++void ff_bwdif_filter_intra_c(void *dst1, void *cur1, int w, int prefs, int mrefs,
++                             int prefs3, int mrefs3, int parity, int clip_max)
+ {
+     uint8_t *dst = dst1;
+     uint8_t *cur = cur1;
+@@ -132,10 +132,10 @@ static void filter_intra(void *dst1, voi
+     FILTER_INTRA()
+ }
+ 
+-static void filter_line_c(void *dst1, void *prev1, void *cur1, void *next1,
+-                          int w, int prefs, int mrefs, int prefs2, int mrefs2,
+-                          int prefs3, int mrefs3, int prefs4, int mrefs4,
+-                          int parity, int clip_max)
++void ff_bwdif_filter_line_c(void *dst1, void *prev1, void *cur1, void *next1,
++                            int w, int prefs, int mrefs, int prefs2, int mrefs2,
++                            int prefs3, int mrefs3, int prefs4, int mrefs4,
++                            int parity, int clip_max)
+ {
+     uint8_t *dst   = dst1;
+     uint8_t *prev  = prev1;
+@@ -150,9 +150,34 @@ static void filter_line_c(void *dst1, vo
+     FILTER2()
+ }
+ 
+-static void filter_edge(void *dst1, void *prev1, void *cur1, void *next1,
+-                        int w, int prefs, int mrefs, int prefs2, int mrefs2,
+-                        int parity, int clip_max, int spat)
++#define NEXT_LINE()\
++    dst += d_stride; \
++    prev += prefs; \
++    cur  += prefs; \
++    next += prefs;
++
++void ff_bwdif_filter_line3_c(void * dst1, int d_stride,
++                             const void * prev1, const void * cur1, const void * next1, int s_stride,
++                             int w, int parity, int clip_max)
++{
++    const int prefs = s_stride;
++    uint8_t * dst  = dst1;
++    const uint8_t * prev = prev1;
++    const uint8_t * cur  = cur1;
++    const uint8_t * next = next1;
++
++    ff_bwdif_filter_line_c(dst, (void*)prev, (void*)cur, (void*)next, w,
++                           prefs, -prefs, prefs * 2, - prefs * 2, prefs * 3, -prefs * 3, prefs * 4, -prefs * 4, parity, clip_max);
++    NEXT_LINE();
++    memcpy(dst, cur, w);
++    NEXT_LINE();
++    ff_bwdif_filter_line_c(dst, (void*)prev, (void*)cur, (void*)next, w,
++                           prefs, -prefs, prefs * 2, - prefs * 2, prefs * 3, -prefs * 3, prefs * 4, -prefs * 4, parity, clip_max);
++}
++
++void ff_bwdif_filter_edge_c(void *dst1, void *prev1, void *cur1, void *next1,
++                            int w, int prefs, int mrefs, int prefs2, int mrefs2,
++                            int parity, int clip_max, int spat)
+ {
+     uint8_t *dst   = dst1;
+     uint8_t *prev  = prev1;
+@@ -212,6 +237,13 @@ static void filter_edge_16bit(void *dst1
+     FILTER2()
+ }
+ 
++// Round job start line down to multiple of 4 so that if filter_line3 exists
++// and the frame is a multiple of 4 high then filter_line will never be called
++static inline int job_start(const int jobnr, const int nb_jobs, const int h)
++{
++    return jobnr >= nb_jobs ? h : ((h * jobnr) / nb_jobs) & ~3;
++}
++
+ static int filter_slice(AVFilterContext *ctx, void *arg, int jobnr, int nb_jobs)
+ {
+     BWDIFContext *s = ctx->priv;
+@@ -221,8 +253,8 @@ static int filter_slice(AVFilterContext
+     int clip_max = (1 << (yadif->csp->comp[td->plane].depth)) - 1;
+     int df = (yadif->csp->comp[td->plane].depth + 7) / 8;
+     int refs = linesize / df;
+-    int slice_start = (td->h *  jobnr   ) / nb_jobs;
+-    int slice_end   = (td->h * (jobnr+1)) / nb_jobs;
++    int slice_start = job_start(jobnr, nb_jobs, td->h);
++    int slice_end   = job_start(jobnr + 1, nb_jobs, td->h);
+     int y;
+ 
+     for (y = slice_start; y < slice_end; y++) {
+@@ -244,6 +276,11 @@ static int filter_slice(AVFilterContext
+                                refs << 1, -(refs << 1),
+                                td->parity ^ td->tff, clip_max,
+                                (y < 2) || ((y + 3) > td->h) ? 0 : 1);
++            } else if (s->filter_line3 && y + 2 < slice_end && y + 6 < td->h) {
++                s->filter_line3(dst, td->frame->linesize[td->plane],
++                                prev, cur, next, linesize, td->w,
++                                td->parity ^ td->tff, clip_max);
++                y += 2;
+             } else {
+                 s->filter_line(dst, prev, cur, next, td->w,
+                                refs, -refs, refs << 1, -(refs << 1),
+@@ -280,7 +317,7 @@ static void filter(AVFilterContext *ctx,
+         td.plane = i;
+ 
+         ff_filter_execute(ctx, filter_slice, &td, NULL,
+-                          FFMIN(h, ff_filter_get_nb_threads(ctx)));
++                          FFMIN((h+3)/4, ff_filter_get_nb_threads(ctx)));
+     }
+     if (yadif->current_field == YADIF_FIELD_END) {
+         yadif->current_field = YADIF_FIELD_NORMAL;
+@@ -340,21 +377,29 @@ static int config_props(AVFilterLink *li
+ 
+     yadif->csp = av_pix_fmt_desc_get(link->format);
+     yadif->filter = filter;
+-    if (yadif->csp->comp[0].depth > 8) {
++    ff_bwdif_init_filter_line(s, yadif->csp->comp[0].depth);
++
++    return 0;
++}
++
++av_cold void ff_bwdif_init_filter_line(BWDIFContext *s, int bit_depth)
++{
++    s->filter_line3 = 0;
++    if (bit_depth > 8) {
+         s->filter_intra = filter_intra_16bit;
+         s->filter_line  = filter_line_c_16bit;
+         s->filter_edge  = filter_edge_16bit;
+     } else {
+-        s->filter_intra = filter_intra;
+-        s->filter_line  = filter_line_c;
+-        s->filter_edge  = filter_edge;
++        s->filter_intra = ff_bwdif_filter_intra_c;
++        s->filter_line  = ff_bwdif_filter_line_c;
++        s->filter_edge  = ff_bwdif_filter_edge_c;
+     }
+ 
+ #if ARCH_X86
+-    ff_bwdif_init_x86(s);
++    ff_bwdif_init_x86(s, bit_depth);
++#elif ARCH_AARCH64
++    ff_bwdif_init_aarch64(s, bit_depth);
+ #endif
+-
+-    return 0;
+ }
+ 
+ 
 --- /dev/null
 +++ b/libavfilter/vf_deinterlace_v4l2m2m.c
 @@ -0,0 +1,2102 @@
@@ -16160,6 +17357,21 @@
 +    FILTER_OUTPUTS(avfilter_vf_unsand_outputs),
 +};
 +
+--- a/libavfilter/x86/vf_bwdif_init.c
++++ b/libavfilter/x86/vf_bwdif_init.c
+@@ -42,11 +42,9 @@ void ff_bwdif_filter_line_12bit_ssse3(vo
+                                       int mrefs2, int prefs3, int mrefs3, int prefs4,
+                                       int mrefs4, int parity, int clip_max);
+ 
+-av_cold void ff_bwdif_init_x86(BWDIFContext *bwdif)
++av_cold void ff_bwdif_init_x86(BWDIFContext *bwdif, int bit_depth)
+ {
+-    YADIFContext *yadif = &bwdif->yadif;
+     int cpu_flags = av_get_cpu_flags();
+-    int bit_depth = (!yadif->csp) ? 8 : yadif->csp->comp[0].depth;
+ 
+     if (bit_depth <= 8) {
+         if (EXTERNAL_SSE2(cpu_flags))
 --- a/libavformat/matroskaenc.c
 +++ b/libavformat/matroskaenc.c
 @@ -75,6 +75,10 @@
@@ -16300,7 +17512,7 @@
 +
 --- /dev/null
 +++ b/libavutil/aarch64/rpi_sand_neon.S
-@@ -0,0 +1,781 @@
+@@ -0,0 +1,672 @@
 +/*
 +Copyright (c) 2021 Michael Eiler
 +
@@ -16551,197 +17763,189 @@
 +    ret
 +endfunc
 +
-+//void ff_rpi_sand30_lines_to_planar_c16(
-+//  uint8_t * dst_u,            // [x0]
-+//  unsigned int dst_stride_u,  // [w1] == _w*2
-+//  uint8_t * dst_v,            // [x2]
-+//  unsigned int dst_stride_v,  // [w3] == _w*2
-+//  const uint8_t * src,        // [x4]
-+//  unsigned int stride1,       // [w5] == 128
-+//  unsigned int stride2,       // [w6] 
-+//  unsigned int _x,            // [w7] == 0
-+//  unsigned int y,             // [sp, #0] == 0
-+//  unsigned int _w,            // [sp, #8] -> w3
-+//  unsigned int h);            // [sp, #16] -> w7
++// Unzip chroma
++//
++// On entry:
++// a0 = V0, U2,  ...
++// a1 = U0, V1,  ...
++// a2 = U1, V2,  ...
++// b0 = V8, U10, ...
++// b1 = U8, V9,  ...
++// b2 = U9, V10, ...
++//
++// On exit:
++// d0 = U0, U3, ...
++// ...
++// a0 = V0, V3, ..
++// ...
++//
++// Reg order for USAND is a1, a0, a2 (i.e. swap natural order of 1st 2 dest regs)
 +
-+.macro rpi_sand30_lines_to_planar_c16_block_half
-+    ld1 { v0.4s,  v1.4s, v2.4s, v3.4s }, [x13], #64
++.macro UZPH_C d0, d1, d2, a0, a1, a2, b0, b1, b2
++                uzp1            \d0\().8h, \a1\().8h, \b1\().8h
++                uzp1            \d1\().8h, \a2\().8h, \b2\().8h
++                uzp2            \d2\().8h, \a0\().8h, \b0\().8h
 +
-+    xtn v4.4h, v0.4s
-+    ushr v0.4s, v0.4s, #10
-+    xtn v5.4h, v0.4s
-+    ushr v0.4s, v0.4s, #10
-+    xtn v6.4h, v0.4s
-+    xtn2 v4.8h, v1.4s
-+    ushr v1.4s, v1.4s, #10
-+    xtn2 v5.8h, v1.4s
-+    ushr v1.4s, v1.4s, #10
-+    xtn2 v6.8h, v1.4s
-+    and v4.16b, v4.16b, v16.16b
-+    and v5.16b, v5.16b, v16.16b
-+    and v6.16b, v6.16b, v16.16b
-+    st3 { v4.8h, v5.8h, v6.8h }, [sp], #48
-+    
-+    xtn v4.4h, v2.4s
-+    ushr v2.4s, v2.4s, #10
-+    xtn v5.4h, v2.4s
-+    ushr v2.4s, v2.4s, #10
-+    xtn v6.4h, v2.4s
-+    xtn2 v4.8h, v3.4s
-+    ushr v3.4s, v3.4s, #10
-+    xtn2 v5.8h, v3.4s
-+    ushr v3.4s, v3.4s, #10
-+    xtn2 v6.8h, v3.4s
-+    and v4.16b, v4.16b, v16.16b
-+    and v5.16b, v5.16b, v16.16b
-+    and v6.16b, v6.16b, v16.16b
-+    st3 { v4.8h, v5.8h, v6.8h }, [sp]
-+    sub sp, sp, #48
++                uzp1            \a0\().8h, \a0\().8h, \b0\().8h
++                uzp2            \a1\().8h, \a1\().8h, \b1\().8h
++                uzp2            \a2\().8h, \a2\().8h, \b2\().8h
 +.endm
 +
++// SAND30 -> 10bit
++.macro USAND10 d0, d1, d2, a0, a1
++                shrn            \d2\().4h, \a0\().4s, #14
++                shrn            \d1\().4h, \a0\().4s, #10
++
++                shrn2           \d2\().8h, \a1\().4s, #14
++                shrn2           \d1\().8h, \a1\().4s, #10
++                uzp1            \d0\().8h, \a0\().8h, \a1\().8h
++
++                ushr            \d2\().8h, \d2\().8h, #6
++                bic             \d0\().8h, #0xfc,     lsl #8
++                bic             \d1\().8h, #0xfc,     lsl #8
++.endm
++
++// SAND30 -> 8bit
++.macro USAND8 d0, d1, d2, a0, a1, a2, a3, t0, t1, t2
++                shrn            \d1\().4h,  \a0\().4s,  #12
++                shrn2           \d1\().8h,  \a1\().4s,  #12
++                uzp1            \d0\().8h,  \a0\().8h,  \a1\().8h
++                uzp2            \d2\().8h,  \a0\().8h,  \a1\().8h
++
++                shrn            \t1\().4h,  \a2\().4s,  #12
++                shrn2           \t1\().8h,  \a3\().4s,  #12
++                uzp1            \t0\().8h,  \a2\().8h,  \a3\().8h
++                uzp2            \t2\().8h,  \a2\().8h,  \a3\().8h
++
++                shrn            \d0\().8b,  \d0\().8h,  #2
++                shrn2           \d0\().16b, \t0\().8h,  #2
++                shrn            \d2\().8b,  \d2\().8h,  #6
++                shrn2           \d2\().16b, \t2\().8h,  #6
++                uzp1            \d1\().16b, \d1\().16b, \t1\().16b
++.endm
++
++
++// void ff_rpi_sand30_lines_to_planar_c16(
++//   uint8_t * dst_u,            // [x0]
++//   unsigned int dst_stride_u,  // [w1]
++//   uint8_t * dst_v,            // [x2]
++//   unsigned int dst_stride_v,  // [w3]
++//   const uint8_t * src,        // [x4]
++//   unsigned int stride1,       // [w5]      128
++//   unsigned int stride2,       // [w6]
++//   unsigned int _x,            // [w7]      0
++//   unsigned int y,             // [sp, #0]
++//   unsigned int _w,            // [sp, #8]  w9
++//   unsigned int h);            // [sp, #16] w10
++
 +function ff_rpi_sand30_lines_to_planar_c16, export=1
-+    stp x19, x20, [sp, #-48]!
-+    stp x21, x22, [sp, #16]
-+    stp x23, x24, [sp, #32]
++                ldr             w7,  [sp, #0]                   // y
++                ldr             w8,  [sp, #8]                   // _w
++                ldr             w10, [sp, #16]                  // h
++                lsl             w6,  w6,  #7                    // Fixup stride2
++                sub             w6,  w6,  #64
++                uxtw            x6,  w6
++                sub             w1,  w1,  w8,  LSL #1           // Fixup chroma strides
++                sub             w3,  w3,  w8,  LSL #1
++                lsl             w7,  w7,  #7                    // Add y to src
++                add             x4,  x4,  w7,  UXTW
++10:
++                mov             w13, #0
++                mov             x5,  x4
++                mov             w9,  w8
++1:
++                ld1             {v0.4s-v3.4s}, [x5], #64
++                ld1             {v4.4s-v7.4s}, [x5], x6
++                subs            w9,  w9,  #48
 +
-+    ldr w3, [sp, #48+8]    // w3 = width
-+    ldr w7, [sp, #48+16]   // w7 = height
++                USAND10         v17, v16, v18, v0, v1
++                USAND10         v20, v19, v21, v2, v3
++                UZPH_C          v0, v1, v2, v16, v17, v18, v19, v20, v21
++                USAND10         v23, v22, v24, v4, v5
++                USAND10         v26, v25, v27, v6, v7
++                UZPH_C          v4, v5, v6, v22, v23, v24, v25, v26, v27
 +
-+    // reserve space on the stack for intermediate results
-+    sub sp, sp, #256
++                blt             2f
 +
-+    // number of 128byte blocks per row, w8 = width / 48
-+    mov w9, #48
-+    udiv w8, w3, w9
++                st3             {v0.8h-v2.8h},   [x0], #48
++                st3             {v4.8h-v6.8h},   [x0], #48
++                st3             {v16.8h-v18.8h}, [x2], #48
++                st3             {v22.8h-v24.8h}, [x2], #48
 +
-+    // remaining pixels (rem_pix) per row, w9 = width - w8 * 48
-+    mul w9, w8, w9
-+    sub w9, w3, w9
++                bne             1b
++11:
++                subs            w10, w10, #1
++                add             x4,  x4,  #128
++                add             x0,  x0,  w1,  UXTW
++                add             x2,  x2,  w3,  UXTW
++                bne             10b
++99:
++                ret
 +
-+    // row offset, the beginning of the next row to process
-+    eor w10, w10, w10
-+
-+    // offset to the beginning of the next block, w11 = stride2 * 128 - 128
-+    lsl w11, w6, #7
-+    sub w11, w11, #128
-+
-+    // decrease the height by one and in case of remaining pixels increase the block count by one
-+    sub w7, w7, #1
-+    cmp w9, #0
-+    cset w19, ne    // w19 == 1 iff reamining pixels != 0
-+    add w8, w8, w19
-+
-+    // bytes we have to move dst back by at the end of every row
-+    mov w21, #48*2
-+    mul w21, w21, w8
-+    sub w21, w1, w21
-+
-+    mov w20, #0     // w20 = flag, last row processed
-+
-+    mov x12, #0x03ff03ff03ff03ff
-+    dup v16.2d, x12
-+
-+    // iterate through rows, row counter = w12 = 0
-+    eor w12, w12, w12
-+row_loop_c16:
-+    cmp w12, w7
-+    bge row_loop_c16_fin
-+
-+    // address of row data = src + row_offset
-+    mov x13, x4
-+    add x13, x13, x10
-+
-+    eor w14, w14, w14
-+block_loop_c16:
-+    cmp w14, w8
-+    bge block_loop_c16_fin
-+
-+    rpi_sand30_lines_to_planar_c16_block_half
-+
-+    ld2 { v0.8h, v1.8h }, [sp], #32
-+    ld2 { v2.8h, v3.8h }, [sp], #32
-+    ld2 { v4.8h, v5.8h }, [sp]
-+    sub sp, sp, #64
-+
-+    st1 { v0.8h }, [x0], #16
-+    st1 { v2.8h }, [x0], #16
-+    st1 { v4.8h }, [x0], #16
-+    st1 { v1.8h }, [x2], #16
-+    st1 { v3.8h }, [x2], #16
-+    st1 { v5.8h }, [x2], #16
-+
-+    rpi_sand30_lines_to_planar_c16_block_half
-+
-+    ld2 { v0.8h, v1.8h }, [sp], #32
-+    ld2 { v2.8h, v3.8h }, [sp], #32
-+    ld2 { v4.8h, v5.8h }, [sp]
-+    sub sp, sp, #64
-+
-+    st1 { v0.8h }, [x0], #16
-+    st1 { v2.8h }, [x0], #16
-+    st1 { v4.8h }, [x0], #16
-+    st1 { v1.8h }, [x2], #16
-+    st1 { v3.8h }, [x2], #16
-+    st1 { v5.8h }, [x2], #16
-+
-+    add x13, x13, x11 // offset to next block
-+    add w14, w14, #1
-+    b block_loop_c16
-+block_loop_c16_fin:
-+
-+    add w10, w10, #128
-+    add w12, w12, #1
-+    add x0, x0, w21, sxtw  // move dst pointers back by x21
-+    add x2, x2, w21, sxtw
-+    b row_loop_c16
-+row_loop_c16_fin:
-+
-+    cmp w20, #1
-+    beq row_loop_c16_fin2
-+    mov w20, #1
-+    sub w8, w8, w19 // decrease block count by w19
-+    add w7, w7, #1 // increase height
-+    b row_loop_c16
-+
-+row_loop_c16_fin2:
-+    sub x0, x0, w21, sxtw // readd x21 in case of the last row
-+    sub x2, x2, w21, sxtw // so that we can write out the few remaining pixels
-+
-+    // last incomplete block to be finished
-+    // read operations are fine, stride2 is more than large enough even if rem_pix is 0
-+    rpi_sand30_lines_to_planar_c16_block_half
-+    ld2 { v0.8h, v1.8h }, [sp], #32
-+    ld2 { v2.8h, v3.8h }, [sp], #32
-+    ld2 { v4.8h, v5.8h }, [sp], #32
-+    rpi_sand30_lines_to_planar_c16_block_half
-+    ld2 { v0.8h, v1.8h }, [sp], #32
-+    ld2 { v2.8h, v3.8h }, [sp], #32
-+    ld2 { v4.8h, v5.8h }, [sp]
-+    sub sp, sp, #160
-+
-+    mov x4, sp
-+    eor w20, w20, w20
-+rem_pix_c16_loop:
-+    cmp w20, w9
-+    bge rem_pix_c16_fin
-+
-+    ldr w22, [x4], #4
-+    str w22, [x0], #2
-+    lsr w22, w22, #16
-+    str w22, [x2], #2 
-+
-+    add w20, w20, #1
-+    b rem_pix_c16_loop
-+rem_pix_c16_fin:
-+
-+    add sp, sp, #256
-+
-+    ldp x23, x24, [sp, #32]
-+    ldp x21, x22, [sp, #16]
-+    ldp x19, x20, [sp], #48
-+    ret
++// Partial final write
++2:
++                cmp             w9,  #24-48
++                blt             1f
++                st3             {v0.8h  - v2.8h},  [x0], #48
++                st3             {v16.8h - v18.8h}, [x2], #48
++                beq             11b
++                mov             v0.16b,  v4.16b
++                mov             v1.16b,  v5.16b
++                sub             w9,  w9,  #24
++                mov             v2.16b,  v6.16b
++                mov             v16.16b, v22.16b
++                mov             v17.16b, v23.16b
++                mov             v18.16b, v24.16b
++1:
++                cmp             w9,  #12-48
++                blt             1f
++                st3             {v0.4h  - v2.4h},  [x0], #24
++                st3             {v16.4h - v18.4h}, [x2], #24
++                beq             11b
++                mov             v0.2d[0],  v0.2d[1]
++                sub             w9,  w9,  #12
++                mov             v1.2d[0],  v1.2d[1]
++                mov             v2.2d[0],  v2.2d[1]
++                mov             v16.2d[0], v16.2d[1]
++                mov             v17.2d[0], v17.2d[1]
++                mov             v18.2d[0], v18.2d[1]
++1:
++                cmp             w9,  #6-48
++                blt             1f
++                st3             {v0.h  - v2.h}[0],  [x0], #6
++                st3             {v0.h  - v2.h}[1],  [x0], #6
++                st3             {v16.h - v18.h}[0], [x2], #6
++                st3             {v16.h - v18.h}[1], [x2], #6
++                beq             11b
++                mov             v0.s[0],  v0.s[1]
++                sub             w9,  w9,  #6
++                mov             v1.s[0],  v1.s[1]
++                mov             v2.s[0],  v2.s[1]
++                mov             v16.s[0], v16.s[1]
++                mov             v17.s[0], v17.s[1]
++                mov             v18.s[0], v18.s[1]
++1:
++                cmp             w9,  #3-48
++                blt             1f
++                st3             {v0.h  - v2.h}[0],  [x0], #6
++                st3             {v16.h - v18.h}[0], [x2], #6
++                beq             11b
++                mov             v0.h[0],  v0.h[1]
++                sub             w9,  w9,  #3
++                mov             v1.h[0],  v1.h[1]
++                mov             v16.h[0], v16.h[1]
++                mov             v17.h[0], v17.h[1]
++1:
++                cmp             w9,  #2-48
++                blt             1f
++                st2             {v0.h  - v1.h}[0],  [x0], #4
++                st2             {v16.h - v17.h}[0], [x2], #4
++                b               11b
++1:
++                st1             {v0.h}[0],  [x0], #2
++                st1             {v16.h}[0], [x2], #2
++                b               11b
 +endfunc
-+
 +
 +
 +//void ff_rpi_sand30_lines_to_planar_p010(
@@ -16772,6 +17976,7 @@
 +function ff_rpi_sand30_lines_to_planar_y16, export=1
 +                lsl             w4,  w4,  #7
 +                sub             w4,  w4,  #64
++                uxtw            x4,  w4
 +                sub             w1,  w1,  w7, lsl #1
 +                uxtw            x6,  w6
 +                add             x8,  x2,  x6, lsl #7
@@ -16786,61 +17991,10 @@
 +
 +                subs            w5,  w5,  #96
 +
-+                // v0, v1
-+
-+                shrn            v18.4h,  v0.4s,   #14
-+                xtn             v16.4h,  v0.4s
-+                shrn            v17.4h,  v0.4s,   #10
-+
-+                shrn2           v18.8h,  v1.4s,   #14
-+                xtn2            v16.8h,  v1.4s
-+                shrn2           v17.8h,  v1.4s,   #10
-+
-+                ushr            v18.8h,  v18.8h,  #6
-+                bic             v16.8h,  #0xfc,   lsl #8
-+                bic             v17.8h,  #0xfc,   lsl #8
-+
-+                // v2, v3
-+
-+                shrn            v21.4h,  v2.4s,   #14
-+                xtn             v19.4h,  v2.4s
-+                shrn            v20.4h,  v2.4s,   #10
-+
-+                shrn2           v21.8h,  v3.4s,   #14
-+                xtn2            v19.8h,  v3.4s
-+                shrn2           v20.8h,  v3.4s,   #10
-+
-+                ushr            v21.8h,  v21.8h,  #6
-+                bic             v19.8h,  #0xfc,   lsl #8
-+                bic             v20.8h,  #0xfc,   lsl #8
-+
-+                // v4, v5
-+
-+                shrn            v24.4h,  v4.4s,   #14
-+                xtn             v22.4h,  v4.4s
-+                shrn            v23.4h,  v4.4s,   #10
-+
-+                shrn2           v24.8h,  v5.4s,   #14
-+                xtn2            v22.8h,  v5.4s
-+                shrn2           v23.8h,  v5.4s,   #10
-+
-+                ushr            v24.8h,  v24.8h,  #6
-+                bic             v22.8h,  #0xfc,   lsl #8
-+                bic             v23.8h,  #0xfc,   lsl #8
-+
-+                // v6, v7
-+
-+                shrn            v27.4h,  v6.4s,   #14
-+                xtn             v25.4h,  v6.4s
-+                shrn            v26.4h,  v6.4s,   #10
-+
-+                shrn2           v27.8h,  v7.4s,   #14
-+                xtn2            v25.8h,  v7.4s
-+                shrn2           v26.8h,  v7.4s,   #10
-+
-+                ushr            v27.8h,  v27.8h,  #6
-+                bic             v25.8h,  #0xfc,   lsl #8
-+                bic             v26.8h,  #0xfc,   lsl #8
++                USAND10         v16, v17, v18, v0, v1
++                USAND10         v19, v20, v21, v2, v3
++                USAND10         v22, v23, v24, v4, v5
++                USAND10         v25, v26, v27, v6, v7
 +
 +                blt             2f
 +
@@ -16937,6 +18091,7 @@
 +function ff_rpi_sand30_lines_to_planar_y8, export=1
 +                lsl             w4,  w4,  #7
 +                sub             w4,  w4,  #64
++                uxtw            x4,  w4
 +                sub             w1,  w1,  w7
 +                uxtw            x6,  w6
 +                add             x8,  x2,  x6, lsl #7
@@ -16952,60 +18107,8 @@
 +                subs            w5,  w5,  #96
 +
 +                // v0, v1
-+
-+                shrn            v18.4h,  v0.4s,   #16
-+                xtn             v16.4h,  v0.4s
-+                shrn            v17.4h,  v0.4s,   #12
-+
-+                shrn2           v18.8h,  v1.4s,   #16
-+                xtn2            v16.8h,  v1.4s
-+                shrn2           v17.8h,  v1.4s,   #12
-+
-+                shrn            v18.8b,  v18.8h,  #6
-+                shrn            v16.8b,  v16.8h,  #2
-+                xtn             v17.8b,  v17.8h
-+
-+                // v2, v3
-+
-+                shrn            v21.4h,  v2.4s,   #16
-+                xtn             v19.4h,  v2.4s
-+                shrn            v20.4h,  v2.4s,   #12
-+
-+                shrn2           v21.8h,  v3.4s,   #16
-+                xtn2            v19.8h,  v3.4s
-+                shrn2           v20.8h,  v3.4s,   #12
-+
-+                shrn2           v18.16b, v21.8h,  #6
-+                shrn2           v16.16b, v19.8h,  #2
-+                xtn2            v17.16b, v20.8h
-+
-+                // v4, v5
-+
-+                shrn            v24.4h,  v4.4s,   #16
-+                xtn             v22.4h,  v4.4s
-+                shrn            v23.4h,  v4.4s,   #12
-+
-+                shrn2           v24.8h,  v5.4s,   #16
-+                xtn2            v22.8h,  v5.4s
-+                shrn2           v23.8h,  v5.4s,   #12
-+
-+                shrn            v21.8b,  v24.8h,  #6
-+                shrn            v19.8b,  v22.8h,  #2
-+                xtn             v20.8b,  v23.8h
-+
-+                // v6, v7
-+
-+                shrn            v27.4h,  v6.4s,   #16
-+                xtn             v25.4h,  v6.4s
-+                shrn            v26.4h,  v6.4s,   #12
-+
-+                shrn2           v27.8h,  v7.4s,   #16
-+                xtn2            v25.8h,  v7.4s
-+                shrn2           v26.8h,  v7.4s,   #12
-+
-+                shrn2           v21.16b, v27.8h,  #6
-+                shrn2           v19.16b, v25.8h,  #2
-+                xtn2            v20.16b, v26.8h
++                USAND8          v16, v17, v18, v0, v1, v2, v3, v22, v23, v24
++                USAND8          v19, v20, v21, v4, v5, v6, v7, v22, v23, v24
 +
 +                blt             2f
 +
@@ -18752,7 +19855,7 @@
 +
 --- /dev/null
 +++ b/libavutil/rpi_sand_fns.c
-@@ -0,0 +1,445 @@
+@@ -0,0 +1,447 @@
 +/*
 +Copyright (c) 2018 Raspberry Pi (Trading) Ltd.
 +All rights reserved.
@@ -18790,10 +19893,12 @@
 +#include "frame.h"
 +
 +#if ARCH_ARM && HAVE_NEON
-+#include "arm/rpi_sand_neon.h"
++#include "libavutil/arm/cpu.h"
++#include "libavutil/arm/rpi_sand_neon.h"
 +#define HAVE_SAND_ASM 1
 +#elif ARCH_AARCH64 && HAVE_NEON
-+#include "aarch64/rpi_sand_neon.h"
++#include "libavutil/aarch64/cpu.h"
++#include "libavutil/aarch64/rpi_sand_neon.h"
 +#define HAVE_SAND_ASM 1
 +#else
 +#define HAVE_SAND_ASM 0
@@ -18852,7 +19957,7 @@
 +    const unsigned int slice_inc = ((stride2 - 1) * stride1) >> 2;  // RHS of a stripe to LHS of next in words
 +
 +#if HAVE_SAND_ASM
-+    if (_x == 0) {
++    if (_x == 0 && have_neon(av_get_cpu_flags())) {
 +        ff_rpi_sand30_lines_to_planar_y16(dst, dst_stride, src, stride1, stride2, _x, y, _w, h);
 +        return;
 +    }
@@ -18918,7 +20023,7 @@
 +    const unsigned int slice_inc = ((stride2 - 1) * stride1) >> 2;  // RHS of a stripe to LHS of next in words
 +
 +#if HAVE_SAND_ASM
-+    if (_x == 0) {
++    if (_x == 0 && have_neon(av_get_cpu_flags())) {
 +        ff_rpi_sand30_lines_to_planar_c16(dst_u, dst_stride_u, dst_v, dst_stride_v,
 +                                       src, stride1, stride2, _x, y, _w, h);
 +        return;
@@ -19544,11 +20649,11 @@
 +        shrn            v26.4h, v26.4s, #12
 +        shrn2           v26.8h, v27.4s, #12
 +        add             v26.8h, v26.8h, v6.8h     // +128 (>> 3 = 16)
-+        uqrshrn         v26.8b, v26.8h, #3
++        sqrshrun        v26.8b, v26.8h, #3
 +        shrn            v28.4h, v28.4s, #12
 +        shrn2           v28.8h, v29.4s, #12
 +        add             v28.8h, v28.8h, v6.8h
-+        uqrshrn2        v26.16b, v28.8h, #3
++        sqrshrun2       v26.16b, v28.8h, #3
 +        // Y0/Y1
 +
 +        // U
@@ -19623,11 +20728,11 @@
 +        shrn            v26.4h, v26.4s, #12
 +        shrn2           v26.8h, v27.4s, #12
 +        add             v26.8h, v26.8h, v6.8h     // +128 (>> 3 = 16)
-+        uqrshrn         v26.8b, v26.8h, #3
++        sqrshrun        v26.8b, v26.8h, #3
 +        shrn            v28.4h, v28.4s, #12
 +        shrn2           v28.8h, v29.4s, #12
 +        add             v28.8h, v28.8h, v6.8h
-+        uqrshrn2        v26.16b, v28.8h, #3
++        sqrshrun2       v26.16b, v28.8h, #3
 +        // Y0/Y1
 +
 +        // U
@@ -19757,11 +20862,11 @@
 +        shrn            v26.4h, v26.4s, #12
 +        shrn2           v26.8h, v27.4s, #12
 +        add             v26.8h, v26.8h, v6.8h     // +128 (>> 3 = 16)
-+        uqrshrn         v26.8b, v26.8h, #3
++        sqrshrun        v26.8b, v26.8h, #3
 +        shrn            v28.4h, v28.4s, #12
 +        shrn2           v28.8h, v29.4s, #12
 +        add             v28.8h, v28.8h, v6.8h
-+        uqrshrn2        v26.16b, v28.8h, #3
++        sqrshrun2       v26.16b, v28.8h, #3
 +        // Y0/Y1
 +
 +        subs            w9, w9, #16
@@ -19805,11 +20910,11 @@
 +        shrn            v26.4h, v26.4s, #12
 +        shrn2           v26.8h, v27.4s, #12
 +        add             v26.8h, v26.8h, v6.8h     // +128 (>> 3 = 16)
-+        uqrshrn         v26.8b, v26.8h, #3
++        sqrshrun        v26.8b, v26.8h, #3
 +        shrn            v28.4h, v28.4s, #12
 +        shrn2           v28.8h, v29.4s, #12
 +        add             v28.8h, v28.8h, v6.8h
-+        uqrshrn2        v26.16b, v28.8h, #3
++        sqrshrun2       v26.16b, v28.8h, #3
 +        // Y0/Y1
 +
 +        // Here:
@@ -22207,3 +23312,462 @@
 +
 +    do_logparse(args.logfile)
 +
+--- a/tests/checkasm/Makefile
++++ b/tests/checkasm/Makefile
+@@ -38,6 +38,7 @@ CHECKASMOBJS-$(CONFIG_AVCODEC)
+ # libavfilter tests
+ AVFILTEROBJS-$(CONFIG_AFIR_FILTER) += af_afir.o
+ AVFILTEROBJS-$(CONFIG_BLEND_FILTER) += vf_blend.o
++AVFILTEROBJS-$(CONFIG_BWDIF_FILTER)      += vf_bwdif.o
+ AVFILTEROBJS-$(CONFIG_COLORSPACE_FILTER) += vf_colorspace.o
+ AVFILTEROBJS-$(CONFIG_EQ_FILTER)         += vf_eq.o
+ AVFILTEROBJS-$(CONFIG_GBLUR_FILTER)      += vf_gblur.o
+@@ -56,8 +57,9 @@ CHECKASMOBJS-$(CONFIG_SWSCALE)  += $(SWS
+ AVUTILOBJS                              += av_tx.o
+ AVUTILOBJS                              += fixed_dsp.o
+ AVUTILOBJS                              += float_dsp.o
++AVUTILOBJS-$(CONFIG_SAND)               += rpi_sand.o
+ 
+-CHECKASMOBJS-$(CONFIG_AVUTIL)  += $(AVUTILOBJS)
++CHECKASMOBJS-$(CONFIG_AVUTIL)  += $(AVUTILOBJS) $(AVUTILOBJS-yes)
+ 
+ CHECKASMOBJS-$(ARCH_AARCH64)            += aarch64/checkasm.o
+ CHECKASMOBJS-$(HAVE_ARMV5TE_EXTERNAL)   += arm/checkasm.o
+--- a/tests/checkasm/checkasm.c
++++ b/tests/checkasm/checkasm.c
+@@ -173,6 +173,9 @@ static const struct {
+     #if CONFIG_BLEND_FILTER
+         { "vf_blend", checkasm_check_blend },
+     #endif
++    #if CONFIG_BWDIF_FILTER
++        { "vf_bwdif", checkasm_check_vf_bwdif },
++    #endif
+     #if CONFIG_COLORSPACE_FILTER
+         { "vf_colorspace", checkasm_check_colorspace },
+     #endif
+@@ -201,6 +204,9 @@ static const struct {
+         { "fixed_dsp", checkasm_check_fixed_dsp },
+         { "float_dsp", checkasm_check_float_dsp },
+         { "av_tx",     checkasm_check_av_tx },
++    #if CONFIG_SAND
++        { "rpi_sand",  checkasm_check_rpi_sand },
++    #endif
+ #endif
+     { NULL }
+ };
+--- a/tests/checkasm/checkasm.h
++++ b/tests/checkasm/checkasm.h
+@@ -72,6 +72,7 @@ void checkasm_check_motion(void);
+ void checkasm_check_nlmeans(void);
+ void checkasm_check_opusdsp(void);
+ void checkasm_check_pixblockdsp(void);
++void checkasm_check_rpi_sand(void);
+ void checkasm_check_sbrdsp(void);
+ void checkasm_check_synth_filter(void);
+ void checkasm_check_sw_gbrp(void);
+@@ -81,6 +82,7 @@ void checkasm_check_utvideodsp(void);
+ void checkasm_check_v210dec(void);
+ void checkasm_check_v210enc(void);
+ void checkasm_check_vc1dsp(void);
++void checkasm_check_vf_bwdif(void);
+ void checkasm_check_vf_eq(void);
+ void checkasm_check_vf_gblur(void);
+ void checkasm_check_vf_hflip(void);
+--- /dev/null
++++ b/tests/checkasm/rpi_sand.c
+@@ -0,0 +1,118 @@
++/*
++ * Copyright (c) 2023 John Cox
++ *
++ * This file is part of FFmpeg.
++ *
++ * FFmpeg is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * FFmpeg is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with FFmpeg; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#include <string.h>
++#include "checkasm.h"
++#include "libavutil/common.h"
++#include "libavutil/rpi_sand_fns.h"
++
++#if ARCH_ARM
++#include "libavutil/arm/cpu.h"
++#include "libavutil/arm/rpi_sand_neon.h"
++#elif ARCH_AARCH64
++#include "libavutil/aarch64/cpu.h"
++#include "libavutil/aarch64/rpi_sand_neon.h"
++#endif
++
++static inline uint32_t pack30(unsigned int a, unsigned int b, unsigned int c)
++{
++    return (a & 0x3ff) | ((b & 0x3ff) << 10) | ((c & 0x3ff) << 20);
++}
++
++void checkasm_check_rpi_sand(void)
++{
++    const unsigned int w = 1280;
++    const unsigned int h = 66;
++    const unsigned int stride1 = 128;
++    const unsigned int stride2 = h*3/2;
++    const unsigned int ssize = ((w+95)/96)*128*h*3/2;
++    const unsigned int ysize = ((w + 32) * (h + 32) * 2);
++
++    uint8_t * sbuf0 = malloc(ssize);
++    uint8_t * sbuf1 = malloc(ssize);
++    uint8_t * ybuf0 = malloc(ysize);
++    uint8_t * ybuf1 = malloc(ysize);
++    uint8_t * vbuf0 = malloc(ysize);
++    uint8_t * vbuf1 = malloc(ysize);
++    uint8_t * yframe0 = (w + 32) * 16 + ybuf0;
++    uint8_t * yframe1 = (w + 32) * 16 + ybuf1;
++    uint8_t * vframe0 = (w + 32) * 16 + vbuf0;
++    uint8_t * vframe1 = (w + 32) * 16 + vbuf1;
++    unsigned int i;
++
++    for (i = 0; i != ssize; i += 4)
++        *(uint32_t*)(sbuf0 + i) = rnd();
++    memcpy(sbuf1, sbuf0, ssize);
++
++    if (check_func(have_neon(av_get_cpu_flags()) ? ff_rpi_sand30_lines_to_planar_y16 : av_rpi_sand30_to_planar_y16, "rpi_sand30_to_planar_y16")) {
++        declare_func(void, uint8_t * dst, const unsigned int dst_stride,
++                     const uint8_t * src,
++                     unsigned int stride1, unsigned int stride2,
++                     unsigned int _x, unsigned int y,
++                     unsigned int _w, unsigned int h);
++
++        memset(ybuf0, 0xbb, ysize);
++        memset(ybuf1, 0xbb, ysize);
++
++        call_ref(yframe0, (w + 32) * 2, sbuf0, stride1, stride2, 0, 0, w, h);
++        call_new(yframe1, (w + 32) * 2, sbuf1, stride1, stride2, 0, 0, w, h);
++
++        if (memcmp(sbuf0, sbuf1, ssize)
++            || memcmp(ybuf0, ybuf1, ysize))
++            fail();
++
++        bench_new(ybuf1, (w + 32) * 2, sbuf1, stride1, stride2, 0, 0, w, h);
++    }
++
++    if (check_func(have_neon(av_get_cpu_flags()) ? ff_rpi_sand30_lines_to_planar_c16 : av_rpi_sand30_to_planar_c16, "rpi_sand30_to_planar_c16")) {
++        declare_func(void, uint8_t * u_dst, const unsigned int u_stride,
++                     uint8_t * v_dst, const unsigned int v_stride,
++                     const uint8_t * src,
++                     unsigned int stride1, unsigned int stride2,
++                     unsigned int _x, unsigned int y,
++                     unsigned int _w, unsigned int h);
++
++        memset(ybuf0, 0xbb, ysize);
++        memset(ybuf1, 0xbb, ysize);
++        memset(vbuf0, 0xbb, ysize);
++        memset(vbuf1, 0xbb, ysize);
++
++        call_ref(yframe0, (w + 32), vframe0, (w + 32), sbuf0, stride1, stride2, 0, 0, w/2, h/2);
++        call_new(yframe1, (w + 32), vframe1, (w + 32), sbuf1, stride1, stride2, 0, 0, w/2, h/2);
++
++        if (memcmp(sbuf0, sbuf1, ssize)
++            || memcmp(ybuf0, ybuf1, ysize)
++            || memcmp(vbuf0, vbuf1, ysize))
++            fail();
++
++        bench_new(yframe1, (w + 32), vframe1, (w + 32), sbuf1, stride1, stride2, 0, 0, w/2, h/2);
++    }
++
++
++    report("sand30");
++
++    free(sbuf0);
++    free(sbuf1);
++    free(ybuf0);
++    free(ybuf1);
++    free(vbuf0);
++    free(vbuf1);
++}
++
+--- /dev/null
++++ b/tests/checkasm/vf_bwdif.c
+@@ -0,0 +1,256 @@
++/*
++ * This file is part of FFmpeg.
++ *
++ * FFmpeg is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * FFmpeg is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with FFmpeg; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#include <string.h>
++#include "checkasm.h"
++#include "libavcodec/internal.h"
++#include "libavfilter/bwdif.h"
++#include "libavutil/mem_internal.h"
++
++#define WIDTH 256
++
++#define randomize_buffers(buf0, buf1, mask, count) \
++    for (size_t i = 0; i < count; i++) \
++        buf0[i] = buf1[i] = rnd() & mask
++
++#define randomize_overflow_check(buf0, buf1, mask, count) \
++    for (size_t i = 0; i < count; i++) \
++        buf0[i] = buf1[i] = (rnd() & 1) != 0 ? mask : 0;
++
++#define BODY(type, depth)                                                      \
++    do {                                                                       \
++        type prev0[9*WIDTH], prev1[9*WIDTH];                                   \
++        type next0[9*WIDTH], next1[9*WIDTH];                                   \
++        type cur0[9*WIDTH], cur1[9*WIDTH];                                     \
++        type dst0[WIDTH], dst1[WIDTH];                                         \
++        const int stride = WIDTH;                                              \
++        const int mask = (1<<depth)-1;                                         \
++                                                                               \
++        declare_func(void, void *dst, void *prev, void *cur, void *next,       \
++                        int w, int prefs, int mrefs, int prefs2, int mrefs2,   \
++                        int prefs3, int mrefs3, int prefs4, int mrefs4,        \
++                        int parity, int clip_max);                             \
++                                                                               \
++        randomize_buffers(prev0, prev1, mask, 9*WIDTH);                        \
++        randomize_buffers(next0, next1, mask, 9*WIDTH);                        \
++        randomize_buffers( cur0,  cur1, mask, 9*WIDTH);                        \
++                                                                               \
++        call_ref(dst0, prev0 + 4*WIDTH, cur0 + 4*WIDTH, next0 + 4*WIDTH,       \
++                WIDTH, stride, -stride, 2*stride, -2*stride,                   \
++                3*stride, -3*stride, 4*stride, -4*stride,                      \
++                0, mask);                                                      \
++        call_new(dst1, prev1 + 4*WIDTH, cur1 + 4*WIDTH, next1 + 4*WIDTH,       \
++                WIDTH, stride, -stride, 2*stride, -2*stride,                   \
++                3*stride, -3*stride, 4*stride, -4*stride,                      \
++                0, mask);                                                      \
++                                                                               \
++        if (memcmp(dst0, dst1, sizeof dst0)                                    \
++                || memcmp(prev0, prev1, sizeof prev0)                          \
++                || memcmp(next0, next1, sizeof next0)                          \
++                || memcmp( cur0,  cur1, sizeof cur0))                          \
++            fail();                                                            \
++        bench_new(dst1, prev1 + 4*WIDTH, cur1 + 4*WIDTH, next1 + 4*WIDTH,      \
++                WIDTH, stride, -stride, 2*stride, -2*stride,                   \
++                3*stride, -3*stride, 4*stride, -4*stride,                      \
++                0, mask);                                                      \
++    } while (0)
++
++void checkasm_check_vf_bwdif(void)
++{
++    BWDIFContext ctx_8, ctx_10;
++
++    ff_bwdif_init_filter_line(&ctx_8, 8);
++    ff_bwdif_init_filter_line(&ctx_10, 10);
++
++    if (check_func(ctx_8.filter_line, "bwdif8")) {
++        BODY(uint8_t, 8);
++        report("bwdif8");
++    }
++
++    if (check_func(ctx_10.filter_line, "bwdif10")) {
++        BODY(uint16_t, 10);
++        report("bwdif10");
++    }
++
++    if (!ctx_8.filter_line3)
++        ctx_8.filter_line3 = ff_bwdif_filter_line3_c;
++
++    {
++        LOCAL_ALIGNED_16(uint8_t, prev0, [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, prev1, [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, next0, [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, next1, [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, cur0,  [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, cur1,  [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, dst0,  [WIDTH*3]);
++        LOCAL_ALIGNED_16(uint8_t, dst1,  [WIDTH*3]);
++        const int stride = WIDTH;
++        const int mask = (1<<8)-1;
++        int parity;
++
++        for (parity = 0; parity != 2; ++parity) {
++            if (check_func(ctx_8.filter_line3, "bwdif8.line3.rnd.p%d", parity)) {
++
++                declare_func(void, void * dst1, int d_stride,
++                                          const void * prev1, const void * cur1, const void * next1, int prefs,
++                                          int w, int parity, int clip_max);
++
++                randomize_buffers(prev0, prev1, mask, 11*WIDTH);
++                randomize_buffers(next0, next1, mask, 11*WIDTH);
++                randomize_buffers( cur0,  cur1, mask, 11*WIDTH);
++
++                call_ref(dst0, stride,
++                         prev0 + stride * 4, cur0 + stride * 4, next0 + stride * 4, stride,
++                         WIDTH, parity, mask);
++                call_new(dst1, stride,
++                         prev1 + stride * 4, cur1 + stride * 4, next1 + stride * 4, stride,
++                         WIDTH, parity, mask);
++
++                if (memcmp(dst0, dst1, WIDTH*3)
++                        || memcmp(prev0, prev1, WIDTH*11)
++                        || memcmp(next0, next1, WIDTH*11)
++                        || memcmp( cur0,  cur1, WIDTH*11))
++                    fail();
++
++                bench_new(dst1, stride,
++                         prev1 + stride * 4, cur1 + stride * 4, next1 + stride * 4, stride,
++                         WIDTH, parity, mask);
++            }
++        }
++
++        // Use just 0s and ~0s to try to provoke bad cropping or overflow
++        // Parity makes no difference to this test so just test 0
++        if (check_func(ctx_8.filter_line3, "bwdif8.line3.overflow")) {
++
++            declare_func(void, void * dst1, int d_stride,
++                                      const void * prev1, const void * cur1, const void * next1, int prefs,
++                                      int w, int parity, int clip_max);
++
++            randomize_overflow_check(prev0, prev1, mask, 11*WIDTH);
++            randomize_overflow_check(next0, next1, mask, 11*WIDTH);
++            randomize_overflow_check( cur0,  cur1, mask, 11*WIDTH);
++
++            call_ref(dst0, stride,
++                     prev0 + stride * 4, cur0 + stride * 4, next0 + stride * 4, stride,
++                     WIDTH, 0, mask);
++            call_new(dst1, stride,
++                     prev1 + stride * 4, cur1 + stride * 4, next1 + stride * 4, stride,
++                     WIDTH, 0, mask);
++
++            if (memcmp(dst0, dst1, WIDTH*3)
++                    || memcmp(prev0, prev1, WIDTH*11)
++                    || memcmp(next0, next1, WIDTH*11)
++                    || memcmp( cur0,  cur1, WIDTH*11))
++                fail();
++
++            // No point to benching
++        }
++
++        report("bwdif8.line3");
++    }
++
++    {
++        LOCAL_ALIGNED_16(uint8_t, prev0, [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, prev1, [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, next0, [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, next1, [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, cur0,  [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, cur1,  [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, dst0,  [WIDTH*3]);
++        LOCAL_ALIGNED_16(uint8_t, dst1,  [WIDTH*3]);
++        const int stride = WIDTH;
++        const int mask = (1<<8)-1;
++        int spat;
++        int parity;
++
++        for (spat = 0; spat != 2; ++spat) {
++            for (parity = 0; parity != 2; ++parity) {
++                if (check_func(ctx_8.filter_edge, "bwdif8.edge.s%d.p%d", spat, parity)) {
++
++                    declare_func(void, void *dst1, void *prev1, void *cur1, void *next1,
++                                            int w, int prefs, int mrefs, int prefs2, int mrefs2,
++                                            int parity, int clip_max, int spat);
++
++                    randomize_buffers(prev0, prev1, mask, 11*WIDTH);
++                    randomize_buffers(next0, next1, mask, 11*WIDTH);
++                    randomize_buffers( cur0,  cur1, mask, 11*WIDTH);
++                    memset(dst0, 0xba, WIDTH * 3);
++                    memset(dst1, 0xba, WIDTH * 3);
++
++                    call_ref(dst0 + stride,
++                             prev0 + stride * 4, cur0 + stride * 4, next0 + stride * 4, WIDTH,
++                             stride, -stride, stride * 2, -stride * 2,
++                             parity, mask, spat);
++                    call_new(dst1 + stride,
++                             prev1 + stride * 4, cur1 + stride * 4, next1 + stride * 4, WIDTH,
++                             stride, -stride, stride * 2, -stride * 2,
++                             parity, mask, spat);
++
++                    if (memcmp(dst0, dst1, WIDTH*3)
++                            || memcmp(prev0, prev1, WIDTH*11)
++                            || memcmp(next0, next1, WIDTH*11)
++                            || memcmp( cur0,  cur1, WIDTH*11))
++                        fail();
++
++                    bench_new(dst1 + stride,
++                             prev1 + stride * 4, cur1 + stride * 4, next1 + stride * 4, WIDTH,
++                             stride, -stride, stride * 2, -stride * 2,
++                             parity, mask, spat);
++                }
++            }
++        }
++
++        report("bwdif8.edge");
++    }
++
++    if (check_func(ctx_8.filter_intra, "bwdif8.intra")) {
++        LOCAL_ALIGNED_16(uint8_t, cur0,  [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, cur1,  [11*WIDTH]);
++        LOCAL_ALIGNED_16(uint8_t, dst0,  [WIDTH*3]);
++        LOCAL_ALIGNED_16(uint8_t, dst1,  [WIDTH*3]);
++        const int stride = WIDTH;
++        const int mask = (1<<8)-1;
++
++        declare_func(void, void *dst1, void *cur1, int w, int prefs, int mrefs,
++                     int prefs3, int mrefs3, int parity, int clip_max);
++
++        randomize_buffers( cur0,  cur1, mask, 11*WIDTH);
++        memset(dst0, 0xba, WIDTH * 3);
++        memset(dst1, 0xba, WIDTH * 3);
++
++        call_ref(dst0 + stride,
++                 cur0 + stride * 4, WIDTH,
++                 stride, -stride, stride * 3, -stride * 3,
++                 0, mask);
++        call_new(dst1 + stride,
++                 cur0 + stride * 4, WIDTH,
++                 stride, -stride, stride * 3, -stride * 3,
++                 0, mask);
++
++        if (memcmp(dst0, dst1, WIDTH*3)
++                || memcmp( cur0,  cur1, WIDTH*11))
++            fail();
++
++        bench_new(dst1 + stride,
++                  cur0 + stride * 4, WIDTH,
++                  stride, -stride, stride * 3, -stride * 3,
++                  0, mask);
++
++        report("bwdif8.intra");
++    }
++}
+--- a/tests/fate/checkasm.mak
++++ b/tests/fate/checkasm.mak
+@@ -26,6 +26,7 @@ FATE_CHECKASM = fate-checkasm-aacpsdsp
+                 fate-checkasm-motion                                    \
+                 fate-checkasm-opusdsp                                   \
+                 fate-checkasm-pixblockdsp                               \
++                fate-checkasm-rpi_sand                                  \
+                 fate-checkasm-sbrdsp                                    \
+                 fate-checkasm-synth_filter                              \
+                 fate-checkasm-sw_gbrp                                   \
+@@ -36,6 +37,7 @@ FATE_CHECKASM = fate-checkasm-aacpsdsp
+                 fate-checkasm-v210enc                                   \
+                 fate-checkasm-vc1dsp                                    \
+                 fate-checkasm-vf_blend                                  \
++                fate-checkasm-vf_bwdif                                  \
+                 fate-checkasm-vf_colorspace                             \
+                 fate-checkasm-vf_eq                                     \
+                 fate-checkasm-vf_gblur                                  \

@@ -1,3 +1,12 @@
+ffmpeg (8:5.1.3-1+rpt2) bookworm; urgency=medium
+
+  * HW accel patch 19
+    - Adds aarch64 asm for bwdif deinterlace
+    - Fixes a buffer overwrite in sand->yuv conversion (rare)
+    - Tweaks v4l2 stateful decode scheduling again (fixes some Kodi playback)
+
+ -- Serge Schneider <serge@raspberrypi.com>  Mon, 17 Jul 2023 08:43:04 +0100
+
 ffmpeg (8:5.1.3-1+rpt1) bookworm; urgency=medium
 
   * HW accel patch 18
