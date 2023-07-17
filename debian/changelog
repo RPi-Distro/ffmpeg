@@ -1,3 +1,12 @@
+ffmpeg (8:4.3.6-0+deb11u1+rpt3) bullseye; urgency=medium
+
+  * HW accel patch 19
+    - Adds aarch64 asm for bwdif deinterlace
+    - Fixes a buffer overwrite in sand->yuv conversion (rare)
+    - Tweaks v4l2 stateful decode scheduling again (fixes some Kodi playback)
+
+ -- Serge Schneider <serge@raspberrypi.com>  Mon, 17 Jul 2023 08:36:33 +0100
+
 ffmpeg (8:4.3.6-0+deb11u1+rpt2) bullseye; urgency=medium
 
   * HW accel patch 18
