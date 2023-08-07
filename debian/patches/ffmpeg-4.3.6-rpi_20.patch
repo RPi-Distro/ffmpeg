@@ -52120,7 +52120,7 @@
          return ret;
  
      return ff_v4l2_buffer_enqueue(avbuf);
-@@ -635,42 +1032,36 @@ int ff_v4l2_context_enqueue_packet(V4L2C
+@@ -635,42 +1032,77 @@ int ff_v4l2_context_enqueue_packet(V4L2C
  
  int ff_v4l2_context_dequeue_frame(V4L2Context* ctx, AVFrame* frame, int timeout)
  {
@@ -52138,9 +52138,6 @@
 -    if (!avbuf) {
 -        if (ctx->done)
 -            return AVERROR_EOF;
--
--        return AVERROR(EAGAIN);
--    }
 +    do {
 +        if ((rv = get_qbuf(ctx, &avbuf, timeout)) != 0)
 +            return rv;
@@ -52148,6 +52145,9 @@
 +            return rv;
 +    } while (xlat_pts_frame_out(avctx, &s->xlat, frame) != 0);
  
+-        return AVERROR(EAGAIN);
+-    }
+-
 -    return ff_v4l2_buffer_buf_to_avframe(frame, avbuf);
 +   return 0;
  }
@@ -52177,14 +52177,53 @@
 +    } while (xlat_pts_pkt_out(avctx, &s->xlat, pkt) != 0);
  
 -        return AVERROR(EAGAIN);
--    }
--
--    return ff_v4l2_buffer_buf_to_avpkt(pkt, avbuf);
 +    return 0;
++}
++
++// Return 0 terminated list of drm fourcc video formats for this context
++// NULL if none found or error
++// Returned list is malloced so must be freed
++uint32_t * ff_v4l2_context_enum_drm_formats(V4L2Context *ctx, unsigned int *pN)
++{
++    unsigned int i;
++    unsigned int n = 0;
++    unsigned int size = 0;
++    uint32_t * e = NULL;
++    *pN = 0;
++
++    for (i = 0; i < 1024; ++i) {
++        struct v4l2_fmtdesc fdesc = {
++            .index = i,
++            .type = ctx->type
++        };
++
++        if (ioctl(ctx_to_m2mctx(ctx)->fd, VIDIOC_ENUM_FMT, &fdesc))
++            return e;
++
++        if (n + 1 >= size) {
++            unsigned int newsize = (size == 0) ? 16 : size * 2;
++            uint32_t * t = av_realloc(e, newsize * sizeof(*t));
++            if (!t)
++                return e;
++            e = t;
++            size = newsize;
++        }
++
++        e[n] = fdesc.pixelformat;
++        e[++n] = 0;
++        if (pN)
++            *pN = n;
+     }
+ 
+-    return ff_v4l2_buffer_buf_to_avpkt(pkt, avbuf);
++    // If we've looped 1024 times we are clearly confused
++    *pN = 0;
++    av_free(e);
++    return NULL;
  }
  
  int ff_v4l2_context_get_format(V4L2Context* ctx, int probe)
-@@ -702,78 +1093,179 @@ int ff_v4l2_context_get_format(V4L2Conte
+@@ -702,78 +1134,179 @@ int ff_v4l2_context_get_format(V4L2Conte
  
  int ff_v4l2_context_set_format(V4L2Context* ctx)
  {
@@ -52320,7 +52359,8 @@
 +    av_freep(&ctx->bufrefs);
 +    return ret;
 +}
-+
+ 
+-    av_freep(&ctx->buffers);
 +int ff_v4l2_context_init(V4L2Context* ctx)
 +{
 +    struct v4l2_queryctrl qctrl;
@@ -52364,8 +52404,7 @@
 +        av_log(logger(ctx), AV_LOG_ERROR, "%s VIDIOC_G_FMT failed: %s\n", ctx->name, av_err2str(ret));
 +        goto fail_unref_hwframes;
 +    }
- 
--    av_freep(&ctx->buffers);
++
 +    memset(&qctrl, 0, sizeof(qctrl));
 +    qctrl.id = V4L2_CID_MIN_BUFFERS_FOR_OUTPUT;
 +    if (ioctl(s->fd, VIDIOC_QUERYCTRL, &qctrl) != 0) {
@@ -52466,7 +52505,27 @@
  } V4L2Context;
  
  /**
-@@ -147,7 +177,7 @@ int ff_v4l2_context_set_status(V4L2Conte
+@@ -120,6 +150,19 @@ int ff_v4l2_context_set_format(V4L2Conte
+ int ff_v4l2_context_get_format(V4L2Context* ctx, int probe);
+ 
+ /**
++ * Get the list of drm fourcc pixel formats for this context
++ *
++ * @param[in] ctx A pointer to a V4L2Context. See V4L2Context
++ *       description for required variables.
++ * @param[in] pN A pointer to receive the number of formats
++ *       found. May be NULL if not wanted.
++ * @return Pointer to malloced list of zero terminated formats,
++ *         NULL if none or error. As list is malloced it must be
++ *         freed.
++ */
++uint32_t * ff_v4l2_context_enum_drm_formats(V4L2Context *ctx, unsigned int *pN);
++
++/**
+  * Releases a V4L2Context.
+  *
+  * @param[in] ctx A pointer to a V4L2Context.
+@@ -147,7 +190,7 @@ int ff_v4l2_context_set_status(V4L2Conte
   * @param[inout] pkt The AVPacket to dequeue to.
   * @return 0 in case of success, AVERROR(EAGAIN) if no buffer was ready, another negative error in case of error.
   */
@@ -52475,7 +52534,7 @@
  
  /**
   * Dequeues a buffer from a V4L2Context to an AVFrame.
-@@ -156,7 +186,10 @@ int ff_v4l2_context_dequeue_packet(V4L2C
+@@ -156,7 +199,10 @@ int ff_v4l2_context_dequeue_packet(V4L2C
   * @param[in] ctx The V4L2Context to dequeue from.
   * @param[inout] f The AVFrame to dequeue to.
   * @param[in] timeout The timeout for dequeue (-1 to block, 0 to return immediately, or milliseconds)
@@ -52486,7 +52545,7 @@
   */
  int ff_v4l2_context_dequeue_frame(V4L2Context* ctx, AVFrame* f, int timeout);
  
-@@ -170,7 +203,7 @@ int ff_v4l2_context_dequeue_frame(V4L2Co
+@@ -170,7 +216,7 @@ int ff_v4l2_context_dequeue_frame(V4L2Co
   * @param[in] pkt A pointer to an AVPacket.
   * @return 0 in case of success, a negative error otherwise.
   */
@@ -52495,7 +52554,7 @@
  
  /**
   * Enqueues a buffer to a V4L2Context from an AVFrame
-@@ -183,4 +216,28 @@ int ff_v4l2_context_enqueue_packet(V4L2C
+@@ -183,4 +229,28 @@ int ff_v4l2_context_enqueue_packet(V4L2C
   */
  int ff_v4l2_context_enqueue_frame(V4L2Context* ctx, const AVFrame* f);
  
@@ -52668,7 +52727,7 @@
  
      av_free(s);
  }
-@@ -338,17 +392,35 @@ int ff_v4l2_m2m_codec_end(V4L2m2mPriv *p
+@@ -338,17 +392,39 @@ int ff_v4l2_m2m_codec_end(V4L2m2mPriv *p
      V4L2m2mContext *s = priv->context;
      int ret;
  
@@ -52697,11 +52756,15 @@
 +    }
  
      ff_v4l2_context_release(&s->output);
- 
-+    dmabufs_ctl_unref(&s->db_ctl);
-+    close(s->fd);
-+    s->fd = -1;
++    av_buffer_unref(&s->device_ref);
 +
++    dmabufs_ctl_unref(&s->db_ctl);
++
++    if (s->fd != -1) {
++        close(s->fd);
++        s->fd = -1;
++    }
+ 
      s->self_ref = NULL;
 +    // This is only called on avctx close so after this point we don't have that
 +    // Crash sooner if we find we are using it (can still log with avctx = NULL)
@@ -52710,7 +52773,7 @@
      av_buffer_unref(&priv->context_ref);
  
      return 0;
-@@ -392,28 +464,33 @@ int ff_v4l2_m2m_codec_init(V4L2m2mPriv *
+@@ -392,28 +468,33 @@ int ff_v4l2_m2m_codec_init(V4L2m2mPriv *
      return v4l2_configure_contexts(s);
  }
  
@@ -52988,13 +53051,13 @@
 +    for (i = 0; i != 8; ++i) {
 +        *s++ = ' ';
 +        s = len > i + offset ? hex2(s, *m++) : dash2(s);
-+    }
+     }
 +    *s++ = ' ';
 +    *s++ = ':';
 +    for (; i != 16; ++i) {
 +        *s++ = ' ';
 +        s = len > i + offset ? hex2(s, *m++) : dash2(s);
-     }
++    }
 +    *s++ = 0;
 +}
  
@@ -53236,7 +53299,7 @@
      return 0;
  }
  
-@@ -133,52 +343,737 @@ static int v4l2_prepare_decoder(V4L2m2mC
+@@ -133,52 +343,821 @@ static int v4l2_prepare_decoder(V4L2m2mC
      return 0;
  }
  
@@ -53505,10 +53568,7 @@
 +            return ret;
 +        }
 +    }
- 
--            /* cant recover */
--            if (ret == AVERROR(ENOMEM))
--                return ret;
++
 +    // Start if we haven't
 +    {
 +        const int ret2 = v4l2_try_start(avctx);
@@ -53571,7 +53631,7 @@
 +            av_log(avctx, AV_LOG_WARNING, "Poll thinks src Q has space; none found\n");
 +            break;
 +        }
- 
++
 +        // Try to get a new frame if
 +        // (a) we haven't already got one AND
 +        // (b) enqueue returned a status indicating that decode should be attempted
@@ -53737,7 +53797,10 @@
 +    }
 +    return ~(uint32_t)0;
 +}
-+
+ 
+-            /* cant recover */
+-            if (ret == AVERROR(ENOMEM))
+-                return ret;
 +// This check mirrors Chrome's profile check by testing to see if the profile
 +// exists as a possible value for the V4L2 profile control
 +static int
@@ -53752,7 +53815,7 @@
 +        av_log(avctx, AV_LOG_VERBOSE, "Profile %d <= 0 - check skipped\n", avctx->profile);
 +        return 0;
 +    }
-+
+ 
 +    memset(&query_ctrl, 0, sizeof(query_ctrl));
 +    switch (avctx->codec_id) {
 +        case AV_CODEC_ID_MPEG2VIDEO:
@@ -53807,10 +53870,9 @@
 +};
 +
 +static int
-+check_size(AVCodecContext * const avctx, V4L2m2mContext * const s)
++check_size(AVCodecContext * const avctx, V4L2m2mContext * const s, const uint32_t fcc)
 +{
 +    unsigned int i;
-+    const uint32_t fcc = ff_v4l2_get_format_pixelformat(&s->capture.format);
 +    const uint32_t w = avctx->coded_width;
 +    const uint32_t h = avctx->coded_height;
 +
@@ -53938,10 +54000,12 @@
 +#if CONFIG_H264_DECODER
 +        case AV_CODEC_ID_H264:
 +        {
-+            H264ParamSets ps = {{NULL}};
++            H264ParamSets ps;
 +            int is_avc = 0;
 +            int nal_length_size = 0;
 +            int ret;
++
++            memset(&ps, 0, sizeof(ps));
 +
 +            ret = ff_h264_decode_extradata(avctx->extradata, avctx->extradata_size,
 +                                           &ps, &is_avc, &nal_length_size,
@@ -53968,11 +54032,14 @@
 +#if CONFIG_HEVC_DECODER
 +        case AV_CODEC_ID_HEVC:
 +        {
-+            HEVCParamSets ps = {{NULL}};
-+            HEVCSEI sei = {{{{0}}}};
++            HEVCParamSets ps;
++            HEVCSEI sei;
 +            int is_nalff = 0;
 +            int nal_length_size = 0;
 +            int ret;
++
++            memset(&ps, 0, sizeof(ps));
++            memset(&sei, 0, sizeof(sei));
 +
 +            ret = ff_hevc_decode_extradata(avctx->extradata, avctx->extradata_size,
 +                                           &ps, &sei, &is_nalff, &nal_length_size,
@@ -54000,14 +54067,91 @@
 +        default:
 +            break;
 +    }
++}
++
++static int
++choose_capture_format(AVCodecContext * const avctx, V4L2m2mContext * const s)
++{
++    const V4L2m2mPriv * const priv = avctx->priv_data;
++    unsigned int fmts_n;
++    uint32_t *fmts = ff_v4l2_context_enum_drm_formats(&s->capture, &fmts_n);
++    enum AVPixelFormat *fmts2 = NULL;
++    enum AVPixelFormat t;
++    enum AVPixelFormat gf_pix_fmt;
++    unsigned int i;
++    unsigned int n = 0;
++    unsigned int pref_n = 1;
++    int rv = AVERROR(ENOENT);
++
++    if (!fmts)
++        return AVERROR(ENOENT);
++
++    if ((fmts2 = av_malloc(sizeof(*fmts2) * (fmts_n + 2))) == NULL) {
++        rv = AVERROR(ENOMEM);
++        goto error;
++    }
++
++    // Filter for formats that are supported by ffmpeg and
++    // can accomodate the stream size
++    fmts2[n++] = AV_PIX_FMT_DRM_PRIME;
++    for (i = 0; i != fmts_n; ++i) {
++        const enum AVPixelFormat f = ff_v4l2_format_v4l2_to_avfmt(fmts[i], AV_CODEC_ID_RAWVIDEO);
++        if (f == AV_PIX_FMT_NONE)
++            continue;
++
++        if (check_size(avctx, s, fmts[i]) != 0)
++            continue;
++
++        if (f == priv->pix_fmt)
++            pref_n = n;
++        fmts2[n++] = f;
++    }
++    fmts2[n] = AV_PIX_FMT_NONE;
++
++    if (n < 2) {
++        av_log(avctx, AV_LOG_DEBUG, "%s: No usable formats found\n", __func__);
++        goto error;
++    }
++
++    // Put preferred s/w format at the end - ff_get_format will put it in sw_pix_fmt
++    t = fmts2[n - 1];
++    fmts2[n - 1] = fmts2[pref_n];
++    fmts2[pref_n] = t;
++
++    gf_pix_fmt = ff_get_format(avctx, avctx->codec->pix_fmts);
++    av_log(avctx, AV_LOG_DEBUG, "avctx requested=%d (%s) %dx%d; get_format requested=%d (%s)\n",
++           avctx->pix_fmt, av_get_pix_fmt_name(avctx->pix_fmt),
++           avctx->coded_width, avctx->coded_height,
++           gf_pix_fmt, av_get_pix_fmt_name(gf_pix_fmt));
++
++    if (gf_pix_fmt == AV_PIX_FMT_NONE)
++        goto error;
++
++    if (gf_pix_fmt == AV_PIX_FMT_DRM_PRIME || avctx->pix_fmt == AV_PIX_FMT_DRM_PRIME) {
++        avctx->pix_fmt = AV_PIX_FMT_DRM_PRIME;
++        s->capture.av_pix_fmt = avctx->sw_pix_fmt;
++        s->output_drm = 1;
++    }
++    else {
++        avctx->pix_fmt = gf_pix_fmt;
++        s->capture.av_pix_fmt = gf_pix_fmt;
++        s->output_drm = 0;
++    }
++
++    // Get format converts capture.av_pix_fmt back into a V4L2 format in the context
++    if ((rv = ff_v4l2_context_get_format(&s->capture, 0)) != 0)
++        goto error;
++    rv = ff_v4l2_context_set_format(&s->capture);
++
++error:
++    av_free(fmts2);
++    av_free(fmts);
++    return rv;
  }
  
  static av_cold int v4l2_decode_init(AVCodecContext *avctx)
-@@ -186,12 +1081,30 @@ static av_cold int v4l2_decode_init(AVCo
-     V4L2Context *capture, *output;
-     V4L2m2mContext *s;
+@@ -188,10 +1167,27 @@ static av_cold int v4l2_decode_init(AVCo
      V4L2m2mPriv *priv = avctx->priv_data;
-+    int gf_pix_fmt;
      int ret;
  
 +    av_log(avctx, AV_LOG_TRACE, "<<< %s\n", __func__);
@@ -54034,7 +54178,7 @@
      capture = &s->capture;
      output = &s->output;
  
-@@ -199,34 +1112,155 @@ static av_cold int v4l2_decode_init(AVCo
+@@ -199,34 +1195,137 @@ static av_cold int v4l2_decode_init(AVCo
       * by the v4l2 driver; this event will trigger a full pipeline reconfig and
       * the proper values will be retrieved from the kernel driver.
       */
@@ -54053,28 +54197,8 @@
      capture->av_pix_fmt = avctx->pix_fmt;
 +    capture->min_buf_size = 0;
 +
-+    /* the client requests the codec to generate DRM frames:
-+     *   - data[0] will therefore point to the returned AVDRMFrameDescriptor
-+     *       check the ff_v4l2_buffer_to_avframe conversion function.
-+     *   - the DRM frame format is passed in the DRM frame descriptor layer.
-+     *       check the v4l2_get_drm_frame function.
-+     */
-+
-+    avctx->sw_pix_fmt = avctx->pix_fmt;
-+    gf_pix_fmt = ff_get_format(avctx, avctx->codec->pix_fmts);
-+    av_log(avctx, AV_LOG_DEBUG, "avctx requested=%d (%s) %dx%d; get_format requested=%d (%s)\n",
-+           avctx->pix_fmt, av_get_pix_fmt_name(avctx->pix_fmt),
-+           avctx->coded_width, avctx->coded_height,
-+           gf_pix_fmt, av_get_pix_fmt_name(gf_pix_fmt));
-+
-+    if (gf_pix_fmt == AV_PIX_FMT_DRM_PRIME || avctx->pix_fmt == AV_PIX_FMT_DRM_PRIME) {
-+        avctx->pix_fmt = AV_PIX_FMT_DRM_PRIME;
-+        s->output_drm = 1;
-+    }
-+    else {
-+        capture->av_pix_fmt = gf_pix_fmt;
-+        s->output_drm = 0;
-+    }
++    capture->av_pix_fmt = AV_PIX_FMT_NONE;
++    s->output_drm = 0;
 +
 +    s->db_ctl = NULL;
 +    if (priv->dmabuf_alloc != NULL && strcmp(priv->dmabuf_alloc, "v4l2") != 0) {
@@ -54108,30 +54232,32 @@
 -        av_buffer_unref(&priv->context_ref);
 +        return ret;
 +    }
- 
++
 +    if (avctx->extradata &&
 +        (ret = copy_extradata(avctx, avctx->extradata, avctx->extradata_size, &s->extdata_data, &s->extdata_size)) != 0) {
 +        av_log(avctx, AV_LOG_ERROR, "Failed to copy extradata from context: %s\n", av_err2str(ret));
 +#if DUMP_FAILED_EXTRADATA
 +        log_dump(avctx, AV_LOG_INFO, avctx->extradata, avctx->extradata_size);
 +#endif
++        return ret;
++    }
++
++    if ((ret = get_quirks(avctx, s)) != 0)
++        return ret;
+ 
++    if ((ret = check_profile(avctx, s)) != 0) {
++        av_log(avctx, AV_LOG_WARNING, "Profile %d not supported by decode\n", avctx->profile);
          return ret;
      }
  
 -    return v4l2_prepare_decoder(s);
++    // Size check done as part of format filtering
++    if ((ret = choose_capture_format(avctx, s)) != 0)
++        return ret;
++
 +    if ((ret = v4l2_prepare_decoder(s)) < 0)
 +        return ret;
 +
-+    if ((ret = get_quirks(avctx, s)) != 0)
-+        return ret;
-+
-+    if ((ret = check_size(avctx, s)) != 0)
-+        return ret;
-+
-+    if ((ret = check_profile(avctx, s)) != 0) {
-+        av_log(avctx, AV_LOG_WARNING, "Profile %d not supported by decode\n", avctx->profile);
-+        return ret;
-+    }
 +    return 0;
  }
  
@@ -54198,7 +54324,7 @@
  }
  
  #define OFFSET(x) offsetof(V4L2m2mPriv, x)
-@@ -235,10 +1269,17 @@ static av_cold int v4l2_decode_close(AVC
+@@ -235,10 +1334,17 @@ static av_cold int v4l2_decode_close(AVC
  static const AVOption options[] = {
      V4L_M2M_DEFAULT_OPTS,
      { "num_capture_buffers", "Number of buffers in the capture context",
@@ -54217,7 +54343,7 @@
  #define M2MDEC_CLASS(NAME) \
      static const AVClass v4l2_m2m_ ## NAME ## _dec_class = { \
          .class_name = #NAME "_v4l2m2m_decoder", \
-@@ -259,9 +1300,15 @@ static const AVOption options[] = {
+@@ -259,9 +1365,15 @@ static const AVOption options[] = {
          .init           = v4l2_decode_init, \
          .receive_frame  = v4l2_receive_frame, \
          .close          = v4l2_decode_close, \
@@ -54805,7 +54931,7 @@
 +
 --- /dev/null
 +++ b/libavcodec/v4l2_req_devscan.c
-@@ -0,0 +1,449 @@
+@@ -0,0 +1,451 @@
 +#include <errno.h>
 +#include <fcntl.h>
 +#include <libudev.h>
@@ -55245,12 +55371,14 @@
 +    }
 +
 +    udev_enumerate_unref(enumerate);
++    udev_unref(udev);
 +
 +    *pscan = scan;
 +    return 0;
 +
 +fail:
-+    udev_unref(udev);
++    if (udev)
++        udev_unref(udev);
 +    devscan_delete(&scan);
 +    return ret;
 +}
@@ -60040,7 +60168,7 @@
  void ff_vc1dsp_init(VC1DSPContext* c);
 --- /dev/null
 +++ b/libavcodec/weak_link.c
-@@ -0,0 +1,102 @@
+@@ -0,0 +1,103 @@
 +#include <stdlib.h>
 +#include <pthread.h>
 +#include <stdatomic.h>
@@ -60062,6 +60190,7 @@
 +    struct ff_weak_link_master * w = malloc(sizeof(*w));
 +    if (!w)
 +        return NULL;
++    atomic_init(&w->ref_count, 0);
 +    w->ptr = p;
 +    if (pthread_rwlock_init(&w->lock, NULL)) {
 +        free(w);
