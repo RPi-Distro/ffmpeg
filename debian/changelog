@@ -1,3 +1,10 @@
+ffmpeg (8:4.3.6-0+deb11u1+rpt5) bullseye; urgency=medium
+
+  * HW accel patch 21
+  * Fix gbp.conf
+
+ -- Serge Schneider <serge@raspberrypi.com>  Mon, 14 Aug 2023 02:39:57 +0000
+
 ffmpeg (8:4.3.6-0+deb11u1+rpt4) bullseye; urgency=medium
 
   * HW accel patch 20
