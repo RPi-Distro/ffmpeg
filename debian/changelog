@@ -1,3 +1,10 @@
+ffmpeg (8:5.1.3-1+rpt5) bookworm; urgency=medium
+
+  * HW accel patch 22
+  * Remove libraspberrypi0 dependencies
+
+ -- Serge Schneider <serge@raspberrypi.com>  Thu, 09 Nov 2023 15:52:53 +0000
+
 ffmpeg (8:5.1.3-1+rpt4) bookworm; urgency=medium
 
   * HW accel patch 21
