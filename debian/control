@@ -97,8 +97,6 @@ Build-Depends:
  libopenal-dev,
 # --enable-omx
  libomxil-bellagio-dev,
-# --enable-omx-rpi
- libraspberrypi-dev [armhf arm64],
 # --enable-libopencore_amrnb
  libopencore-amrnb-dev,
 # --enable-libopencore_amrwb
@@ -256,7 +254,6 @@ Multi-Arch: same
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
- libraspberrypi0 [armhf arm64]
 Suggests:
  libcuda1 [amd64 arm64 i386],
  libnvcuvid1 [amd64 arm64 i386],
@@ -286,7 +283,6 @@ Provides: libavcodec59 (= ${binary:Version})
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
- libraspberrypi0 [armhf arm64]
 Suggests:
  libcuda1 [amd64 arm64 i386],
  libnvcuvid1 [amd64 arm64 i386],
@@ -366,7 +362,6 @@ Multi-Arch: same
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
- libraspberrypi0 [armhf arm64]
 Description: FFmpeg library for handling input and output devices - runtime files
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and
@@ -412,7 +407,6 @@ Multi-Arch: same
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
- libraspberrypi0 [armhf arm64]
 Description: FFmpeg library containing media filters - runtime files
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and
@@ -433,7 +427,6 @@ Provides: libavfilter8 (= ${binary:Version})
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
- libraspberrypi0 [armhf arm64]
 Description: FFmpeg library with extra media filters - runtime files
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and
@@ -500,7 +493,6 @@ Multi-Arch: same
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
- libraspberrypi0 [armhf arm64]
 Description: FFmpeg library with (de)muxers for multimedia containers - runtime files
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and
