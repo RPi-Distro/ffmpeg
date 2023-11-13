@@ -253,7 +253,7 @@ Section: libs
 Multi-Arch: same
 Depends:
  ${shlibs:Depends},
- ${misc:Depends},
+ ${misc:Depends}
 Suggests:
  libcuda1 [amd64 arm64 i386],
  libnvcuvid1 [amd64 arm64 i386],
@@ -282,7 +282,7 @@ Conflicts: libavcodec59
 Provides: libavcodec59 (= ${binary:Version})
 Depends:
  ${shlibs:Depends},
- ${misc:Depends},
+ ${misc:Depends}
 Suggests:
  libcuda1 [amd64 arm64 i386],
  libnvcuvid1 [amd64 arm64 i386],
@@ -361,7 +361,7 @@ Section: libs
 Multi-Arch: same
 Depends:
  ${shlibs:Depends},
- ${misc:Depends},
+ ${misc:Depends}
 Description: FFmpeg library for handling input and output devices - runtime files
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and
@@ -406,7 +406,7 @@ Section: libs
 Multi-Arch: same
 Depends:
  ${shlibs:Depends},
- ${misc:Depends},
+ ${misc:Depends}
 Description: FFmpeg library containing media filters - runtime files
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and
@@ -426,7 +426,7 @@ Conflicts: libavfilter8
 Provides: libavfilter8 (= ${binary:Version})
 Depends:
  ${shlibs:Depends},
- ${misc:Depends},
+ ${misc:Depends}
 Description: FFmpeg library with extra media filters - runtime files
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and
@@ -492,7 +492,7 @@ Section: libs
 Multi-Arch: same
 Depends:
  ${shlibs:Depends},
- ${misc:Depends},
+ ${misc:Depends}
 Description: FFmpeg library with (de)muxers for multimedia containers - runtime files
  FFmpeg is the leading multimedia framework, able to decode, encode, transcode,
  mux, demux, stream, filter and play pretty much anything that humans and
