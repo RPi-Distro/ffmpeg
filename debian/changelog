@@ -1,41 +1,32 @@
-ffmpeg (8:5.1.3-1+rpt5) bookworm; urgency=medium
+ffmpeg (8:5.1.4-0+rpt1+deb12u1) bookworm-security; urgency=medium
 
   * HW accel patch 22
-  * Remove libraspberrypi0 dependencies
-
- -- Serge Schneider <serge@raspberrypi.com>  Thu, 09 Nov 2023 15:52:53 +0000
-
-ffmpeg (8:5.1.3-1+rpt4) bookworm; urgency=medium
-
-  * HW accel patch 21
-
- -- Serge Schneider <serge@raspberrypi.com>  Mon, 14 Aug 2023 01:01:49 +0000
-
-ffmpeg (8:5.1.3-1+rpt3) bookworm; urgency=medium
-
-  * HW accel patch 20
-
- -- Serge Schneider <serge@raspberrypi.com>  Mon, 07 Aug 2023 13:22:49 +0000
-
-ffmpeg (8:5.1.3-1+rpt2) bookworm; urgency=medium
-
-  * HW accel patch 19
-    - Adds aarch64 asm for bwdif deinterlace
-    - Fixes a buffer overwrite in sand->yuv conversion (rare)
-    - Tweaks v4l2 stateful decode scheduling again (fixes some Kodi playback)
-
- -- Serge Schneider <serge@raspberrypi.com>  Mon, 17 Jul 2023 08:43:04 +0100
-
-ffmpeg (8:5.1.3-1+rpt1) bookworm; urgency=medium
-
-  * HW accel patch 18
   * Bump epoch to take priority over Debian and Raspbian builds
-  * Disable MMAL on all platforms
-  * Remove --enable-rpi
-  * Remove --enable-lensfun
-  * Enable SAND on all platforms
+  * Split ARMv6 and ARMv7 builds
+  * Added build dependencies:
+    - libdrm-dev
+      libepoxy-dev
+      libx11-dev
+      libx11-xcb-dev
+      libxcb-dri3-dev
+      libxcb1-dev
+      linux-libc-dev
+  * On all platforms:
+    - --enable-neon
+      --enable-vout-drm
+      --disable-mmal
+      --enable-sand
+      --enable-v4l2-request
+      --enable-libudev
+      --enable-epoxy
 
- -- Serge Schneider <serge@raspberrypi.com>  Tue, 30 May 2023 11:39:15 +0100
+ -- Serge Schneider <serge@raspberrypi.com>  Mon, 13 Nov 2023 15:06:21 +0000
+
+ffmpeg (7:5.1.4-0+deb12u1) bookworm-security; urgency=medium
+
+  * New upstream version 5.1.4
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 11 Nov 2023 13:09:28 +0100
 
 ffmpeg (7:5.1.3-1) unstable; urgency=medium
 
