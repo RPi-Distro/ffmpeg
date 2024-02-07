@@ -1,3 +1,9 @@
+ffmpeg (8:5.1.4-0+rpt2+deb12u1) bookworm; urgency=medium
+
+  * HW accel patch 23
+
+ -- Serge Schneider <serge@raspberrypi.com>  Wed, 07 Feb 2024 11:52:56 +0000
+
 ffmpeg (8:5.1.4-0+rpt1+deb12u1) bookworm-security; urgency=medium
 
   * HW accel patch 22
