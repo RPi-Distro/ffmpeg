@@ -3230,7 +3230,7 @@
      }
  
 -    return ff_v4l2_buffer_enqueue(avbuf);
-+    if (!want_mmap) {
++    if (V4L2_TYPE_IS_CAPTURE(ctx->type) && !want_mmap) {
 +        // export_drm does dmabuf alloc if we aren't using v4l2 alloc
 +        ret = v4l2_buffer_export_drm(avbuf);
 +        if (ret) {
@@ -7287,9 +7287,11 @@
 +
 --- /dev/null
 +++ b/libavcodec/v4l2_req_decode_q.h
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,27 @@
 +#ifndef AVCODEC_V4L2_REQ_DECODE_Q_H
 +#define AVCODEC_V4L2_REQ_DECODE_Q_H
++
++#include <pthread.h>
 +
 +typedef struct req_decode_ent {
 +    struct req_decode_ent * next;
@@ -17829,7 +17831,7 @@
      case AV_CODEC_ID_H264:
 +    {
 +        uint8_t *side_data;
-+        int side_data_size = 0;
++        size_t side_data_size = 0;
 +
 +        side_data = av_packet_get_side_data(pkt, AV_PKT_DATA_NEW_EXTRADATA,
 +                                            &side_data_size);
@@ -18277,13 +18279,13 @@
 +                st3             {v0.4h  - v2.4h},  [x0], #24
 +                st3             {v16.4h - v18.4h}, [x2], #24
 +                beq             11b
-+                mov             v0.2d[0],  v0.2d[1]
++                mov             v0.d[0],  v0.d[1]
 +                sub             w9,  w9,  #12
-+                mov             v1.2d[0],  v1.2d[1]
-+                mov             v2.2d[0],  v2.2d[1]
-+                mov             v16.2d[0], v16.2d[1]
-+                mov             v17.2d[0], v17.2d[1]
-+                mov             v18.2d[0], v18.2d[1]
++                mov             v1.d[0],  v1.d[1]
++                mov             v2.d[0],  v2.d[1]
++                mov             v16.d[0], v16.d[1]
++                mov             v17.d[0], v17.d[1]
++                mov             v18.d[0], v18.d[1]
 +1:
 +                cmp             w9,  #6-48
 +                blt             1f
@@ -18416,28 +18418,28 @@
 +                blt             1f
 +                st3             {v16.4h, v17.4h, v18.4h}, [x0], #24
 +                beq             11b
-+                mov             v16.2d[0], v16.2d[1]
++                mov             v16.d[0], v16.d[1]
 +                sub             w5,  w5,  #12
-+                mov             v17.2d[0], v17.2d[1]
-+                mov             v18.2d[0], v18.2d[1]
++                mov             v17.d[0], v17.d[1]
++                mov             v18.d[0], v18.d[1]
 +1:
 +                cmp             w5,  #6-96
 +                blt             1f
 +                st3             {v16.h, v17.h, v18.h}[0], [x0], #6
 +                st3             {v16.h, v17.h, v18.h}[1], [x0], #6
 +                beq             11b
-+                mov             v16.2s[0], v16.2s[1]
++                mov             v16.s[0], v16.s[1]
 +                sub             w5,  w5,  #6
-+                mov             v17.2s[0], v17.2s[1]
-+                mov             v18.2s[0], v18.2s[1]
++                mov             v17.s[0], v17.s[1]
++                mov             v18.s[0], v18.s[1]
 +1:
 +                cmp             w5,  #3-96
 +                blt             1f
 +                st3             {v16.h, v17.h, v18.h}[0], [x0], #6
 +                beq             11b
-+                mov             v16.4h[0], v16.4h[1]
++                mov             v16.h[0], v16.h[1]
 +                sub             w5,  w5,  #3
-+                mov             v17.4h[0], v17.4h[1]
++                mov             v17.h[0], v17.h[1]
 +1:
 +                cmp             w5,  #2-96
 +                blt             1f
@@ -18515,10 +18517,10 @@
 +                blt             1f
 +                st3             {v16.8b, v17.8b, v18.8b}, [x0], #24
 +                beq             11b
-+                mov             v16.2d[0], v16.2d[1]
++                mov             v16.d[0], v16.d[1]
 +                sub             w5,  w5,  #24
-+                mov             v17.2d[0], v17.2d[1]
-+                mov             v18.2d[0], v18.2d[1]
++                mov             v17.d[0], v17.d[1]
++                mov             v18.d[0], v18.d[1]
 +1:
 +                cmp             w5,  #12-96
 +                blt             1f
@@ -18527,28 +18529,28 @@
 +                st3             {v16.b, v17.b, v18.b}[2], [x0], #3
 +                st3             {v16.b, v17.b, v18.b}[3], [x0], #3
 +                beq             11b
-+                mov             v16.2s[0], v16.2s[1]
++                mov             v16.s[0], v16.s[1]
 +                sub             w5,  w5,  #12
-+                mov             v17.2s[0], v17.2s[1]
-+                mov             v18.2s[0], v18.2s[1]
++                mov             v17.s[0], v17.s[1]
++                mov             v18.s[0], v18.s[1]
 +1:
 +                cmp             w5,  #6-96
 +                blt             1f
 +                st3             {v16.b, v17.b, v18.b}[0], [x0], #3
 +                st3             {v16.b, v17.b, v18.b}[1], [x0], #3
 +                beq             11b
-+                mov             v16.4h[0], v16.4h[1]
++                mov             v16.h[0], v16.h[1]
 +                sub             w5,  w5,  #6
-+                mov             v17.4h[0], v17.4h[1]
-+                mov             v18.4h[0], v18.4h[1]
++                mov             v17.h[0], v17.h[1]
++                mov             v18.h[0], v18.h[1]
 +1:
 +                cmp             w5,  #3-96
 +                blt             1f
 +                st3             {v16.b, v17.b, v18.b}[0], [x0], #3
 +                beq             11b
-+                mov             v16.8b[0], v16.8b[1]
++                mov             v16.b[0], v16.b[1]
 +                sub             w5,  w5,  #3
-+                mov             v17.8b[0], v17.8b[1]
++                mov             v17.b[0], v17.b[1]
 +1:
 +                cmp             w5,  #2-96
 +                blt             1f
@@ -21159,8 +21161,8 @@
 +        b.eq            90f
 +
 +        subs            w9,  w4, #0
-+        add             x0, x0, w14, SXTX
-+        add             x1, x1, w6, SXTX
++        add             x0, x0, w14, sxtw
++        add             x1, x1, w6, sxtw
 +        mov             x10, x0
 +        mov             x11, x1
 +        b.lt            12f
@@ -21245,10 +21247,10 @@
 +
 +// ------------------- Loop to start
 +
-+        add             x0, x0, w14, SXTX
-+        add             x1, x1, w6, SXTX
-+        add             x2, x2, w7, SXTX
-+        add             x3, x3, w7, SXTX
++        add             x0, x0, w14, sxtw
++        add             x1, x1, w6, sxtw
++        add             x2, x2, w7, sxtw
++        add             x3, x3, w7, sxtw
 +        subs            w5, w5, #1
 +        b.gt            11b
 +90:
