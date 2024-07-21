@@ -1,37 +1,15 @@
-ffmpeg (8:4.3.6-0+deb11u1+rpt5) bullseye; urgency=medium
+ffmpeg (8:4.3.7-0+deb11u1+rpt1) bullseye; urgency=medium
 
   * HW accel patch 21
-  * Fix gbp.conf
-
- -- Serge Schneider <serge@raspberrypi.com>  Mon, 14 Aug 2023 02:39:57 +0000
-
-ffmpeg (8:4.3.6-0+deb11u1+rpt4) bullseye; urgency=medium
-
-  * HW accel patch 20
-
- -- Serge Schneider <serge@raspberrypi.com>  Mon, 07 Aug 2023 12:46:35 +0000
-
-ffmpeg (8:4.3.6-0+deb11u1+rpt3) bullseye; urgency=medium
-
-  * HW accel patch 19
-    - Adds aarch64 asm for bwdif deinterlace
-    - Fixes a buffer overwrite in sand->yuv conversion (rare)
-    - Tweaks v4l2 stateful decode scheduling again (fixes some Kodi playback)
-
- -- Serge Schneider <serge@raspberrypi.com>  Mon, 17 Jul 2023 08:36:33 +0100
-
-ffmpeg (8:4.3.6-0+deb11u1+rpt2) bullseye; urgency=medium
-
-  * HW accel patch 18
   * Bump epoch to take priority over Debian and Raspbian builds
 
- -- Serge Schneider <serge@raspberrypi.com>  Tue, 09 May 2023 08:27:20 +0100
+ -- Serge Schneider <serge@raspberrypi.com>  Sun, 21 Jul 2024 16:56:45 +0100
 
-ffmpeg (7:4.3.6-0+deb11u1+rpt1) bullseye; urgency=medium
+ffmpeg (7:4.3.7-0+deb11u1) bullseye-security; urgency=medium
 
-  * HW accel patch 17
+  * New upstream release 4.3.7
 
- -- Serge Schneider <serge@raspberrypi.com>  Tue, 02 May 2023 07:26:40 +0100
+ -- Moritz Mühlenhoff <jmm@debian.org>  Tue, 25 Jun 2024 00:15:01 +0200
 
 ffmpeg (7:4.3.6-0+deb11u1) bullseye-security; urgency=medium
 

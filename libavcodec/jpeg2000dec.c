@@ -317,6 +317,16 @@ static int get_siz(Jpeg2000DecoderContext *s)
         return AVERROR_INVALIDDATA;
     }
 
+    if (s->image_offset_x >= s->width || s->image_offset_y >= s->height) {
+        av_log(s->avctx, AV_LOG_ERROR, "image offsets outside image");
+        return AVERROR_INVALIDDATA;
+    }
+
+    if (s->reduction_factor && (s->image_offset_x || s->image_offset_y) ){
+        av_log(s->avctx, AV_LOG_ERROR, "reduction factor with image offsets is not fully implemented");
+        return AVERROR_PATCHWELCOME;
+    }
+
     s->ncomponents = ncomponents;
 
     if (s->tile_width <= 0 || s->tile_height <= 0) {
@@ -872,9 +882,6 @@ static int get_tlm(Jpeg2000DecoderContext *s, int n)
             break;
         case 2:
             bytestream2_get_be16(&s->g);
-            break;
-        case 3:
-            bytestream2_get_be32(&s->g);
             break;
         }
         if (SP == 0) {

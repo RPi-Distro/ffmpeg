@@ -1116,6 +1116,12 @@ static int mov_read_ftyp(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     int ret = ffio_read_size(pb, type, 4);
     if (ret < 0)
         return ret;
+    if (c->fc->nb_streams) {
+        if (c->fc->strict_std_compliance >= FF_COMPLIANCE_STRICT)
+            return AVERROR_INVALIDDATA;
+        av_log(c->fc, AV_LOG_DEBUG, "Ignoring duplicate FTYP\n");
+        return 0;
+    }
 
     if (strcmp(type, "qt  "))
         c->isom = 1;
@@ -2032,8 +2038,13 @@ static int mov_read_stco(MOVContext *c, AVIOContext *pb, MOVAtom atom)
         for (i = 0; i < entries && !pb->eof_reached; i++)
             sc->chunk_offsets[i] = avio_rb32(pb);
     else if (atom.type == MKTAG('c','o','6','4'))
-        for (i = 0; i < entries && !pb->eof_reached; i++)
+        for (i = 0; i < entries && !pb->eof_reached; i++) {
             sc->chunk_offsets[i] = avio_rb64(pb);
+            if (sc->chunk_offsets[i] < 0) {
+                av_log(c->fc, AV_LOG_WARNING, "Impossible chunk_offset\n");
+                sc->chunk_offsets[i] = 0;
+            }
+        }
     else
         return AVERROR_INVALIDDATA;
 
@@ -4400,12 +4411,13 @@ static int mov_read_keys(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     for (i = 1; i <= count; ++i) {
         uint32_t key_size = avio_rb32(pb);
         uint32_t type = avio_rl32(pb);
-        if (key_size < 8) {
+        if (key_size < 8 || key_size > atom.size) {
             av_log(c->fc, AV_LOG_ERROR,
                    "The key# %"PRIu32" in meta has invalid size:"
                    "%"PRIu32"\n", i, key_size);
             return AVERROR_INVALIDDATA;
         }
+        atom.size -= key_size;
         key_size -= 8;
         if (type != MKTAG('m','d','t','a')) {
             avio_skip(pb, key_size);
@@ -5417,8 +5429,10 @@ static int mov_read_smdm(MOVContext *c, AVIOContext *pb, MOVAtom atom)
         av_log(c->fc, AV_LOG_WARNING, "Unsupported Mastering Display Metadata box version %d\n", version);
         return 0;
     }
-    if (sc->mastering)
-        return AVERROR_INVALIDDATA;
+    if (sc->mastering) {
+        av_log(c->fc, AV_LOG_WARNING, "Ignoring duplicate Mastering Display Metadata\n");
+        return 0;
+    }
 
     avio_skip(pb, 3); /* flags */
 
@@ -5455,9 +5469,14 @@ static int mov_read_mdcv(MOVContext *c, AVIOContext *pb, MOVAtom atom)
 
     sc = c->fc->streams[c->fc->nb_streams - 1]->priv_data;
 
-    if (atom.size < 24 || sc->mastering) {
+    if (atom.size < 24) {
         av_log(c->fc, AV_LOG_ERROR, "Invalid Mastering Display Color Volume box\n");
         return AVERROR_INVALIDDATA;
+    }
+
+    if (sc->mastering) {
+        av_log(c->fc, AV_LOG_WARNING, "Ignoring duplicate Mastering Display Color Volume\n");
+        return 0;
     }
 
     sc->mastering = av_mastering_display_metadata_alloc();
@@ -7829,12 +7848,13 @@ static AVIndexEntry *mov_find_next_sample(AVFormatContext *s, AVStream **st)
         if (msc->pb && msc->current_sample < avst->nb_index_entries) {
             AVIndexEntry *current_sample = &avst->index_entries[msc->current_sample];
             int64_t dts = av_rescale(current_sample->timestamp, AV_TIME_BASE, msc->time_scale);
+            uint64_t dtsdiff = best_dts > dts ? best_dts - (uint64_t)dts : ((uint64_t)dts - best_dts);
             av_log(s, AV_LOG_TRACE, "stream %d, sample %d, dts %"PRId64"\n", i, msc->current_sample, dts);
             if (!sample || (!(s->pb->seekable & AVIO_SEEKABLE_NORMAL) && current_sample->pos < sample->pos) ||
                 ((s->pb->seekable & AVIO_SEEKABLE_NORMAL) &&
                  ((msc->pb != s->pb && dts < best_dts) || (msc->pb == s->pb && dts != AV_NOPTS_VALUE &&
-                 ((FFABS(best_dts - dts) <= AV_TIME_BASE && current_sample->pos < sample->pos) ||
-                  (FFABS(best_dts - dts) > AV_TIME_BASE && dts < best_dts)))))) {
+                 ((dtsdiff <= AV_TIME_BASE && current_sample->pos < sample->pos) ||
+                  (dtsdiff > AV_TIME_BASE && dts < best_dts)))))) {
                 sample = current_sample;
                 best_dts = dts;
                 *st = avst;
@@ -7997,7 +8017,7 @@ static int mov_read_packet(AVFormatContext *s, AVPacket *pkt)
         pkt->flags |= AV_PKT_FLAG_DISCARD;
     }
     if (sc->ctts_data && sc->ctts_index < sc->ctts_count) {
-        pkt->pts = pkt->dts + sc->dts_shift + sc->ctts_data[sc->ctts_index].duration;
+        pkt->pts = av_sat_add64(pkt->dts, av_sat_add64(sc->dts_shift, sc->ctts_data[sc->ctts_index].duration));
         /* update ctts context */
         sc->ctts_sample++;
         if (sc->ctts_index < sc->ctts_count &&

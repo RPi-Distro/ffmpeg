@@ -363,6 +363,10 @@ static int vorbis_parse_setup_hdr_codebooks(vorbis_context *vc)
             unsigned codebook_value_bits = get_bits(gb, 4) + 1;
             unsigned codebook_sequence_p = get_bits1(gb);
 
+            if (!isfinite(codebook_minimum_value) || !isfinite(codebook_delta_value)) {
+                ret = AVERROR_INVALIDDATA;
+                goto error;
+            }
             ff_dlog(NULL, " We expect %d numbers for building the codevectors. \n",
                     codebook_lookup_values);
             ff_dlog(NULL, "  delta %f minmum %f \n",
@@ -1446,6 +1450,9 @@ static av_always_inline int vorbis_residue_decode_internal(vorbis_context *vc,
                             unsigned dim  = vc->codebooks[vqbook].dimensions;
                             unsigned step = FASTDIV(vr->partition_size << 1, dim << 1);
                             vorbis_codebook codebook = vc->codebooks[vqbook];
+
+                            if (get_bits_left(gb) <= 0)
+                                return AVERROR_INVALIDDATA;
 
                             if (vr_type == 0) {
 
