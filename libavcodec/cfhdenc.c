@@ -258,6 +258,11 @@ static av_cold int cfhd_encode_init(AVCodecContext *avctx)
     if (ret < 0)
         return ret;
 
+    if (avctx->height < 32) {
+        av_log(avctx, AV_LOG_ERROR, "Height must be >= 32.\n");
+        return AVERROR_INVALIDDATA;
+    }
+
     if (avctx->width & 15) {
         av_log(avctx, AV_LOG_ERROR, "Width must be multiple of 16.\n");
         return AVERROR_INVALIDDATA;
@@ -547,7 +552,7 @@ static int cfhd_encode_frame(AVCodecContext *avctx, AVPacket *pkt,
                          width, height * 2);
     }
 
-    ret = ff_alloc_packet(avctx, pkt, 64LL + s->planes * (2LL * avctx->width * avctx->height + 1000LL));
+    ret = ff_alloc_packet(avctx, pkt, 256LL + s->planes * (4LL * avctx->width * (avctx->height + 15) + 2048LL));
     if (ret < 0)
         return ret;
 

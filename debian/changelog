@@ -1,4 +1,4 @@
-ffmpeg (8:5.1.5-0+rpt1+deb12u1) bookworm; urgency=medium
+ffmpeg (8:5.1.6-0+deb12u1+rpt1) bookworm; urgency=medium
 
   * HW accel patch 24
   * Bump epoch to take priority over Debian and Raspbian builds
@@ -20,7 +20,14 @@ ffmpeg (8:5.1.5-0+rpt1+deb12u1) bookworm; urgency=medium
       --enable-libudev
       --enable-epoxy
 
- -- Serge Schneider <serge@raspberrypi.com>  Tue, 18 Jun 2024 23:10:04 +0100
+ -- Serge Schneider <serge@raspberrypi.com>  Wed, 14 Aug 2024 15:41:43 +0100
+
+ffmpeg (7:5.1.6-0+deb12u1) bookworm-security; urgency=medium
+
+  * New upstream version 5.1.6
+    - Fixes CVE-2024-7055, CVE-2024-7272
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 09 Aug 2024 23:15:07 +0200
 
 ffmpeg (7:5.1.5-0+deb12u1) bookworm-security; urgency=medium
 

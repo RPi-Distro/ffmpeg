@@ -302,7 +302,8 @@ static int mov_read_udta_string(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     char *str = NULL;
     const char *key = NULL;
     uint16_t langcode = 0;
-    uint32_t data_type = 0, str_size, str_size_alloc;
+    uint32_t data_type = 0, str_size_alloc;
+    uint64_t str_size;
     int (*parse)(MOVContext*, AVIOContext*, unsigned, const char*) = NULL;
     int raw = 0;
     int num = 0;
@@ -3325,6 +3326,10 @@ static int get_edit_list_entry(MOVContext *mov,
     }
     *edit_list_duration = av_rescale(*edit_list_duration, msc->time_scale,
                                      global_timescale);
+
+    if (*edit_list_duration + (uint64_t)*edit_list_media_time > INT64_MAX)
+        *edit_list_duration = 0;
+
     return 1;
 }
 
