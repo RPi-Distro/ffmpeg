@@ -1,0 +1,33 @@
+--- a/libavcodec/v4l2_m2m.h
++++ b/libavcodec/v4l2_m2m.h
+@@ -139,6 +139,7 @@
+ 
+     int num_output_buffers;
+     int num_capture_buffers;
++    int repeat_seq_header;
+     const char * dmabuf_alloc;
+     enum AVPixelFormat pix_fmt;
+ } V4L2m2mPriv;
+--- a/libavcodec/v4l2_m2m_enc.c
++++ b/libavcodec/v4l2_m2m_enc.c
+@@ -226,6 +226,9 @@
+     v4l2_set_ext_ctrl(s, MPEG_CID(BITRATE) , avctx->bit_rate, "bit rate", 1);
+     v4l2_set_ext_ctrl(s, MPEG_CID(FRAME_RC_ENABLE), 1, "frame level rate control", 0);
+     v4l2_set_ext_ctrl(s, MPEG_CID(GOP_SIZE), avctx->gop_size,"gop size", 1);
++    if (((V4L2m2mPriv*)s->priv)->repeat_seq_header) {
++        v4l2_set_ext_ctrl(s, MPEG_CID(REPEAT_SEQ_HEADER), 1, "repeat sequence headers", 1);
++    }
+ 
+     av_log(avctx, AV_LOG_DEBUG,
+         "Encoder Context: id (%d), profile (%d), frame rate(%d/%d), number b-frames (%d), "
+@@ -732,7 +735,9 @@
+     { "num_output_buffers", "Number of buffers in the output context",\
+         OFFSET(num_output_buffers), AV_OPT_TYPE_INT, { .i64 = 0 }, 0, INT_MAX, FLAGS },\
+     { "num_capture_buffers", "Number of buffers in the capture context", \
+-        OFFSET(num_capture_buffers), AV_OPT_TYPE_INT, {.i64 = 8 }, 8, INT_MAX, FLAGS }
++        OFFSET(num_capture_buffers), AV_OPT_TYPE_INT, {.i64 = 8 }, 8, INT_MAX, FLAGS }, \
++    { "repeat_seq_header", "Insert sequence (PPS/SPS) headers inline", \
++        OFFSET(repeat_seq_header), AV_OPT_TYPE_BOOL, {.i64 = 0 }, 0, 1, FLAGS }
+ 
+ static const AVOption mpeg4_options[] = {
+     V4L_M2M_CAPTURE_OPTS,
