@@ -1,3 +1,10 @@
+ffmpeg (7:7.1-1) experimental; urgency=medium
+
+  * New upstream version 7.1
+  * debian/patches: Remove patches from upstream
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 19 Oct 2024 17:18:27 +0200
+
 ffmpeg (7:7.0.2-3) unstable; urgency=medium
 
   * debian/patches: Apply upstream patch to fix armel/armhf asm builds
