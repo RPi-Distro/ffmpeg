@@ -3,7 +3,6 @@ libswscale.so.8 libswscale8 #MINVER#
  LIBSWSCALE_8@LIBSWSCALE_8 @DEB_VERSION_EPOCH_UPSTREAM@
  sws_allocVec@LIBSWSCALE_8 7:7.0
  sws_alloc_context@LIBSWSCALE_8 7:7.0
- sws_alloc_set_opts@LIBSWSCALE_8 7:7.0
  sws_convertPalette8ToPacked24@LIBSWSCALE_8 7:7.0
  sws_convertPalette8ToPacked32@LIBSWSCALE_8 7:7.0
  sws_frame_end@LIBSWSCALE_8 7:7.0
