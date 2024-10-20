@@ -137,6 +137,7 @@ libavcodec.so.61 libavcodec61 #MINVER#
  avcodec_get_hw_frames_parameters@LIBAVCODEC_61 7:7.0
  avcodec_get_name@LIBAVCODEC_61 7:7.0
  avcodec_get_subtitle_rect_class@LIBAVCODEC_61 7:7.0
+ avcodec_get_supported_config@LIBAVCODEC_61 7:7.1
  avcodec_get_type@LIBAVCODEC_61 7:7.0
  avcodec_is_open@LIBAVCODEC_61 7:7.0
  avcodec_license@LIBAVCODEC_61 7:7.0

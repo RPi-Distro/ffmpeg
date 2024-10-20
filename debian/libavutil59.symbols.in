@@ -85,6 +85,7 @@ libavutil.so.59 libavutil59 #MINVER#
  av_channel_description@LIBAVUTIL_59 7:7.0
  av_channel_description_bprint@LIBAVUTIL_59 7:7.0
  av_channel_from_string@LIBAVUTIL_59 7:7.0
+ av_channel_layout_ambisonic_order@LIBAVUTIL_59 7:7.1
  av_channel_layout_channel_from_index@LIBAVUTIL_59 7:7.0
  av_channel_layout_channel_from_string@LIBAVUTIL_59 7:7.0
  av_channel_layout_check@LIBAVUTIL_59 7:7.0
@@ -157,6 +158,7 @@ libavutil.so.59 libavutil59 #MINVER#
  av_div_i@LIBAVUTIL_59 7:7.0
  av_div_q@LIBAVUTIL_59 7:7.0
  av_dovi_alloc@LIBAVUTIL_59 7:7.0
+ av_dovi_find_level@LIBAVUTIL_59 7:7.1
  av_dovi_metadata_alloc@LIBAVUTIL_59 7:7.0
  av_downmix_info_update_side_data@LIBAVUTIL_59 7:7.0
  av_dynamic_hdr_plus_alloc@LIBAVUTIL_59 7:7.0
@@ -232,11 +234,14 @@ libavutil.so.59 libavutil59 #MINVER#
  av_frame_ref@LIBAVUTIL_59 7:7.0
  av_frame_remove_side_data@LIBAVUTIL_59 7:7.0
  av_frame_replace@LIBAVUTIL_59 7:7.0
+ av_frame_side_data_add@LIBAVUTIL_59 7:7.1
  av_frame_side_data_clone@LIBAVUTIL_59 7:7.0
+ av_frame_side_data_desc@LIBAVUTIL_59 7:7.1
  av_frame_side_data_free@LIBAVUTIL_59 7:7.0
  av_frame_side_data_get_c@LIBAVUTIL_59 7:7.0
  av_frame_side_data_name@LIBAVUTIL_59 7:7.0
  av_frame_side_data_new@LIBAVUTIL_59 7:7.0
+ av_frame_side_data_remove@LIBAVUTIL_59 7:7.1
  av_frame_unref@LIBAVUTIL_59 7:7.0
  av_free@LIBAVUTIL_59 7:7.0
  av_freep@LIBAVUTIL_59 7:7.0
@@ -353,6 +358,7 @@ libavutil.so.59 libavutil59 #MINVER#
  av_malloc_array@LIBAVUTIL_59 7:7.0
  av_mallocz@LIBAVUTIL_59 7:7.0
  av_mastering_display_metadata_alloc@LIBAVUTIL_59 7:7.0
+ av_mastering_display_metadata_alloc_size@LIBAVUTIL_59 7:7.1
  av_mastering_display_metadata_create_side_data@LIBAVUTIL_59 7:7.0
  av_match_list@LIBAVUTIL_59 7:7.0
  av_match_name@LIBAVUTIL_59 7:7.0
@@ -383,12 +389,15 @@ libavutil.so.59 libavutil59 #MINVER#
  av_opt_eval_int64@LIBAVUTIL_59 7:7.0
  av_opt_eval_int@LIBAVUTIL_59 7:7.0
  av_opt_eval_q@LIBAVUTIL_59 7:7.0
+ av_opt_eval_uint@LIBAVUTIL_59 7:7.1
  av_opt_find2@LIBAVUTIL_59 7:7.0
  av_opt_find@LIBAVUTIL_59 7:7.0
  av_opt_flag_is_set@LIBAVUTIL_59 7:7.0
  av_opt_free@LIBAVUTIL_59 7:7.0
  av_opt_freep_ranges@LIBAVUTIL_59 7:7.0
  av_opt_get@LIBAVUTIL_59 7:7.0
+ av_opt_get_array@LIBAVUTIL_59 7:7.1
+ av_opt_get_array_size@LIBAVUTIL_59 7:7.1
  av_opt_get_chlayout@LIBAVUTIL_59 7:7.0
  av_opt_get_dict_val@LIBAVUTIL_59 7:7.0
  av_opt_get_double@LIBAVUTIL_59 7:7.0
@@ -407,6 +416,7 @@ libavutil.so.59 libavutil59 #MINVER#
  av_opt_query_ranges_default@LIBAVUTIL_59 7:7.0
  av_opt_serialize@LIBAVUTIL_59 7:7.0
  av_opt_set@LIBAVUTIL_59 7:7.0
+ av_opt_set_array@LIBAVUTIL_59 7:7.1
  av_opt_set_bin@LIBAVUTIL_59 7:7.0
  av_opt_set_chlayout@LIBAVUTIL_59 7:7.0
  av_opt_set_defaults2@LIBAVUTIL_59 7:7.0
@@ -486,9 +496,14 @@ libavutil.so.59 libavutil59 #MINVER#
  av_spherical_tile_bounds@LIBAVUTIL_59 7:7.0
  av_sscanf@LIBAVUTIL_59 7:7.0
  av_stereo3d_alloc@LIBAVUTIL_59 7:7.0
+ av_stereo3d_alloc_size@LIBAVUTIL_59 7:7.1
  av_stereo3d_create_side_data@LIBAVUTIL_59 7:7.0
  av_stereo3d_from_name@LIBAVUTIL_59 7:7.0
+ av_stereo3d_primary_eye_from_name@LIBAVUTIL_59 7:7.1
+ av_stereo3d_primary_eye_name@LIBAVUTIL_59 7:7.1
  av_stereo3d_type_name@LIBAVUTIL_59 7:7.0
+ av_stereo3d_view_from_name@LIBAVUTIL_59 7:7.1
+ av_stereo3d_view_name@LIBAVUTIL_59 7:7.1
  av_strcasecmp@LIBAVUTIL_59 7:7.0
  av_strdup@LIBAVUTIL_59 7:7.0
  av_strerror@LIBAVUTIL_59 7:7.0
