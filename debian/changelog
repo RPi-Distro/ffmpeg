@@ -2,8 +2,11 @@ ffmpeg (7:7.1-2) experimental; urgency=medium
 
   * debian/patches: Apply patches from upstream and skip tests using
     non-existing pmtchange.ts
+  * debian/*.symbols:
+    - Remove dropped internal symbol
+    - Add new symbols
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 20 Oct 2024 14:48:43 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 20 Oct 2024 16:03:45 +0200
 
 ffmpeg (7:7.1-1) experimental; urgency=medium
 
