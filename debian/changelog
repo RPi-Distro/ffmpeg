@@ -1,3 +1,14 @@
+ffmpeg (7:7.1-3) unstable; urgency=medium
+
+  [ Diederik de Haas ]
+  * d/copyright: Update for removed and moved files
+
+  [ Sebastian Ramacher ]
+  * debian/rules: Disable asm on riscv64
+    See https://trac.ffmpeg.org/ticket/11258 for details
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 27 Oct 2024 18:31:51 +0100
+
 ffmpeg (7:7.1-2) experimental; urgency=medium
 
   * debian/patches: Apply patches from upstream and skip tests using
