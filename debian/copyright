@@ -767,18 +767,11 @@ Copyright:
 License: Expat
 
 Files:
-  libavcodec/aacdec_fixed.c
   libavcodec/aacsbr_fixed.c
   libavcodec/ac3dec_fixed.c
   libavcodec/arm/vp8dsp_armv6.S
   libavcodec/ilbcdata.h
   libavcodec/ilbcdec.c
-  libavcodec/mips/aacdec_mips.c
-  libavcodec/mips/aacdec_mips.h
-  libavcodec/mips/aacpsdsp_mips.c
-  libavcodec/mips/aacpsy_mips.h
-  libavcodec/mips/aacsbr_mips.c
-  libavcodec/mips/aacsbr_mips.h
   libavcodec/mips/ac3dsp_mips.c
   libavcodec/mips/acelp_filters_mips.c
   libavcodec/mips/acelp_vectors_mips.c
@@ -793,8 +786,7 @@ Files:
   libavcodec/mips/lsp_mips.h
   libavcodec/mips/mpegaudiodsp_mips_fixed.c
   libavcodec/mips/mpegaudiodsp_mips_float.c
-  libavcodec/mips/sbrdsp_mips.c
-  libavcodec/vvc/vvc_itx_1d.c
+  libavcodec/vvc/itx_1d.c
   libavfilter/opencl/deshake.cl
   libavfilter/vf_deshake_opencl.c
   libavutil/fixed_dsp.c
