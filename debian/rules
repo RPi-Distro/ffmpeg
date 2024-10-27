@@ -208,6 +208,13 @@ else
 endif
 endif
 
+# Disable ASM-based optimizations on riscv64.
+# They are currently broken:
+# * https://trac.ffmpeg.org/ticket/11258
+ifneq (,$(filter riscv64,$(DEB_HOST_ARCH)))
+	CONFIG += --disable-asm
+endif
+
 # Disable ASM-based optimizations on powerpc and ppc64el.
 # They are currently not maintained and broken:
 # * https://trac.ffmpeg.org/ticket/9604
