@@ -213,7 +213,7 @@
      disable memalign
 --- a/fftools/ffmpeg.c
 +++ b/fftools/ffmpeg.c
-@@ -2119,8 +2119,8 @@ static int ifilter_send_frame(InputFilte
+@@ -2120,8 +2120,8 @@ static int ifilter_send_frame(InputFilte
                         ifilter->channel_layout != frame->channel_layout;
          break;
      case AVMEDIA_TYPE_VIDEO:
@@ -224,7 +224,7 @@
          break;
      }
  
-@@ -2131,6 +2131,9 @@ static int ifilter_send_frame(InputFilte
+@@ -2132,6 +2132,9 @@ static int ifilter_send_frame(InputFilte
          (ifilter->hw_frames_ctx && ifilter->hw_frames_ctx->data != frame->hw_frames_ctx->data))
          need_reinit = 1;
  
@@ -234,7 +234,7 @@
      if (need_reinit) {
          ret = ifilter_parameters_from_frame(ifilter, frame);
          if (ret < 0)
-@@ -2401,8 +2404,7 @@ static int decode_video(InputStream *ist
+@@ -2402,8 +2405,7 @@ static int decode_video(InputStream *ist
          decoded_frame->top_field_first = ist->top_field_first;
  
      ist->frames_decoded++;
@@ -244,7 +244,7 @@
          err = ist->hwaccel_retrieve_data(ist->dec_ctx, decoded_frame);
          if (err < 0)
              goto fail;
-@@ -2600,7 +2602,12 @@ static int process_input_packet(InputStr
+@@ -2601,7 +2603,12 @@ static int process_input_packet(InputStr
          case AVMEDIA_TYPE_VIDEO:
              ret = decode_video    (ist, repeating ? NULL : &avpkt, &got_output, &duration_pts, !pkt,
                                     &decode_failed);
@@ -258,7 +258,7 @@
                  if (pkt && pkt->duration) {
                      duration_dts = av_rescale_q(pkt->duration, ist->st->time_base, AV_TIME_BASE_Q);
                  } else if(ist->dec_ctx->framerate.num != 0 && ist->dec_ctx->framerate.den != 0) {
-@@ -2820,6 +2827,16 @@ static enum AVPixelFormat get_format(AVC
+@@ -2821,6 +2828,16 @@ static enum AVPixelFormat get_format(AVC
          } else {
              const HWAccel *hwaccel = NULL;
              int i;
@@ -275,7 +275,7 @@
              for (i = 0; hwaccels[i].name; i++) {
                  if (hwaccels[i].pix_fmt == *p) {
                      hwaccel = &hwaccels[i];
-@@ -2914,6 +2931,15 @@ static int init_input_stream(int ist_ind
+@@ -2915,6 +2932,15 @@ static int init_input_stream(int ist_ind
              return ret;
          }
  
@@ -19476,7 +19476,7 @@
      ret = pic_arrays_init(s, sps);
      if (ret < 0)
          goto fail;
-@@ -2812,11 +2850,13 @@ static int hevc_frame_start(HEVCContext
+@@ -2813,11 +2851,13 @@ static int hevc_frame_start(HEVCContext
                             ((s->ps.sps->height >> s->ps.sps->log2_min_cb_size) + 1);
      int ret;
  
@@ -19495,7 +19495,7 @@
  
      s->is_decoded        = 0;
      s->first_nal_type    = s->nal_unit_type;
-@@ -3233,7 +3273,14 @@ static int hevc_decode_frame(AVCodecCont
+@@ -3237,7 +3277,14 @@ static int hevc_decode_frame(AVCodecCont
      s->ref = NULL;
      ret    = decode_nal_units(s, avpkt->data, avpkt->size);
      if (ret < 0)
@@ -19510,7 +19510,7 @@
  
      if (avctx->hwaccel) {
          if (s->ref && (ret = avctx->hwaccel->end_frame(avctx)) < 0) {
-@@ -3276,15 +3323,19 @@ static int hevc_ref_frame(HEVCContext *s
+@@ -3280,15 +3327,19 @@ static int hevc_ref_frame(HEVCContext *s
      if (ret < 0)
          return ret;
  
@@ -19538,7 +19538,7 @@
  
      dst->rpl_buf = av_buffer_ref(src->rpl_buf);
      if (!dst->rpl_buf)
-@@ -3588,6 +3639,15 @@ AVCodec ff_hevc_decoder = {
+@@ -3592,6 +3643,15 @@ AVCodec ff_hevc_decoder = {
  #if CONFIG_HEVC_NVDEC_HWACCEL
                                 HWACCEL_NVDEC(hevc),
  #endif
@@ -63972,10 +63972,10 @@
          AV_PIX_FMT_GBRP, AV_PIX_FMT_GBRP9, AV_PIX_FMT_GBRP10,
          AV_PIX_FMT_GBRP12, AV_PIX_FMT_GBRP14, AV_PIX_FMT_GBRP16,
          AV_PIX_FMT_GBRAP, AV_PIX_FMT_GBRAP16,
-@@ -350,20 +398,29 @@ static int config_props(AVFilterLink *li
+@@ -351,23 +399,30 @@ static int config_props(AVFilterLink *li
+         return AVERROR(EINVAL);
+     }
  
-     yadif->csp = av_pix_fmt_desc_get(link->format);
-     yadif->filter = filter;
 -    if (yadif->csp->comp[0].depth > 8) {
 +    ff_bwdif_init_filter_line(s, yadif->csp->comp[0].depth);
 +
@@ -63993,22 +63993,24 @@
 -        s->filter_intra = filter_intra;
 -        s->filter_line  = filter_line_c;
 -        s->filter_edge  = filter_edge;
+-    }
 +        s->filter_intra = ff_bwdif_filter_intra_c;
 +        s->filter_line  = ff_bwdif_filter_line_c;
 +        s->filter_edge  = ff_bwdif_filter_edge_c;
-     }
++     }
  
--    if (ARCH_X86)
+     if (ARCH_X86)
 -        ff_bwdif_init_x86(s);
 -
 -    return 0;
-+#if ARCH_X86
-+    ff_bwdif_init_x86(s, bit_depth);
-+#elif ARCH_AARCH64
-+    ff_bwdif_init_aarch64(s, bit_depth);
-+#endif
++        ff_bwdif_init_x86(s, bit_depth);
++    else if (ARCH_AARCH64)
++        ff_bwdif_init_aarch64(s, bit_depth);
  }
  
+-
+ #define OFFSET(x) offsetof(YADIFContext, x)
+ #define FLAGS AV_OPT_FLAG_VIDEO_PARAM|AV_OPT_FLAG_FILTERING_PARAM
  
 --- /dev/null
 +++ b/libavfilter/vf_deinterlace_v4l2m2m.c
