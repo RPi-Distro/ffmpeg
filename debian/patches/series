@@ -1,4 +1,6 @@
 0001-avcodec-arm-sbcenc-avoid-callee-preserved-vfp-regist.patch
 0002-Fix-build-on-powerpc-and-ppc64.patch
+CVE-2023-49502.patch
+CVE-2024-31578.patch
 ffmpeg-4.3.7-rpi_24.patch
 fix_flags.diff
