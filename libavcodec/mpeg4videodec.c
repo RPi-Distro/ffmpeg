@@ -351,6 +351,8 @@ static int mpeg4_decode_sprite_trajectory(Mpeg4DecContext *ctx, GetBitContext *g
         ctx->sprite_shift[0]  = alpha + beta + rho - min_ab;
         ctx->sprite_shift[1]  = alpha + beta + rho - min_ab + 2;
         break;
+    default:
+        av_assert0(0);
     }
     /* try to simplify the situation */
     if (sprite_delta[0][0] == a << ctx->sprite_shift[0] &&
@@ -616,7 +618,7 @@ static inline int get_amv(Mpeg4DecContext *ctx, int n)
         for (y = 0; y < 16; y++) {
             int v;
 
-            v = mb_v + dy * y;
+            v = mb_v + (unsigned)dy * y;
             // FIXME optimize
             for (x = 0; x < 16; x++) {
                 sum += v >> shift;
@@ -1189,7 +1191,7 @@ static inline int mpeg4_decode_block(Mpeg4DecContext *ctx, int16_t *block,
                                 if (SHOW_UBITS(re, &s->gb, 1) == 0) {
                                     av_log(s->avctx, AV_LOG_ERROR,
                                            "1. marker bit missing in 3. esc\n");
-                                    if (!(s->avctx->err_recognition & AV_EF_IGNORE_ERR))
+                                    if (!(s->avctx->err_recognition & AV_EF_IGNORE_ERR) || get_bits_left(&s->gb) <= 0)
                                         return AVERROR_INVALIDDATA;
                                 }
                                 SKIP_CACHE(re, &s->gb, 1);
@@ -1200,7 +1202,7 @@ static inline int mpeg4_decode_block(Mpeg4DecContext *ctx, int16_t *block,
                                 if (SHOW_UBITS(re, &s->gb, 1) == 0) {
                                     av_log(s->avctx, AV_LOG_ERROR,
                                            "2. marker bit missing in 3. esc\n");
-                                    if (!(s->avctx->err_recognition & AV_EF_IGNORE_ERR))
+                                    if (!(s->avctx->err_recognition & AV_EF_IGNORE_ERR) || get_bits_left(&s->gb) <= 0)
                                         return AVERROR_INVALIDDATA;
                                 }
 
