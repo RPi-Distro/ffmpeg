@@ -1,15 +1,16 @@
-ffmpeg (8:4.3.7-0+deb11u1+rpt2) bullseye; urgency=medium
+ffmpeg (8:4.3.8-0+deb11u1+rpt1) bullseye; urgency=medium
 
   * HW accel patch 24
-
- -- Serge Schneider <serge@raspberrypi.com>  Tue, 20 Aug 2024 13:17:44 +0100
-
-ffmpeg (8:4.3.7-0+deb11u1+rpt1) bullseye; urgency=medium
-
-  * HW accel patch 21
   * Bump epoch to take priority over Debian and Raspbian builds
 
- -- Serge Schneider <serge@raspberrypi.com>  Sun, 21 Jul 2024 16:56:45 +0100
+ -- Serge Schneider <serge@raspberrypi.com>  Mon, 28 Oct 2024 10:51:00 +0000
+
+ffmpeg (7:4.3.8-0+deb11u1) bullseye-security; urgency=medium
+
+  * New upstream release, fixes CVE-2024-7055.
+  * Backport patches for CVE-2024-31578 and CVE-2023-49502.
+
+ -- Emilio Pozuelo Monfort <pochu@debian.org>  Mon, 21 Oct 2024 15:27:44 +0200
 
 ffmpeg (7:4.3.7-0+deb11u1) bullseye-security; urgency=medium
 
