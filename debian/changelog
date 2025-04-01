@@ -1,9 +1,33 @@
-ffmpeg (8:4.3.8-0+deb11u1+rpt1) bullseye; urgency=medium
+ffmpeg (8:4.3.8-0+deb11u3+rpt1) bullseye; urgency=medium
 
   * HW accel patch 24
   * Bump epoch to take priority over Debian and Raspbian builds
 
- -- Serge Schneider <serge@raspberrypi.com>  Mon, 28 Oct 2024 10:51:00 +0000
+ -- Serge Schneider <serge@raspberrypi.com>  Tue, 01 Apr 2025 09:01:34 +0100
+
+ffmpeg (7:4.3.8-0+deb11u3) bullseye-security; urgency=medium
+
+  * Non-maintainer upload by the LTS Team.
+  * CVE-2025-0518
+    Fix out-of-bounds read
+  * CVE-2025-22919
+    Fix assert error
+  * CVE-2025-22921
+    Fixes NULL pointer dereferences
+
+ -- Thorsten Alteholz <debian@alteholz.de>  Fri, 28 Feb 2025 18:03:02 +0100
+
+ffmpeg (7:4.3.8-0+deb11u2) bullseye-security; urgency=medium
+
+  * Non-maintainer upload by the LTS Team.
+  * CVE-2024-36618
+    Fix integer overflow if ULONG_MAX < INT64_MAX
+  * CVE-2024-35368
+    Fix double-free on error
+  * CVE-2024-35367
+    Fix out-of-bounds access
+
+ -- Thorsten Alteholz <debian@alteholz.de>  Wed, 29 Jan 2025 22:03:02 +0100
 
 ffmpeg (7:4.3.8-0+deb11u1) bullseye-security; urgency=medium
 

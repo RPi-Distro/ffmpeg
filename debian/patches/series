@@ -2,5 +2,14 @@
 0002-Fix-build-on-powerpc-and-ppc64.patch
 CVE-2023-49502.patch
 CVE-2024-31578.patch
+
+CVE-2024-36618.patch
+CVE-2024-35368.patch
+CVE-2024-35367.patch
+
+CVE-2025-0518.patch
+CVE-2025-22921.patch
+CVE-2025-22919.patch
+
 ffmpeg-4.3.7-rpi_24.patch
 fix_flags.diff
