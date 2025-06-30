@@ -220,6 +220,7 @@ else
 		--enable-libzmq \
 		--enable-libzvbi \
 		--enable-lv2 \
+		--enable-sand \
 		--enable-sdl2
 # Some libraries are built only on linux.
 ifeq (linux,$(DEB_HOST_ARCH_OS))
