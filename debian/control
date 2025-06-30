@@ -203,7 +203,9 @@ Build-Depends:
 # assembler optimizations
  nasm,
 # autodetected zlib
- zlib1g-dev
+ zlib1g-dev,
+# --enable-epoxy
+ libepoxy-dev [armhf arm64],
 
 Package: ffmpeg
 Architecture: any
