@@ -30,6 +30,7 @@ CONFIG := --prefix=/usr \
 	--enable-gpl \
 	--disable-stripping \
 	--disable-libmfx \
+	--disable-mmal\
 	--disable-omx \
 	--enable-gnutls \
 	--enable-libaom \
