@@ -1,0 +1,6 @@
+usr/include/*/libavutil
+usr/lib/*/libavutil*.a
+usr/lib/*/neon/vfp/libavutil*.a
+usr/lib/*/libavutil*.so
+usr/lib/*/neon/vfp/libavutil*.so
+usr/lib/*/pkgconfig/libavutil*.pc

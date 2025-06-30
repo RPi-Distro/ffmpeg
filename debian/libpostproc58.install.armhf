@@ -1,0 +1,2 @@
+usr/lib/*/libpostproc.so.*
+usr/lib/*/neon/vfp/libpostproc.so.*

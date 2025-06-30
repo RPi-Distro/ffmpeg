@@ -1,0 +1,6 @@
+usr/include/*/libavfilter
+usr/lib/*/libavfilter*.a
+usr/lib/*/neon/vfp/libavfilter*.a
+usr/lib/*/libavfilter*.so
+usr/lib/*/neon/vfp/libavfilter*.so
+usr/lib/*/pkgconfig/libavfilter*.pc

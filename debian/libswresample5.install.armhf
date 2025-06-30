@@ -1,0 +1,2 @@
+usr/lib/*/libswresample.so.*
+usr/lib/*/neon/vfp/libswresample.so.*
