@@ -163,7 +163,8 @@ endif
 ifeq (linux,$(DEB_HOST_ARCH_OS))
 	CONFIG += --enable-libdc1394 \
 		--enable-libdrm \
-		--enable-libiec61883
+		--enable-libiec61883 \
+		--enable-vout-drm
 endif
 
 # ffmpeg is involved in build-dependency cycles with x264 and chromaprint, so disable them in stage one.
