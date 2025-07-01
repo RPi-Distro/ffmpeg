@@ -1,17 +1,12 @@
 Source: ffmpeg
 Section: video
 Priority: optional
-Maintainer: Debian Multimedia Maintainers <debian-multimedia@lists.debian.org>
-Uploaders:
- Reinhard Tartler <siretart@tauware.de>,
- Balint Reczey <balint@balintreczey.hu>,
- James Cowgill <jcowgill@debian.org>,
- Sebastian Ramacher <sramacher@debian.org>,
+Maintainer: Serge Schneider <serge@raspberrypi.com>
 Rules-Requires-Root: no
 Homepage: https://ffmpeg.org/
 Standards-Version: 4.7.2
-Vcs-Git: https://salsa.debian.org/multimedia-team/ffmpeg.git
-Vcs-Browser: https://salsa.debian.org/multimedia-team/ffmpeg
+Vcs-Git: https://github.com/RPi-Distro/ffmpeg.git
+Vcs-Browser: https://github.com/RPi-Distro/ffmpeg
 Build-Depends-Indep:
 # needed to minify the CSS files
  cleancss,
