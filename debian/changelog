@@ -1,4 +1,4 @@
-ffmpeg (7:5.1.7-1) bookworm-security; urgency=medium
+ffmpeg (7:5.1.7-0+deb12u1) bookworm-security; urgency=medium
 
   * New upstream version 5.1.7
     - Fixes CVE-2023-49502
@@ -12,8 +12,10 @@ ffmpeg (7:5.1.7-1) bookworm-security; urgency=medium
     - Fixes CVE-2024-35368
     - Fixes CVE-2025-0518
     - Fixes CVE-2025-22919
+  * debian/patches: Revert commit making tests fail
+    See https://code.ffmpeg.org/FFmpeg/FFmpeg/issues/20270
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 17 Aug 2025 17:58:46 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 24 Aug 2025 22:59:40 +0200
 
 ffmpeg (7:5.1.6-0+deb12u1) bookworm-security; urgency=medium
 
