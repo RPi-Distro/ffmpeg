@@ -1,3 +1,27 @@
+ffmpeg (8:5.1.7-0+deb12u1+rpt1) bookworm; urgency=medium
+
+  * HW accel patch 27
+  * Bump epoch to take priority over Debian and Raspbian builds
+  * Split ARMv6 and ARMv7 builds
+  * Added build dependencies:
+    - libdrm-dev
+      libepoxy-dev
+      libx11-dev
+      libx11-xcb-dev
+      libxcb-dri3-dev
+      libxcb1-dev
+      linux-libc-dev
+  * On all platforms:
+    - --enable-neon
+      --enable-vout-drm
+      --disable-mmal
+      --enable-sand
+      --enable-v4l2-request
+      --enable-libudev
+      --enable-epoxy
+
+ -- Serge Schneider <serge@raspberrypi.com>  Tue, 26 Aug 2025 08:10:11 +0100
+
 ffmpeg (7:5.1.7-0+deb12u1) bookworm-security; urgency=medium
 
   * New upstream version 5.1.7
