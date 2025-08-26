@@ -1,0 +1,40 @@
+From: Sebastian Ramacher <sramacher@debian.org>
+Date: Sun, 24 Aug 2025 22:41:38 +0200
+Subject: Revert "avcodec/rangecoder: only perform renorm check/loop for
+ callers that need it"
+
+This reverts commit 54f32ca767581aa7e2ec8c3750569b7580bb4ff6.
+---
+ libavcodec/rangecoder.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/libavcodec/rangecoder.h b/libavcodec/rangecoder.h
+index 110908d..89d178a 100644
+--- a/libavcodec/rangecoder.h
++++ b/libavcodec/rangecoder.h
+@@ -62,6 +62,7 @@ void ff_build_rac_states(RangeCoder *c, int factor, int max_p);
+ static inline void renorm_encoder(RangeCoder *c)
+ {
+     // FIXME: optimize
++    while (c->range < 0x100) {
+         if (c->outstanding_byte < 0) {
+             c->outstanding_byte = c->low >> 8;
+         } else if (c->low <= 0xFF00) {
+@@ -80,6 +81,7 @@ static inline void renorm_encoder(RangeCoder *c)
+ 
+         c->low     = (c->low & 0xFF) << 8;
+         c->range <<= 8;
++    }
+ }
+ 
+ static inline int get_rac_count(RangeCoder *c)
+@@ -106,8 +108,7 @@ static inline void put_rac(RangeCoder *c, uint8_t *const state, int bit)
+         *state   = c->one_state[*state];
+     }
+ 
+-    while (c->range < 0x100)
+-        renorm_encoder(c);
++    renorm_encoder(c);
+ }
+ 
+ static inline void refill(RangeCoder *c)

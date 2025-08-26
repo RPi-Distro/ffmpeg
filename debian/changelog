@@ -1,38 +1,21 @@
-ffmpeg (8:5.1.6-0+deb12u1+rpt3) bookworm; urgency=medium
+ffmpeg (7:5.1.7-0+deb12u1) bookworm-security; urgency=medium
 
-  * HW accel patch 26
+  * New upstream version 5.1.7
+    - Fixes CVE-2023-49502
+    - Fixes CVE-2023-50007
+    - Fixes CVE-2023-50008
+    - Fixes CVE-2023-6602
+    - Fixes CVE-2023-6604
+    - Fixes CVE-2023-6605
+    - Fixes CVE-2024-31582
+    - Fixes CVE-2024-35367
+    - Fixes CVE-2024-35368
+    - Fixes CVE-2025-0518
+    - Fixes CVE-2025-22919
+  * debian/patches: Revert commit making tests fail
+    See https://code.ffmpeg.org/FFmpeg/FFmpeg/issues/20270
 
- -- Serge Schneider <serge@raspberrypi.com>  Wed, 05 Mar 2025 14:09:42 +0000
-
-ffmpeg (8:5.1.6-0+deb12u1+rpt2) bookworm; urgency=medium
-
-  * HW accel patch 25
-
- -- Serge Schneider <serge@raspberrypi.com>  Tue, 25 Feb 2025 10:16:04 +0000
-
-ffmpeg (8:5.1.6-0+deb12u1+rpt1) bookworm; urgency=medium
-
-  * HW accel patch 24
-  * Bump epoch to take priority over Debian and Raspbian builds
-  * Split ARMv6 and ARMv7 builds
-  * Added build dependencies:
-    - libdrm-dev
-      libepoxy-dev
-      libx11-dev
-      libx11-xcb-dev
-      libxcb-dri3-dev
-      libxcb1-dev
-      linux-libc-dev
-  * On all platforms:
-    - --enable-neon
-      --enable-vout-drm
-      --disable-mmal
-      --enable-sand
-      --enable-v4l2-request
-      --enable-libudev
-      --enable-epoxy
-
- -- Serge Schneider <serge@raspberrypi.com>  Wed, 14 Aug 2024 15:41:43 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 24 Aug 2025 22:59:40 +0200
 
 ffmpeg (7:5.1.6-0+deb12u1) bookworm-security; urgency=medium
 
