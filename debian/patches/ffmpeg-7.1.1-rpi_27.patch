@@ -33,7 +33,7 @@
    --disable-vaapi          disable Video Acceleration API (mainly Unix/Intel) code [autodetect]
    --disable-vdpau          disable Nvidia Video Decode and Presentation API for Unix code [autodetect]
    --disable-videotoolbox   disable VideoToolbox code [autodetect]
-@@ -1842,7 +1848,9 @@ EXTERNAL_AUTODETECT_LIBRARY_LIST="
+@@ -1844,7 +1850,9 @@ EXTERNAL_AUTODETECT_LIBRARY_LIST="
      avfoundation
      bzlib
      coreimage
@@ -43,7 +43,7 @@
      libxcb
      libxcb_shm
      libxcb_shape
-@@ -1916,6 +1924,7 @@ EXTERNAL_LIBRARY_LIST="
+@@ -1918,6 +1926,7 @@ EXTERNAL_LIBRARY_LIST="
      libcodec2
      libdav1d
      libdc1394
@@ -51,7 +51,7 @@
      libflite
      libfontconfig
      libfreetype
-@@ -2025,6 +2034,7 @@ HWACCEL_LIBRARY_LIST="
+@@ -2027,6 +2036,7 @@ HWACCEL_LIBRARY_LIST="
      mmal
      omx
      opencl
@@ -59,7 +59,7 @@
  "
  
  DOCUMENT_LIST="
-@@ -2042,10 +2052,14 @@ FEATURE_LIST="
+@@ -2044,10 +2054,14 @@ FEATURE_LIST="
      omx_rpi
      runtime_cpudetect
      safe_bitstream_reader
@@ -74,7 +74,7 @@
  "
  
  # this list should be kept in linking order
-@@ -2621,6 +2635,7 @@ CONFIG_EXTRA="
+@@ -2624,6 +2638,7 @@ CONFIG_EXTRA="
      rtpdec
      rtpenc_chain
      rv34dsp
@@ -82,7 +82,7 @@
      scene_sad
      sinewin
      snappy
-@@ -3146,6 +3161,7 @@ dxva2_deps="dxva2api_h DXVA2_ConfigPictu
+@@ -3150,6 +3165,7 @@ dxva2_deps="dxva2api_h DXVA2_ConfigPictu
  ffnvcodec_deps_any="libdl LoadLibrary"
  mediacodec_deps="android mediandk"
  nvdec_deps="ffnvcodec"
@@ -90,7 +90,7 @@
  vaapi_x11_deps="xlib_x11"
  videotoolbox_hwaccel_deps="videotoolbox pthreads"
  videotoolbox_hwaccel_extralibs="-framework QuartzCore"
-@@ -3200,6 +3216,8 @@ hevc_dxva2_hwaccel_deps="dxva2 DXVA_PicP
+@@ -3204,6 +3220,8 @@ hevc_dxva2_hwaccel_deps="dxva2 DXVA_PicP
  hevc_dxva2_hwaccel_select="hevc_decoder"
  hevc_nvdec_hwaccel_deps="nvdec"
  hevc_nvdec_hwaccel_select="hevc_decoder"
@@ -99,7 +99,7 @@
  hevc_vaapi_hwaccel_deps="vaapi VAPictureParameterBufferHEVC"
  hevc_vaapi_hwaccel_select="hevc_decoder"
  hevc_vdpau_hwaccel_deps="vdpau VdpPictureInfoHEVC"
-@@ -3746,8 +3764,11 @@ sndio_indev_deps="sndio"
+@@ -3750,8 +3768,11 @@ sndio_indev_deps="sndio"
  sndio_outdev_deps="sndio"
  v4l2_indev_deps_any="linux_videodev2_h sys_videoio_h"
  v4l2_indev_suggest="libv4l2"
@@ -111,7 +111,7 @@
  vfwcap_indev_deps="vfw32 vfwcap_defines"
  xcbgrab_indev_deps="libxcb"
  xcbgrab_indev_suggest="libxcb_shm libxcb_shape libxcb_xfixes"
-@@ -3854,6 +3875,7 @@ cropdetect_filter_deps="gpl"
+@@ -3858,6 +3879,7 @@ cropdetect_filter_deps="gpl"
  deinterlace_qsv_filter_deps="libmfx"
  deinterlace_qsv_filter_select="qsvvpp"
  deinterlace_vaapi_filter_deps="vaapi"
@@ -119,7 +119,7 @@
  delogo_filter_deps="gpl"
  denoise_vaapi_filter_deps="vaapi"
  derain_filter_select="dnn"
-@@ -3962,6 +3984,7 @@ transpose_opencl_filter_deps="opencl"
+@@ -3966,6 +3988,7 @@ transpose_opencl_filter_deps="opencl"
  transpose_vaapi_filter_deps="vaapi VAProcPipelineCaps_rotation_flags"
  transpose_vt_filter_deps="videotoolbox VTPixelRotationSessionCreate"
  transpose_vulkan_filter_deps="vulkan spirv_compiler"
@@ -127,7 +127,7 @@
  unsharp_opencl_filter_deps="opencl"
  uspp_filter_deps="gpl avcodec"
  vaguedenoiser_filter_deps="gpl"
-@@ -3973,6 +3996,7 @@ libvmaf_cuda_filter_deps="libvmaf libvma
+@@ -3977,6 +4000,7 @@ libvmaf_cuda_filter_deps="libvmaf libvma
  zmq_filter_deps="libzmq"
  zoompan_filter_deps="swscale"
  zscale_filter_deps="libzimg const_nan"
@@ -135,7 +135,7 @@
  scale_vaapi_filter_deps="vaapi"
  scale_vt_filter_deps="videotoolbox VTPixelTransferSessionCreate"
  scale_vulkan_filter_deps="vulkan spirv_compiler"
-@@ -6623,6 +6647,12 @@ if enabled xlib; then
+@@ -6644,6 +6668,12 @@ if enabled xlib; then
          disable xlib
  fi
  
@@ -148,7 +148,7 @@
  check_headers direct.h
  check_headers dirent.h
  check_headers dxgidebug.h
-@@ -7113,8 +7143,16 @@ enabled rkmpp             && { require_p
+@@ -7134,8 +7164,16 @@ enabled rkmpp             && { require_p
                                 { enabled libdrm ||
                                   die "ERROR: rkmpp requires --enable-libdrm"; }
                               }
@@ -165,7 +165,7 @@
  
  if enabled gcrypt; then
      GCRYPT_CONFIG="${cross_prefix}libgcrypt-config"
-@@ -7197,6 +7235,10 @@ if enabled v4l2_m2m; then
+@@ -7218,6 +7256,10 @@ if enabled v4l2_m2m; then
      check_cc vp9_v4l2_m2m linux/videodev2.h "int i = V4L2_PIX_FMT_VP9;"
  fi
  
@@ -176,7 +176,7 @@
  check_headers sys/videoio.h
  test_code cc sys/videoio.h "struct v4l2_frmsizeenum vfse; vfse.discrete.width = 0;" && enable_sanitized struct_v4l2_frmivalenum_discrete
  
-@@ -7709,6 +7751,9 @@ enabled threads || warn \
+@@ -7730,6 +7772,9 @@ enabled threads || warn \
      "that the libraries from this build MUST NOT be used in a multi-threaded"\
      "environment."
  
@@ -228,7 +228,7 @@
                  if (config->pix_fmt == *p)
 --- a/fftools/ffmpeg_filter.c
 +++ b/fftools/ffmpeg_filter.c
-@@ -2787,8 +2787,8 @@ static int send_frame(FilterGraph *fg, F
+@@ -2791,8 +2791,8 @@ static int send_frame(FilterGraph *fg, F
          break;
      case AVMEDIA_TYPE_VIDEO:
          if (ifp->format != frame->format ||
@@ -239,7 +239,7 @@
              ifp->color_space != frame->colorspace ||
              ifp->color_range != frame->color_range)
              need_reinit |= VIDEO_CHANGED;
-@@ -2809,6 +2809,9 @@ static int send_frame(FilterGraph *fg, F
+@@ -2813,6 +2813,9 @@ static int send_frame(FilterGraph *fg, F
          (ifp->hw_frames_ctx && ifp->hw_frames_ctx->data != frame->hw_frames_ctx->data))
          need_reinit |= HWACCEL_CHANGED;
  
