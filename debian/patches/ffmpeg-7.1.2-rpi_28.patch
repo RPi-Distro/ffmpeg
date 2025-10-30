@@ -5185,7 +5185,7 @@
      AVPacket buf_pkt;
  
      /* Reference to a frame. Only used during encoding */
-@@ -66,6 +99,36 @@ typedef struct V4L2m2mContext {
+@@ -66,6 +99,37 @@ typedef struct V4L2m2mContext {
  
      /* reference back to V4L2m2mPriv */
      void *priv;
@@ -5215,6 +5215,7 @@
 +
 +#define FF_V4L2_QUIRK_REINIT_ALWAYS             1
 +#define FF_V4L2_QUIRK_ENUM_FRAMESIZES_BROKEN    2
++#define FF_V4L2_QUIRK_8192_MACRO_MAX            4   // Size limited to 8192 macroblocks
 +    /* Quirks */
 +    unsigned int quirks;
 +
@@ -5222,7 +5223,7 @@
  } V4L2m2mContext;
  
  typedef struct V4L2m2mPriv {
-@@ -75,6 +138,8 @@ typedef struct V4L2m2mPriv {
+@@ -75,6 +139,8 @@ typedef struct V4L2m2mPriv {
  
      int num_output_buffers;
      int num_capture_buffers;
@@ -5231,7 +5232,7 @@
  } V4L2m2mPriv;
  
  /**
-@@ -128,4 +193,26 @@ int ff_v4l2_m2m_codec_reinit(V4L2m2mCont
+@@ -128,4 +194,26 @@ int ff_v4l2_m2m_codec_reinit(V4L2m2mCont
   */
  int ff_v4l2_m2m_codec_full_reinit(V4L2m2mContext *ctx);
  
@@ -5356,13 +5357,13 @@
 +    for (i = 0; i != 8; ++i) {
 +        *s++ = ' ';
 +        s = len > i + offset ? hex2(s, *m++) : dash2(s);
-     }
++    }
 +    *s++ = ' ';
 +    *s++ = ':';
 +    for (; i != 16; ++i) {
 +        *s++ = ' ';
 +        s = len > i + offset ? hex2(s, *m++) : dash2(s);
-+    }
+     }
 +    *s++ = 0;
 +}
  
@@ -5604,7 +5605,7 @@
      return 0;
  }
  
-@@ -133,51 +344,822 @@ static int v4l2_prepare_decoder(V4L2m2mC
+@@ -133,51 +344,887 @@ static int v4l2_prepare_decoder(V4L2m2mC
      return 0;
  }
  
@@ -5828,18 +5829,18 @@
 +        }
 +        return NQ_DRAINING;
 +    }
-+
-+    if (!s->buf_pkt.size)
-+        return NQ_NONE;
  
 -    ret = ff_v4l2_context_enqueue_packet(output, &s->buf_pkt);
 -    if (ret < 0 && ret != AVERROR(EAGAIN))
 -        goto fail;
-+    if ((ret = check_output_streamon(avctx, s)) != 0)
-+        return ret;
++    if (!s->buf_pkt.size)
++        return NQ_NONE;
  
 -    /* if EAGAIN don't unref packet and try to enqueue in the next iteration */
 -    if (ret != AVERROR(EAGAIN))
++    if ((ret = check_output_streamon(avctx, s)) != 0)
++        return ret;
++
 +    if (s->extdata_sent)
 +        ret = ff_v4l2_context_enqueue_packet(&s->output, &s->buf_pkt, NULL, 0);
 +    else
@@ -6174,6 +6175,68 @@
 +        av_log(avctx, AV_LOG_TRACE, "%s: Size %dx%d or fcc %s empty\n", __func__, w, h, av_fourcc2str(fcc));
 +        return 0;
 +    }
++
++    if ((s->quirks & FF_V4L2_QUIRK_8192_MACRO_MAX) != 0 &&
++        ((w + 15) >> 4) * ((h + 15) >> 4) > 8192)
++    {
++        av_log(avctx, AV_LOG_DEBUG, "%s: %d x %d > 8192 macroblocks (quirk)\n", __func__, w, h);
++        return AVERROR(-EINVAL);
++    }
++
++    // Test with TRY_FMT
++    {
++        struct v4l2_format fmt = {
++            .type = s->capture.format.type,
++        };
++        int rv;
++
++        if (V4L2_TYPE_IS_MULTIPLANAR(s->capture.format.type))
++        {
++            fmt.fmt.pix.width = w;
++            fmt.fmt.pix.height = h;
++            fmt.fmt.pix.pixelformat = fcc;
++        }
++        else
++        {
++            fmt.fmt.pix_mp.width = w;
++            fmt.fmt.pix_mp.height = h;
++            fmt.fmt.pix_mp.pixelformat = fcc;
++        }
++
++        while ((rv = ioctl(s->fd, VIDIOC_TRY_FMT, &fmt)) != 0 && errno == EINTR)
++            /* Loop */;
++
++        if (rv != 0) {
++            rv = AVERROR(errno);
++            if (rv != AVERROR(ENOTTY)) {
++                av_log(avctx, AV_LOG_WARNING, "%s: Try FMT failed\n", __func__);
++                return rv;
++            }
++            av_log(avctx, AV_LOG_DEBUG, "%s: Try FMT not supported\n", __func__);
++            // Just continue hopefully
++        }
++        else if (V4L2_TYPE_IS_MULTIPLANAR(s->capture.format.type))
++        {
++            av_log(avctx, AV_LOG_TRACE, "%s: requested %s %dx%d TRY_FMT %s %dx%d\n", __func__,
++                   av_fourcc2str(fcc), w, h,
++                   av_fourcc2str(fmt.fmt.pix.pixelformat), fmt.fmt.pix.width, fmt.fmt.pix.height);
++            if (fmt.fmt.pix.width < w || fmt.fmt.pix.height < h || fmt.fmt.pix.pixelformat != fcc) {
++                av_log(avctx, AV_LOG_DEBUG, "%s: TRY_FMT returned incompatible size\n", __func__);
++                return AVERROR(EINVAL);
++            }
++        }
++        else
++        {
++            av_log(avctx, AV_LOG_TRACE, "%s: requested %s %dx%d TRY_FMT %s %dx%d\n", __func__,
++                   av_fourcc2str(fcc), w, h,
++                   av_fourcc2str(fmt.fmt.pix_mp.pixelformat), fmt.fmt.pix_mp.width, fmt.fmt.pix_mp.height);
++            if (fmt.fmt.pix_mp.width < w || fmt.fmt.pix_mp.height < h || fmt.fmt.pix_mp.pixelformat != fcc) {
++                av_log(avctx, AV_LOG_DEBUG, "%s: TRY_FMT returned incompatible size\n", __func__);
++                return AVERROR(EINVAL);
++            }
++        }
++    }
++
 +    if ((s->quirks & FF_V4L2_QUIRK_ENUM_FRAMESIZES_BROKEN) != 0) {
 +        av_log(avctx, AV_LOG_TRACE, "%s: Skipped (quirk): Size %dx%d, fcc %s\n", __func__, w, h, av_fourcc2str(fcc));
 +        return 0;
@@ -6259,6 +6322,9 @@
 +    // size in the first place.
 +    if (strcmp(cap.driver, "meson-vdec") == 0)
 +        s->quirks |= FF_V4L2_QUIRK_REINIT_ALWAYS | FF_V4L2_QUIRK_ENUM_FRAMESIZES_BROKEN;
++    // RPI has a max 8192 macroblock limit but no way of signaling it
++    if (strcmp(cap.driver, "bcm2835-codec") == 0)
++        s->quirks |= FF_V4L2_QUIRK_8192_MACRO_MAX;
 +
 +    av_log(avctx, AV_LOG_DEBUG, "Driver '%s': Quirks=%#x\n", cap.driver, s->quirks);
 +    return 0;
@@ -6454,7 +6520,7 @@
  static av_cold int v4l2_decode_init(AVCodecContext *avctx)
  {
      V4L2Context *capture, *output;
-@@ -185,10 +1167,31 @@ static av_cold int v4l2_decode_init(AVCo
+@@ -185,10 +1232,31 @@ static av_cold int v4l2_decode_init(AVCo
      V4L2m2mPriv *priv = avctx->priv_data;
      int ret;
  
@@ -6486,7 +6552,7 @@
      capture = &s->capture;
      output = &s->output;
  
-@@ -196,14 +1199,45 @@ static av_cold int v4l2_decode_init(AVCo
+@@ -196,14 +1264,45 @@ static av_cold int v4l2_decode_init(AVCo
       * by the v4l2 driver; this event will trigger a full pipeline reconfig and
       * the proper values will be retrieved from the kernel driver.
       */
@@ -6534,7 +6600,7 @@
  
      s->avctx = avctx;
      ret = ff_v4l2_m2m_codec_init(priv);
-@@ -212,12 +1246,90 @@ static av_cold int v4l2_decode_init(AVCo
+@@ -212,12 +1311,90 @@ static av_cold int v4l2_decode_init(AVCo
          return ret;
      }
  
@@ -6627,7 +6693,7 @@
  }
  
  #define OFFSET(x) offsetof(V4L2m2mPriv, x)
-@@ -227,9 +1339,16 @@ static const AVOption options[] = {
+@@ -227,9 +1404,16 @@ static const AVOption options[] = {
      V4L_M2M_DEFAULT_OPTS,
      { "num_capture_buffers", "Number of buffers in the capture context",
          OFFSET(num_capture_buffers), AV_OPT_TYPE_INT, {.i64 = 20}, 2, INT_MAX, FLAGS },
@@ -6644,7 +6710,7 @@
  #define M2MDEC_CLASS(NAME) \
      static const AVClass v4l2_m2m_ ## NAME ## _dec_class = { \
          .class_name = #NAME "_v4l2m2m_decoder", \
-@@ -250,11 +1369,17 @@ static const AVOption options[] = {
+@@ -250,11 +1434,17 @@ static const AVOption options[] = {
          .init           = v4l2_decode_init, \
          FF_CODEC_RECEIVE_FRAME_CB(v4l2_receive_frame), \
          .close          = v4l2_decode_close, \
@@ -8456,7 +8522,7 @@
 +
 --- /dev/null
 +++ b/libavcodec/v4l2_req_hevc_vx.c
-@@ -0,0 +1,1478 @@
+@@ -0,0 +1,1479 @@
 +/*
 +    Copyright (C) 2024  John Cox john.cox@raspberrypi.com
 +
@@ -9175,6 +9241,7 @@
 +        av_log(logctx, AV_LOG_ERROR, "%s: Decode fail\n", __func__);
 +        frame->flags |= AV_FRAME_FLAG_CORRUPT;
 +    }
++    av_dict_set_int(&frame->metadata, "v4l2_ts", rd->timestamp, 0);
 +    return 0;
 +}
 +
@@ -10801,7 +10868,7 @@
 +    return 0;
 +}
 +
-+const struct dmabuf_h * qent_dst_dmabuf(const struct qent_dst *const be_dst, unsigned int plane)
++struct dmabuf_h * qent_dst_dmabuf(const struct qent_dst *const be_dst, unsigned int plane)
 +{
 +    const struct qent_base *const be = &be_dst->base;
 +
@@ -11870,7 +11937,7 @@
 +int qent_src_alloc(struct qent_src *const be_src, const size_t len, struct dmabufs_ctl * dbsc);
 +// dbsc may be NULL if realloc not required
 +int qent_src_data_copy(struct qent_src *const be_src, const size_t offset, const void *const src, const size_t len, struct dmabufs_ctl * dbsc);
-+const struct dmabuf_h * qent_dst_dmabuf(const struct qent_dst *const be, unsigned int plane);
++struct dmabuf_h * qent_dst_dmabuf(const struct qent_dst *const be, unsigned int plane);
 +int qent_dst_dup_fd(const struct qent_dst *const be, unsigned int plane);
 +MediaBufsStatus qent_dst_wait(struct qent_dst *const be);
 +void qent_dst_delete(struct qent_dst *const be);
@@ -12444,7 +12511,7 @@
 +#endif
 --- /dev/null
 +++ b/libavcodec/v4l2_request_hevc.c
-@@ -0,0 +1,433 @@
+@@ -0,0 +1,436 @@
 +/*
 + * This file is part of FFmpeg.
 + *
@@ -12620,6 +12687,7 @@
 +int ff_v4l2_request_init(AVCodecContext *avctx,
 +                         const struct v4l2_req_decode_fns * const * const try_fns,
 +                         const int width, const int height, const int bit_depth,
++                         const size_t src_bufsize,
 +                         const int dst_buffers)
 +{
 +    V4L2RequestPrivHEVC * const priv = avctx->internal->hwaccel_priv_data;
@@ -12631,7 +12699,8 @@
 +    enum mediabufs_memory src_memtype;
 +    enum mediabufs_memory dst_memtype;
 +
-+    av_log(avctx, AV_LOG_DEBUG, "<<< %s\n", __func__);
++    av_log(avctx, AV_LOG_DEBUG, "<<< %s (%dx%d %d bits src_size %zd dst_bufs %d\n", __func__,
++           width, height, bit_depth, src_bufsize, dst_buffers);
 +
 +    if ((ctx = av_mallocz(sizeof(*ctx))) == NULL) {
 +        av_log(avctx, AV_LOG_ERROR, "Unable to allocate context");
@@ -12700,7 +12769,7 @@
 +    // We will realloc if we need more
 +    // Must use sps->h/w as avctx contains cropped size
 +retry_src_memtype:
-+    src_size = bit_buf_size(width, height, bit_depth - 8);
++    src_size = src_bufsize;
 +    if (src_memtype == MEDIABUFS_MEMORY_DMABUF && mediabufs_src_resizable(ctx->mbufs))
 +        src_size /= 4;
 +    // Kludge for conformance tests which break Annex A limits
@@ -12854,7 +12923,8 @@
 +    }
 +
 +    return ff_v4l2_request_init(avctx, try_fns, sps->width, sps->height, sps->bit_depth,
-+                             sps->temporal_layer[sps->max_sub_layers - 1].max_dec_pic_buffering);
++                                bit_buf_size(sps->width, sps->height, sps->bit_depth - 8),
++                                sps->temporal_layer[sps->max_sub_layers - 1].max_dec_pic_buffering);
 +}
 +
 +const FFHWAccel ff_hevc_v4l2request_hwaccel = {
@@ -12880,7 +12950,7 @@
 +};
 --- /dev/null
 +++ b/libavcodec/v4l2_request_hevc.h
-@@ -0,0 +1,162 @@
+@@ -0,0 +1,163 @@
 +/*
 +    Copyright (C) 2024  John Cox john.cox@raspberrypi.com
 +
@@ -13032,6 +13102,7 @@
 +int ff_v4l2_request_init(AVCodecContext *avctx,
 +                         const struct v4l2_req_decode_fns * const * const try_fns,
 +                         const int width, const int height, const int bit_depth,
++                         const size_t src_bufsize,
 +                         const int dst_buffers);
 +int ff_v4l2_request_uninit(AVCodecContext *avctx);
 +int ff_v4l2_request_update_thread_context(AVCodecContext *dst, const AVCodecContext *src);
@@ -17263,7 +17334,7 @@
  extern const FFOutputFormat ff_dash_muxer;
 --- /dev/null
 +++ b/libavformat/conformenc.c
-@@ -0,0 +1,479 @@
+@@ -0,0 +1,488 @@
 +/*
 + * Copyright (c) 2020 John Cox for Raspberry Pi Trading
 + *
@@ -17444,10 +17515,9 @@
 +        av_md5_update(de->frame_md5, line, size);
 +    if (de->md5)
 +        av_md5_update(de->md5, line, size);
-+    else {
++    else
 +        avio_write(s->pb, line, size);
-+        de->foffset += size;
-+    }
++    de->foffset += size;
 +}
 +
 +static void end_frame(AVFormatContext * const s, conform_display_env_t * const de)
@@ -17471,6 +17541,7 @@
 +    int is_hw = (pix_desc->flags & AV_PIX_FMT_FLAG_HWACCEL) != 0;
 +    enum AVPixelFormat fmt = is_hw ? AV_PIX_FMT_NONE : sf->format;
 +    unsigned int i;
++    char * meta = NULL;
 +
 +    if (is_hw) {
 +        enum AVPixelFormat *xfmts = NULL;
@@ -17479,10 +17550,12 @@
 +        av_free(xfmts);
 +    }
 +
-+    av_log(s, AV_LOG_DEBUG, "%s: Frame %3d: %#08llx %dx%d crop(ltrb) %zd,%zd,%zd,%zd fmt %s -> %s\n", __func__,
++    av_dict_get_string(sf->metadata, &meta, '=', ';');
++    av_log(s, AV_LOG_DEBUG, "%s: Frame %3d: %#08llx %dx%d crop(ltrb) %zd,%zd,%zd,%zd fmt %s -> %s PTS %"PRId64" [%s]\n", __func__,
 +           de->fno, de->foffset,
 +           sf->width, sf->height, sf->crop_left, sf->crop_top, sf->crop_right, sf->crop_bottom,
-+           av_get_pix_fmt_name(sf->format), av_get_pix_fmt_name(fmt));
++           av_get_pix_fmt_name(sf->format), av_get_pix_fmt_name(fmt), sf->pts, meta);
++    free(meta);
 +
 +    if (start_frame(s, de, sf))
 +        return 0;
@@ -17510,6 +17583,13 @@
 +        for (y = 0; y < h; ++y) {
 +            const void *const lstart = f->data[cd->plane] + (y + (f->crop_top >> srh)) * f->linesize[cd->plane] + cd->offset + (f->crop_left >> srw) * cd->step;
 +            unsigned int x;
++
++            // If line_buf construction would be a simple copy then bypass
++            if (srp == 0 && cd->step == bpp) {
++                add_block(s, de, lstart, w * bpp);
++                continue;
++            }
++
 +            if (bpp == 1) {
 +                uint8_t *d = de->line_buf;
 +                const uint8_t *s = lstart;
