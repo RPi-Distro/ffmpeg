@@ -1,4 +1,4 @@
-ffmpeg (8:5.1.7-0+deb12u1+rpt1) bookworm; urgency=medium
+ffmpeg (8:5.1.8-0+deb12u1+rpt1) bookworm; urgency=medium
 
   * HW accel patch 27
   * Bump epoch to take priority over Debian and Raspbian builds
@@ -20,7 +20,13 @@ ffmpeg (8:5.1.7-0+deb12u1+rpt1) bookworm; urgency=medium
       --enable-libudev
       --enable-epoxy
 
- -- Serge Schneider <serge@raspberrypi.com>  Tue, 26 Aug 2025 08:10:11 +0100
+ -- Serge Schneider <serge@raspberrypi.com>  Mon, 15 Dec 2025 15:45:27 +0000
+
+ffmpeg (7:5.1.8-0+deb12u1) bookworm-security; urgency=medium
+
+  * New upstream version 5.1.8
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 05 Dec 2025 22:14:02 +0100
 
 ffmpeg (7:5.1.7-0+deb12u1) bookworm-security; urgency=medium
 
