@@ -1,12 +1,6 @@
-ffmpeg (8:7.1.2-0+deb13u1+rpt2) trixie; urgency=medium
+ffmpeg (8:7.1.3-0+deb13u1+rpt1) trixie; urgency=medium
 
   * HW accel patch 28
-
- -- Serge Schneider <serge@raspberrypi.com>  Thu, 30 Oct 2025 18:36:28 +0000
-
-ffmpeg (8:7.1.2-0+deb13u1+rpt1) trixie; urgency=medium
-
-  * HW accel patch 27
   * Update gbp branches
   * Add standard_v7 extra_v7 static_v7 flavors for armhf
   * Disable MMAL
@@ -15,7 +9,13 @@ ffmpeg (8:7.1.2-0+deb13u1+rpt1) trixie; urgency=medium
   * Add epoxy dependency
   * Update maintainer information
 
- -- Serge Schneider <serge@raspberrypi.com>  Wed, 08 Oct 2025 15:36:17 +0100
+ -- Serge Schneider <serge@raspberrypi.com>  Mon, 15 Dec 2025 15:24:15 +0000
+
+ffmpeg (7:7.1.3-0+deb13u1) trixie-security; urgency=medium
+
+  * New upstream version 7.1.3
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 05 Dec 2025 22:04:11 +0100
 
 ffmpeg (7:7.1.2-0+deb13u1) trixie-security; urgency=medium
 
