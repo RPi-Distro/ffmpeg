@@ -1,3 +1,9 @@
+ffmpeg (7:5.1.9-0+deb12u1) bookworm-security; urgency=medium
+
+  * New upstream version 5.1.9
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 13 May 2026 15:23:40 +0200
+
 ffmpeg (7:5.1.8-0+deb12u1) bookworm-security; urgency=medium
 
   * New upstream version 5.1.8
