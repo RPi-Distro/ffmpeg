@@ -2038,7 +2038,7 @@ static int decode_cblk(const Jpeg2000DecoderContext *s, Jpeg2000CodingStyle *cod
 
     while (passno--) {
         if (bpno < 0 || bpno > 29) {
-            av_log(s->avctx, AV_LOG_ERROR, "bpno became invalid\n");
+            av_log(s->avctx, AV_LOG_ERROR, "bpno (%d) became invalid\n", bpno);
             return AVERROR_INVALIDDATA;
         }
         switch(pass_t) {
@@ -2237,8 +2237,8 @@ static inline int tile_codeblocks(const Jpeg2000DecoderContext *s, Jpeg2000Tile 
                     band->coord[1][0] == band->coord[1][1])
                     continue;
 
-                if ((codsty->cblk_style & JPEG2000_CTSY_HTJ2K_F) && M_b >= 31) {
-                    avpriv_request_sample(s->avctx, "JPEG2000_CTSY_HTJ2K_F and M_b >= 31");
+                if (M_b > 31) {
+                    avpriv_request_sample(s->avctx, "M_b (%d) > 31", M_b);
                     return AVERROR_PATCHWELCOME;
                 }
 
@@ -2317,9 +2317,12 @@ static inline int tile_codeblocks(const Jpeg2000DecoderContext *s, Jpeg2000Tile 
             int h            = tile->comp[compno].coord[1][1] -                                   \
                                ff_jpeg2000_ceildiv(s->image_offset_y, s->cdy[compno]);            \
             int plane        = 0;                                                                 \
+            ptrdiff_t dstoffset = 0;                                                              \
                                                                                                   \
             if (planar)                                                                           \
                 plane = s->cdef[compno] ? s->cdef[compno]-1 : (s->ncomponents-1);                 \
+            else                                                                                  \
+                dstoffset = s->cdef[compno] ? s->cdef[compno] - 1 : compno;                       \
                                                                                                   \
             y    = tile->comp[compno].coord[1][0] -                                               \
                    ff_jpeg2000_ceildiv(s->image_offset_y, s->cdy[compno]);                        \
@@ -2329,7 +2332,7 @@ static inline int tile_codeblocks(const Jpeg2000DecoderContext *s, Jpeg2000Tile 
                                                                                                   \
                 x   = tile->comp[compno].coord[0][0] -                                            \
                       ff_jpeg2000_ceildiv(s->image_offset_x, s->cdx[compno]);                     \
-                dst = line + x * pixelsize + compno*!planar;                                      \
+                dst = line + x * pixelsize + dstoffset;                                           \
                                                                                                   \
                 if (codsty->transform == FF_DWT97) {                                              \
                     for (; x < w; x++) {                                                          \

@@ -1680,7 +1680,7 @@ static int mp4_read_iods(AVFormatContext *s, const uint8_t *buf, unsigned size,
 
     ret = parse_mp4_descr(&d, avio_tell(&d.pb.pub), size, MP4IODescrTag);
 
-    *descr_count = d.descr_count;
+    *descr_count += d.descr_count;
     return ret;
 }
 
@@ -2383,7 +2383,8 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
     av_log(ts->stream, AV_LOG_TRACE, "pcr_pid=0x%x\n", pcr_pid);
 
     program_info_length = get16(&p, p_end);
-    if (program_info_length < 0)
+
+    if (program_info_length < 0 || (program_info_length & 0xFFF) > p_end - p)
         return;
     program_info_length &= 0xfff;
     while (program_info_length >= 2) {
@@ -2398,12 +2399,12 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
             // something else is broken, exit the program_descriptors_loop
             break;
         program_info_length -= len;
-        if (tag == IOD_DESCRIPTOR) {
+        if (tag == IOD_DESCRIPTOR && len >= 2) {
             get8(&p, p_end); // scope
             get8(&p, p_end); // label
             len -= 2;
             mp4_read_iods(ts->stream, p, len, mp4_descr + mp4_descr_count,
-                          &mp4_descr_count, MAX_MP4_DESCR_COUNT);
+                          &mp4_descr_count, MAX_MP4_DESCR_COUNT - mp4_descr_count);
         } else if (tag == REGISTRATION_DESCRIPTOR && len >= 4) {
             prog_reg_desc = bytestream_get_le32(&p);
             len -= 4;
