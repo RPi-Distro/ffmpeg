@@ -237,6 +237,9 @@ typedef struct OptionsContext {
     int        nb_autoscale;
     SpecifierOpt *bits_per_raw_sample;
     int        nb_bits_per_raw_sample;
+
+
+    int depth;
 } OptionsContext;
 
 typedef struct InputFilter {

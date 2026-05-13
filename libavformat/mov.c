@@ -2705,6 +2705,7 @@ fail:
             av_freep(&sc->extradata[j]);
     }
 
+    sc->stsd_count = 0;
     av_freep(&sc->extradata);
     av_freep(&sc->extradata_size);
     return ret;
@@ -3102,6 +3103,9 @@ static int mov_read_sdtp(MOVContext *c, AVIOContext *pb, MOVAtom atom)
         av_log(c->fc, AV_LOG_WARNING, "Duplicated SDTP atom\n");
     av_freep(&sc->sdtp_data);
     sc->sdtp_count = 0;
+
+    if (entries < 0 || entries > SIZE_MAX)
+        return AVERROR(ERANGE);
 
     sc->sdtp_data = av_malloc(entries);
     if (!sc->sdtp_data)
@@ -3722,7 +3726,12 @@ static void mov_fix_index(MOVContext *mov, AVStream *st)
                st->index, edit_list_index, edit_list_media_time, edit_list_duration);
         edit_list_index++;
         edit_list_dts_counter = edit_list_dts_entry_end;
-        edit_list_dts_entry_end += edit_list_duration;
+        edit_list_dts_entry_end = av_sat_add64(edit_list_dts_entry_end, edit_list_duration);
+        if (edit_list_dts_entry_end == INT64_MAX) {
+            av_log(mov->fc, AV_LOG_ERROR, "Cannot calculate dts entry length with duration %"PRId64"\n",
+                   edit_list_duration);
+            break;
+        }
         num_discarded_begin = 0;
         if (!found_non_empty_edit && edit_list_media_time == -1) {
             empty_edits_sum_duration += edit_list_duration;
@@ -6897,7 +6906,7 @@ static int cenc_scheme_decrypt(MOVContext *c, MOVStreamContext *sc, AVEncryption
     }
 
     for (i = 0; i < sample->subsample_count; i++) {
-        if (sample->subsamples[i].bytes_of_clear_data + sample->subsamples[i].bytes_of_protected_data > size) {
+        if (sample->subsamples[i].bytes_of_clear_data + (int64_t)sample->subsamples[i].bytes_of_protected_data > size) {
             av_log(c->fc, AV_LOG_ERROR, "subsample size exceeds the packet size left\n");
             return AVERROR_INVALIDDATA;
         }
@@ -6952,7 +6961,7 @@ static int cbc1_scheme_decrypt(MOVContext *c, MOVStreamContext *sc, AVEncryption
     }
 
     for (i = 0; i < sample->subsample_count; i++) {
-        if (sample->subsamples[i].bytes_of_clear_data + sample->subsamples[i].bytes_of_protected_data > size) {
+        if (sample->subsamples[i].bytes_of_clear_data + (int64_t)sample->subsamples[i].bytes_of_protected_data > size) {
             av_log(c->fc, AV_LOG_ERROR, "subsample size exceeds the packet size left\n");
             return AVERROR_INVALIDDATA;
         }
@@ -7014,7 +7023,7 @@ static int cens_scheme_decrypt(MOVContext *c, MOVStreamContext *sc, AVEncryption
     }
 
     for (i = 0; i < sample->subsample_count; i++) {
-        if (sample->subsamples[i].bytes_of_clear_data + sample->subsamples[i].bytes_of_protected_data > size) {
+        if (sample->subsamples[i].bytes_of_clear_data + (int64_t)sample->subsamples[i].bytes_of_protected_data > size) {
             av_log(c->fc, AV_LOG_ERROR, "subsample size exceeds the packet size left\n");
             return AVERROR_INVALIDDATA;
         }
@@ -7079,7 +7088,7 @@ static int cbcs_scheme_decrypt(MOVContext *c, MOVStreamContext *sc, AVEncryption
     }
 
     for (i = 0; i < sample->subsample_count; i++) {
-        if (sample->subsamples[i].bytes_of_clear_data + sample->subsamples[i].bytes_of_protected_data > size) {
+        if (sample->subsamples[i].bytes_of_clear_data + (int64_t)sample->subsamples[i].bytes_of_protected_data > size) {
             av_log(c->fc, AV_LOG_ERROR, "subsample size exceeds the packet size left\n");
             return AVERROR_INVALIDDATA;
         }
@@ -7208,7 +7217,7 @@ static int mov_read_dops(MOVContext *c, AVIOContext *pb, MOVAtom atom)
         return 0;
     st = c->fc->streams[c->fc->nb_streams-1];
 
-    if ((uint64_t)atom.size > (1<<30) || atom.size < 11)
+    if ((uint64_t)atom.size > (1<<30) || atom.size < 11 || st->codecpar->extradata)
         return AVERROR_INVALIDDATA;
 
     /* Check OpusSpecificBox version. */
@@ -7226,7 +7235,11 @@ static int mov_read_dops(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     AV_WL32(st->codecpar->extradata, MKTAG('O','p','u','s'));
     AV_WL32(st->codecpar->extradata + 4, MKTAG('H','e','a','d'));
     AV_WB8(st->codecpar->extradata + 8, 1); /* OpusHead version */
-    avio_read(pb, st->codecpar->extradata + 9, size - 9);
+    if ((ret = ffio_read_size(pb, st->codecpar->extradata + 9, size - 9)) < 0) {
+        av_freep(&st->codecpar->extradata);
+        st->codecpar->extradata_size = 0;
+        return ret;
+    }
 
     /* OpusSpecificBox is stored in big-endian, but OpusHead is
        little-endian; aside from the preceeding magic and version they're
