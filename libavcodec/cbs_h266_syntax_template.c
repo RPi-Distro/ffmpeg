@@ -1218,7 +1218,7 @@ static int FUNC(sps)(CodedBitstreamContext *ctx, RWContext *rw,
                     int num_subpic_cols = tmp_width_val /
                                      (current->sps_subpic_width_minus1[0] + 1);
                     if (tmp_width_val % (current->sps_subpic_width_minus1[0] + 1) ||
-                        tmp_height_val % (current->sps_subpic_width_minus1[0] + 1) ||
+                        tmp_height_val % (current->sps_subpic_height_minus1[0] + 1) ||
                         current->sps_num_subpics_minus1 !=
                         (num_subpic_cols * tmp_height_val /
                          (current->sps_subpic_height_minus1[0] + 1) - 1))
@@ -1972,16 +1972,18 @@ static int FUNC(pps) (CodedBitstreamContext *ctx, RWContext *rw,
             for (i = 0; i < current->pps_num_slices_in_pic_minus1; i++) {
                 tile_x = tile_idx % current->num_tile_columns;
                 tile_y = tile_idx / current->num_tile_columns;
+                if (tile_y >= current->num_tile_rows)
+                    return AVERROR_INVALIDDATA;
                 if (tile_x != current->num_tile_columns - 1) {
                     ues(pps_slice_width_in_tiles_minus1[i],
-                        0, current->num_tile_columns - 1, 1, i);
+                        0, current->num_tile_columns - 1 - tile_x, 1, i);
                 } else {
                     infer(pps_slice_width_in_tiles_minus1[i], 0);
                 }
                 if (tile_y != current->num_tile_rows - 1 &&
                     (current->pps_tile_idx_delta_present_flag || tile_x == 0)) {
                     ues(pps_slice_height_in_tiles_minus1[i],
-                        0, current->num_tile_rows - 1, 1, i);
+                        0, current->num_tile_rows - 1 - tile_y, 1, i);
                 } else {
                     if (tile_y == current->num_tile_rows - 1)
                         infer(pps_slice_height_in_tiles_minus1[i], 0);
@@ -2013,6 +2015,12 @@ static int FUNC(pps) (CodedBitstreamContext *ctx, RWContext *rw,
                         slice_top_left_ctu_y[i] = ctu_y;
                     } else {
                         uint16_t slice_height_in_ctus;
+                        int num_uniform_slices;
+
+                        if (i + current->pps_num_exp_slices_in_tile[i] >
+                            current->pps_num_slices_in_pic_minus1 + 1)
+                            return AVERROR_INVALIDDATA;
+
                         for (j = 0; j < current->pps_num_exp_slices_in_tile[i];
                              j++) {
                             ues(pps_exp_slice_height_in_ctus_minus1[i][j], 0,
@@ -2033,6 +2041,13 @@ static int FUNC(pps) (CodedBitstreamContext *ctx, RWContext *rw,
                         uniform_slice_height = 1 +
                             (j == 0 ? current->row_height_val[tile_y] - 1:
                             current->pps_exp_slice_height_in_ctus_minus1[i][j-1]);
+
+                        num_uniform_slices = (remaining_height_in_ctbs_y + uniform_slice_height - 1)
+                                           / uniform_slice_height;
+                        if (i + current->pps_num_exp_slices_in_tile[i] + num_uniform_slices >
+                            current->pps_num_slices_in_pic_minus1 + 1)
+                            return AVERROR_INVALIDDATA;
+
                         while (remaining_height_in_ctbs_y > uniform_slice_height) {
                             current->slice_height_in_ctus[i + j] =
                                                           uniform_slice_height;
@@ -3441,7 +3456,7 @@ static int FUNC(slice_header) (CodedBitstreamContext *ctx, RWContext *rw,
                  tile_idx <=
                  current->sh_slice_address +
                  current->sh_num_tiles_in_slice_minus1; tile_idx++) {
-                tile_y = tile_idx / pps->num_tile_rows;
+                tile_y = tile_idx / pps->num_tile_columns;
                 height = pps->row_height_val[tile_y];
                 current->num_entry_points += (entropy_sync ? height : 1);
             }

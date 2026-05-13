@@ -966,13 +966,22 @@ static int parse_playlist(HLSContext *c, const char *url,
             if (pls)
                 pls->finished = 1;
         } else if (av_strstart(line, "#EXTINF:", &ptr)) {
+            double d = atof(ptr) * AV_TIME_BASE;
+            if (d < 0 || d > INT64_MAX || isnan(d)) {
+                av_log(c->ctx, AV_LOG_WARNING, "EXTINF %f unsupported\n", d / AV_TIME_BASE);
+                d = 0;
+            }
+            duration = d;
             is_segment = 1;
-            duration   = atof(ptr) * AV_TIME_BASE;
         } else if (av_strstart(line, "#EXT-X-BYTERANGE:", &ptr)) {
             seg_size = strtoll(ptr, NULL, 10);
             ptr = strchr(ptr, '@');
             if (ptr)
                 seg_offset = strtoll(ptr+1, NULL, 10);
+            if (seg_size < 0 || seg_offset > INT64_MAX - seg_size) {
+                ret = AVERROR_INVALIDDATA;
+                goto fail;
+            }
         } else if (av_strstart(line, "#", NULL)) {
             av_log(c->ctx, AV_LOG_INFO, "Skip ('%s')\n", line);
             continue;
