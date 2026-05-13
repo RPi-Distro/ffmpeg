@@ -405,8 +405,10 @@ static void yuv2planeX_8_c(const int16_t *filter, int filterSize,
     for (i=0; i<dstW; i++) {
         int val = dither[(i + offset) & 7] << 12;
         int j;
-        for (j=0; j<filterSize; j++)
-            val += src[j][i] * filter[j];
+        for (j=0; j<filterSize; j++) {
+            val += (unsigned)(src[j][i] * filter[j]);
+
+        }
 
         dest[i]= av_clip_uint8(val>>19);
     }
@@ -1037,8 +1039,8 @@ yuv2rgba64_X_c_template(SwsContext *c, const int16_t *lumFilter,
         int j;
         unsigned Y1 = -0x40000000;
         unsigned Y2 = -0x40000000;
-        int U  = -(128 << 23); // 19
-        int V  = -(128 << 23);
+        unsigned U  = -(128 << 23); // 19
+        unsigned V  = -(128 << 23);
         int R, G, B;
 
         for (j = 0; j < lumFilterSize; j++) {
@@ -1068,8 +1070,8 @@ yuv2rgba64_X_c_template(SwsContext *c, const int16_t *lumFilter,
         Y1 += 0x10000;
         Y2 = (int)Y2 >> 14;
         Y2 += 0x10000;
-        U  >>= 14;
-        V  >>= 14;
+        U  = (int)U >> 14;
+        V  = (int)V >> 14;
 
         // 8 bits: 27 -> 17 bits, 16 bits: 31 - 14 = 17 bits
         Y1 -= c->yuv2rgb_y_offset;
@@ -1177,7 +1179,7 @@ yuv2rgba64_1_c_template(SwsContext *c, const int32_t *buf0,
 {
     const int32_t *ubuf0 = ubuf[0], *vbuf0 = vbuf[0];
     int i;
-    int A1 = 0xffff<<14, A2= 0xffff<<14;
+    SUINT A1 = 0xffff<<14, A2= 0xffff<<14;
 
     if (uvalpha < 2048) {
         for (i = 0; i < ((dstW + 1) >> 1); i++) {
@@ -1195,8 +1197,8 @@ yuv2rgba64_1_c_template(SwsContext *c, const int32_t *buf0,
             Y2 += (1 << 13) - (1 << 29);
 
             if (hasAlpha) {
-                A1 = abuf0[i * 2    ] * (1 << 11);
-                A2 = abuf0[i * 2 + 1] * (1 << 11);
+                A1 = abuf0[i * 2    ] * (SUINT)(1 << 11);
+                A2 = abuf0[i * 2 + 1] * (SUINT)(1 << 11);
 
                 A1 += 1 << 13;
                 A2 += 1 << 13;

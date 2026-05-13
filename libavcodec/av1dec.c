@@ -89,12 +89,11 @@ static int32_t decode_signed_subexp_with_ref(uint32_t sub_exp, int low,
 
 static void read_global_param(AV1DecContext *s, int type, int ref, int idx)
 {
-    uint8_t primary_frame, prev_frame;
+    int primary_frame;
     uint32_t abs_bits, prec_bits, round, prec_diff, sub, mx;
     int32_t r, prev_gm_param;
 
     primary_frame = s->raw_frame_header->primary_ref_frame;
-    prev_frame = s->raw_frame_header->ref_frame_idx[primary_frame];
     abs_bits = AV1_GM_ABS_ALPHA_BITS;
     prec_bits = AV1_GM_ALPHA_PREC_BITS;
 
@@ -104,8 +103,10 @@ static void read_global_param(AV1DecContext *s, int type, int ref, int idx)
      */
     if (s->raw_frame_header->primary_ref_frame == AV1_PRIMARY_REF_NONE)
         prev_gm_param = s->cur_frame.gm_params[ref][idx];
-    else
+    else {
+        int prev_frame = s->raw_frame_header->ref_frame_idx[primary_frame];
         prev_gm_param = s->ref[prev_frame].gm_params[ref][idx];
+    }
 
     if (idx < 2) {
         if (type == AV1_WARP_MODEL_TRANSLATION) {
@@ -1042,6 +1043,8 @@ static int av1_decode_frame(AVCodecContext *avctx, AVFrame *frame,
             }
 
             s->raw_seq = &obu->obu.sequence_header;
+            s->raw_frame_header = NULL;
+            raw_tile_group      = NULL;
 
             ret = set_context_with_sequence(avctx, s->raw_seq);
             if (ret < 0) {
@@ -1090,6 +1093,8 @@ static int av1_decode_frame(AVCodecContext *avctx, AVFrame *frame,
                 ret = AVERROR(ENOMEM);
                 goto end;
             }
+
+            raw_tile_group      = NULL;
 
             if (unit->type == AV1_OBU_FRAME)
                 s->raw_frame_header = &obu->obu.frame.header;
@@ -1170,8 +1175,11 @@ static int av1_decode_frame(AVCodecContext *avctx, AVFrame *frame,
                 }
             }
             break;
-        case AV1_OBU_TILE_LIST:
         case AV1_OBU_TEMPORAL_DELIMITER:
+            s->raw_frame_header = NULL;
+            raw_tile_group      = NULL;
+        // fall-through
+        case AV1_OBU_TILE_LIST:
         case AV1_OBU_PADDING:
         case AV1_OBU_METADATA:
             break;
