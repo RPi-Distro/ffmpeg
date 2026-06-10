@@ -21,6 +21,7 @@
 #ifndef AVFILTER_CONVOLUTION_H
 #define AVFILTER_CONVOLUTION_H
 #include "avfilter.h"
+#include "libavutil/internal.h"
 
 enum MatrixMode {
     MATRIX_SQUARE,
