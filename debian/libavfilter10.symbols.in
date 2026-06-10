@@ -22,6 +22,7 @@ libavfilter.so.10 libavfilter10 #MINVER#
  av_buffersrc_add_frame_flags@LIBAVFILTER_10 7:7.0
  av_buffersrc_close@LIBAVFILTER_10 7:7.0
  av_buffersrc_get_nb_failed_requests@LIBAVFILTER_10 7:7.0
+ av_buffersrc_get_status@LIBAVFILTER_10 7:7.1.4
  av_buffersrc_parameters_alloc@LIBAVFILTER_10 7:7.0
  av_buffersrc_parameters_set@LIBAVFILTER_10 7:7.0
  av_buffersrc_write_frame@LIBAVFILTER_10 7:7.0

@@ -2784,6 +2784,10 @@ static int mka_parse_audio_codec(MatroskaTrack *track, AVCodecParameters *par,
             par->block_align  = track->audio.sub_packet_size;
             *extradata_offset = 78;
         }
+        if (par->block_align <= 0 ||
+            track->audio.sub_packet_h * (unsigned)track->audio.frame_size > INT_MAX ||
+            track->audio.frame_size * track->audio.sub_packet_h < par->block_align)
+            return AVERROR_INVALIDDATA;
         track->audio.buf = av_malloc_array(track->audio.sub_packet_h,
                                             track->audio.frame_size);
         if (!track->audio.buf)
@@ -4448,6 +4452,10 @@ static CueDesc get_cue_desc(AVFormatContext *s, int64_t ts, int64_t cues_start) 
         // Clusters.
         cue_desc.end_offset = cues_start - matroska->segment_start;
     }
+
+    if (cue_desc.end_time_ns < cue_desc.start_time_ns)
+        return (CueDesc) {-1, -1, -1, -1};
+
     return cue_desc;
 }
 
