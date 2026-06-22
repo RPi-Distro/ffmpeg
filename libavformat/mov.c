@@ -1196,15 +1196,13 @@ static int mov_read_chnl(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     version = avio_r8(pb);
     flags   = avio_rb24(pb);
     if (version != 0 || flags != 0) {
-        av_log(c->fc, AV_LOG_ERROR,
-               "Unsupported 'chnl' box with version %d, flags: %#x",
+        av_log(c->fc, AV_LOG_WARNING,
+               "Unsupported 'chnl' box with version %d, flags: %#x\n",
                version, flags);
-        return AVERROR_INVALIDDATA;
+        return 0;
     }
 
-    ret = ff_mov_read_chnl(c->fc, pb, st);
-    if (ret < 0)
-        return ret;
+    ff_mov_read_chnl(c->fc, pb, st);
 
     if (avio_tell(pb) != end) {
         av_log(c->fc, AV_LOG_WARNING, "skip %" PRId64 " bytes of unknown data inside chnl\n",
@@ -5035,7 +5033,8 @@ static int sanity_checks(void *log_obj, MOVStreamContext *sc, int index)
 {
     if ((sc->chunk_count && (!sc->stts_count || !sc->stsc_count ||
                             (!sc->sample_size && !sc->sample_count))) ||
-        (!sc->chunk_count && sc->sample_count)) {
+        (sc->sample_count && (!sc->chunk_count ||
+                             (!sc->sample_size && !sc->sample_sizes)))) {
         av_log(log_obj, AV_LOG_ERROR, "stream %d, missing mandatory atoms, broken header\n",
                index);
         return 1;
@@ -9002,6 +9001,12 @@ static int mov_read_ispe(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     av_log(c->fc, AV_LOG_TRACE, "ispe: item_id %d, width %u, height %u\n",
            c->cur_item_id, width, height);
 
+    if (!width || !height || width > INT_MAX || height > INT_MAX) {
+        av_log(c->fc, AV_LOG_ERROR, "Invalid ispe dimensions %"PRIu32"x%"PRIu32"\n",
+               width, height);
+        return AVERROR_INVALIDDATA;
+    }
+
     item = heif_cur_item(c);
     if (item) {
         item->width  = width;
@@ -9915,8 +9920,10 @@ static int read_image_grid(AVFormatContext *s, const HEIFGrid *grid,
 {
     MOVContext *c = s->priv_data;
     const HEIFItem *item = grid->item;
+    int64_t coded_width = 0, coded_height = 0;
     int64_t offset = 0, pos = avio_tell(s->pb);
-    int x = 0, y = 0, i = 0;
+    int64_t x = 0, y = 0;
+    int i = 0;
     int tile_rows, tile_cols;
     int flags, size;
 
@@ -9955,9 +9962,15 @@ static int read_image_grid(AVFormatContext *s, const HEIFGrid *grid,
         return AVERROR_INVALIDDATA;
 
     for (int i = 0; i < tile_cols; i++)
-        tile_grid->coded_width  += grid->tile_item_list[i]->width;
+        coded_width  += grid->tile_item_list[i]->width;
     for (int i = 0; i < size; i += tile_cols)
-        tile_grid->coded_height += grid->tile_item_list[i]->height;
+        coded_height += grid->tile_item_list[i]->height;
+
+    if (coded_width > INT_MAX || coded_height > INT_MAX)
+        return AVERROR_INVALIDDATA;
+
+    tile_grid->coded_width  = coded_width;
+    tile_grid->coded_height = coded_height;
 
     tile_grid->offsets = av_calloc(tile_grid->nb_tiles, sizeof(*tile_grid->offsets));
     if (!tile_grid->offsets)
@@ -10916,6 +10929,7 @@ static int can_seek_to_key_sample(AVStream *st, int sample, int64_t requested_pt
     if (sample >= sc->sample_offsets_count)
         return 1;
 
+    av_assert0(sample >= 0);
     key_sample_dts = sti->index_entries[sample].timestamp;
     key_sample_pts = key_sample_dts + sc->sample_offsets[sample] + sc->dts_shift;
 
@@ -10958,6 +10972,8 @@ static int mov_seek_stream(AVFormatContext *s, AVStream *st, int64_t timestamp, 
 
         next_ts = timestamp - FFMAX(sc->min_sample_duration, 1);
         requested_sample = av_index_search_timestamp(st, next_ts, flags);
+        if (requested_sample < 0)
+            return AVERROR_INVALIDDATA;
 
         // If we've reached a different sample trying to find a good pts to
         // seek to, give up searching because we'll end up seeking back to
