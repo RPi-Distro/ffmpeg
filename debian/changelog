@@ -1,4 +1,4 @@
-ffmpeg (8:7.1.4-0+deb13u1+rpt1) trixie; urgency=medium
+ffmpeg (8:7.1.5-0+deb13u1+rpt1) UNRELEASED; urgency=medium
 
   * HW accel patch 28
   * Update gbp branches
@@ -9,7 +9,14 @@ ffmpeg (8:7.1.4-0+deb13u1+rpt1) trixie; urgency=medium
   * Add epoxy dependency
   * Update maintainer information
 
- -- Serge Schneider <serge@raspberrypi.com>  Wed, 10 Jun 2026 20:45:27 +0100
+ -- Serge Schneider <serge@raspberrypi.com>  Tue, 23 Jun 2026 13:23:12 +0100
+
+ffmpeg (7:7.1.5-0+deb13u1) trixie-security; urgency=high
+
+  * New upstream version 7.1.5
+    - Fixes CVE-2026-8461
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 22 Jun 2026 18:08:37 +0200
 
 ffmpeg (7:7.1.4-0+deb13u1) trixie-security; urgency=medium
 
